@@ -1,0 +1,8 @@
+.Plan-sector {
+  pointer-events: all;
+}
+
+.Plan-sector:hover .Plan-sector-highlight {
+  fill: red;
+  fill-opacity: .3;
+}

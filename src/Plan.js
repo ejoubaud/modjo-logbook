@@ -1,6 +1,7 @@
 // generated with gravit.io -> svgo -> svgr
 // svgo -i source.svg --disable={mergePaths,prefixIds,cleanupIDs,removeTitle,removeDesc,removeViewBox} --enable=removeDimensions —pretty -o - | svgr --no-svgo > src/Plan.js
 import React from "react";
+import './Plan.css';
 
 const sectors = [
   { id: 1, d: "M340 60.833V0h84l1 76.913h-26l-31-16.08h-28z" },
@@ -44,13 +45,23 @@ const badges = [
   { id: 18, d: "M313.417 193.004a7.879 7.879 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.879 7.879 0 0 1-7.875 7.875 7.878 7.878 0 0 1-7.875-7.875z", textTransform: "translate(313.708 197.405)" },
 ]
 
+// We want the whole sector area to trigger a hover/click, but we only want
+// the part on the wall to get highlighted, so we duplicate the path,
+// one for events/:hover, and a clipped one (with a mask) to actually get hightlighted
 const Sector = ({ d, id }) => (
-  <path
-    d={d}
-    id={`sector-${id}`}
-    vectorEffect="non-scaling-stroke"
-    className="Plan-sector"
-  />
+  <g className="Plan-sector">
+    <path
+      d={d}
+      id={`sector-${id}`}
+      vectorEffect="non-scaling-stroke"
+    />
+    <path
+      d={d}
+      className="Plan-sector-highlight"
+      vectorEffect="non-scaling-stroke"
+      mask="url(#highlight-mask)"
+    />
+  </g>
 )
 
 const Badge = ({ d, id, textTransform }) => (
@@ -80,19 +91,37 @@ const Plan = props => (
       <clipPath id="_clipPath_DS6Fbl1Pjoa77teAAsvmS6agZhjT8QYH">
         <path d="M0 0h560v315H0z" />
       </clipPath>
+      {/* WALL PATHS USED IN MASK - We want those to have one fill color in the drawing,
+          and another (black/white) in the sector highlighting mask.
+          But <use> won't let us override existing fill colors, so we need to define them
+          fillless here in defs, then use them both in the image and in the mask */}
+      <path
+        id="wall"
+        d="M538 285v-7l-20-9-9-6-9-9-27-5-33 14-40 2-7-6-40 1-9 6-39 2-15-8-48 1-16 10-59 2-46-30-26 11H71l-2-102-1-35v-7L55 99v-9l20-6 11-11 12-24 62 2 31-1 83-2 20 5 26-5h52l29 15 10-1 34-15 30 1 19 4 8-1 8 19v26l-7 6h-31l-11 4v2l61-1V61l-6-19-71-2-21 8h-15l-21-10h-92l-22.25 4.25-29.75.583-62.333-6L98.25 44.25 79 43l-19 6-17 28v14l13 16v59l-11 6 1 106 75-3 47 5 15 3 125-5 1 7h11l14-11 9-2 6-4 29 2 46 11 99-3 15 7z"
+        vectorEffect="non-scaling-stroke"
+        stroke="#797979"
+      />
+      <path
+        id="bear"
+        d="M283 187l-42 2-81-7-24-19-2-25 24-14 20 9 52-7 61-15 23 2 26 21v3l8 5 2 3-2 4-9 5v2l-28 20-28 11z"
+        vectorEffect="non-scaling-stroke"
+        stroke="#797979"
+      />
+      <path
+        id="bear-back"
+        d="M154.563 129.688l-10.75 23-7.625 5.25 7.625-5.375 21.375 17.125-6 6.625 6-6.625 37.312.812 1.125 11.375L202.5 170.5l42.875 4.563-5.625 8.25 5.625-8.25 23-3.375 13.5 10-13.5-10.125 44.5-13.938-13.75 19 13.75-18.875-5.5 19.625 5.5-19.625 11.75-4-.25 4.25.25-4.375.75-19.125.5-4.75-.375 4.75-29-12.625.125-6.625-.125 6.625-59.812 16.313 9.375-11.625-9.25 11.5-34.688 3.812.875-8.25-.875 8.25L176 140.563l-21.437-10.875z"
+        vectorEffect="non-scaling-stroke"
+        stroke="#AEAEAE"
+      />
+      {/* END WALL PATHS */}
+      <mask id="highlight-mask">
+        <rect id="bg" x="0" y="0" width="100%" height="100%" fill="black"/>
+        <use xlinkHref="#bear" fill="white" />
+        <use xlinkHref="#bear-back" fill="black" />
+        <use xlinkHref="#wall" fill="white" />
+      </mask>
     </defs>
     <g clipPath="url(#_clipPath_DS6Fbl1Pjoa77teAAsvmS6agZhjT8QYH)">
-
-      <g
-        style={{ isolation: "isolate" }}
-        id="secteurs"
-        fill="none"
-        stroke="#EAEAEA"
-        strokeLinecap="square"
-        strokeMiterlimit={3}
-      >
-        { sectors.map(props => <Sector key={`sector-${props.id}`} {...props} />) }
-      </g>
 
       <g style={{ isolation: "isolate" }} id="badges">
         { badges.map(props => <Badge key={`badge-${props.id}`} {...props} />) }
@@ -110,12 +139,7 @@ const Plan = props => (
           vectorEffect="non-scaling-stroke"
           stroke="#AEAEAE"
         />
-        <path
-          d="M283 187l-42 2-81-7-24-19-2-25 24-14 20 9 52-7 61-15 23 2 26 21v3l8 5 2 3-2 4-9 5v2l-28 20-28 11z"
-          fill="none"
-          vectorEffect="non-scaling-stroke"
-          stroke="#797979"
-        />
+        <use xlinkHref="#bear" fill="none" />
         <g style={{ isolation: "isolate" }} id="ours-features">
           <path
             d="M319 128l7 2 2-6-2-4-7 2v6z"
@@ -147,12 +171,7 @@ const Plan = props => (
             vectorEffect="non-scaling-stroke"
             stroke="#797979"
           />
-          <path
-            d="M154.563 129.688l-10.75 23-7.625 5.25 7.625-5.375 21.375 17.125-6 6.625 6-6.625 37.312.812 1.125 11.375L202.5 170.5l42.875 4.563-5.625 8.25 5.625-8.25 23-3.375 13.5 10-13.5-10.125 44.5-13.938-13.75 19 13.75-18.875-5.5 19.625 5.5-19.625 11.75-4-.25 4.25.25-4.375.75-19.125.5-4.75-.375 4.75-29-12.625.125-6.625-.125 6.625-59.812 16.313 9.375-11.625-9.25 11.5-34.688 3.812.875-8.25-.875 8.25L176 140.563l-21.437-10.875z"
-            fill="#F4F4F4"
-            vectorEffect="non-scaling-stroke"
-            stroke="#AEAEAE"
-          />
+          <use xlinkHref="#bear-back" fill="#F4F4F4" />
           <path
             d="M324.594 153.906l.75-19.812 10.187 10.125-10.937 9.687z"
             fill="#F4F4F4"
@@ -160,13 +179,21 @@ const Plan = props => (
             stroke="#AEAEAE"
           />
         </g>
-        <path
-          d="M538 285v-7l-20-9-9-6-9-9-27-5-33 14-40 2-7-6-40 1-9 6-39 2-15-8-48 1-16 10-59 2-46-30-26 11H71l-2-102-1-35v-7L55 99v-9l20-6 11-11 12-24 62 2 31-1 83-2 20 5 26-5h52l29 15 10-1 34-15 30 1 19 4 8-1 8 19v26l-7 6h-31l-11 4v2l61-1V61l-6-19-71-2-21 8h-15l-21-10h-92l-27 6h-38l-40 4h-37l-75-5-19 6-17 28v14l13 16v59l-11 6 1 106 75-3 47 5 15 3 125-5 1 7h11l14-11 9-2 6-4 29 2 46 11 99-3 15 7z"
-          fill="none"
-          vectorEffect="non-scaling-stroke"
-          stroke="#797979"
-        />
+        <use xlinkHref="#wall" fill="none" />
       </g>
+
+      {/* Sectors must be at the bottom, so as to be hoverable/clickable on the top layer*/}
+      <g
+        style={{ isolation: "isolate" }}
+        id="secteurs"
+        fill="none"
+        stroke="#EAEAEA"
+        strokeLinecap="square"
+        strokeMiterlimit={3}
+      >
+        { sectors.map(props => <Sector key={`sector-${props.id}`} {...props} />) }
+      </g>
+
     </g>
   </svg>
 );
