@@ -2,6 +2,78 @@
 // svgo -i source.svg --disable={mergePaths,prefixIds,cleanupIDs,removeTitle,removeDesc,removeViewBox} --enable=removeDimensions —pretty -o - | svgr --no-svgo > src/Plan.js
 import React from "react";
 
+const sectors = [
+  { id: 1, d: "M340 60.833V0h84l1 76.913h-26l-31-16.08h-28z" },
+  { id: 2, d: "M258 62.5V0h82v60.833L258 62.5z" },
+  { id: 3, d: "M182 63.333l76-.833V0h-76v63.333z" },
+  { id: 4, d: "M182 63.143L105 65V0h77v63.143z" },
+  { id: 5, d: "M105 107V-.125L-.313 1.231V107H105z" },
+  { id: 6, d: "M90.14 166H-.187v-59H90.14v59z" },
+  { id: 7, d: "M-.14 232v-66h90.28l.86 65.057L-.14 232z" },
+  { id: 8, d: "M105 314.937v-83.88L0 232.08v82.857h105z" },
+  { id: 9, d: "M141 231.057L170 249v66h-65v-83.943h36z" },
+  { id: 10, d: "M226 315v-66h-56v66h56z" },
+  { id: 11, d: "M309 315h-83v-66h83v66z" },
+  { id: 12, d: "M306 145l47-51 61 51-61 53-47-53z" },
+  { id: 13, d: "M315.853 134L283 129V84h32.853L353 94l-37.147 40z" },
+  { id: 14, d: "M199 144l84-15V84h-84v60z" },
+  { id: 15, d: "M146 144l-18-10.169V84h71v60h-53z" },
+  { id: 16, d: "M199 224h-37l-49-37 33-43 29 15 24 2v63z" },
+  { id: 17, d: "M285 223l-86 1v-63l84-8 2 70z" },
+  { id: 18, d: "M353 198l-30 23-38 2-2-70 23-8 47 53z" },
+];
+
+const badges = [
+  { id: 1, d: "M361.844 22.625a7.879 7.879 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.879 7.879 0 0 1-7.875-7.875z", textTransform: "translate(366.125 27.155)" },
+  { id: 2, d: "M288 22.171a7.88 7.88 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875A7.88 7.88 0 0 1 288 22.171z", textTransform: "translate(292.375 26.405)" },
+  { id: 3, d: "M210 28.921a7.88 7.88 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875A7.88 7.88 0 0 1 210 28.921z", textTransform: "translate(214.25 33.28)" },
+  { id: 4, d: "M128 28.421a7.88 7.88 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875A7.88 7.88 0 0 1 128 28.421z", textTransform: "translate(131.75 32.655)" },
+  { id: 5, d: "M30.5 35.171a7.88 7.88 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.88 7.88 0 0 1-7.875-7.875z", textTransform: "translate(35.5 39.655)" },
+  { id: 6, d: "M24.5 129.171a7.88 7.88 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.88 7.88 0 0 1-7.875-7.875z", textTransform: "translate(28.75 133.655)" },
+  { id: 7, d: "M19 201.092a7.879 7.879 0 0 1 7.875-7.875 7.879 7.879 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875A7.88 7.88 0 0 1 19 201.092z", textTransform: "translate(23.25 205.576)" },
+  { id: 8, d: "M25.5 291.421a7.88 7.88 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.88 7.88 0 0 1-7.875-7.875z", textTransform: "translate(29.75 295.905)" },
+  { id: 9, d: "M128 295.342a7.879 7.879 0 0 1 7.875-7.875 7.879 7.879 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.88 7.88 0 0 1-7.875-7.875z", textTransform: "translate(132.25 299.826)" },
+  { id: 10, d: "M187 295.342a7.879 7.879 0 0 1 7.875-7.875 7.879 7.879 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.88 7.88 0 0 1-7.875-7.875z", textTransform: "translate(187.5 299.826)" },
+  { id: 11, d: "M255.75 292.671a7.88 7.88 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.88 7.88 0 0 1-7.875-7.875z", textTransform: "translate(256.375 297.155)" },
+  { id: 12, d: "M361.417 151.338a7.878 7.878 0 0 1 7.875-7.875 7.879 7.879 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.879 7.879 0 0 1-7.875-7.875z", textTransform: "translate(361.708 155.488)" },
+  { id: 13, d: "M306 101.675a7.88 7.88 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.88 7.88 0 0 1-7.875-7.875z", textTransform: "translate(306.417 105.826)" },
+  { id: 14, d: "M226.75 103.675a7.88 7.88 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.88 7.88 0 0 1-7.875-7.875z", textTransform: "translate(227.167 107.826)" },
+  { id: 15, d: "M152.625 103.675A7.88 7.88 0 0 1 160.5 95.8a7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.88 7.88 0 0 1-7.875-7.875z", textTransform: "translate(153.042 107.826)" },
+  { id: 16, d: "M144.417 196.671a7.879 7.879 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.879 7.879 0 0 1-7.875-7.875z", textTransform: "translate(144.833 200.822)" },
+  { id: 17, d: "M226.75 202.004a7.88 7.88 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.879 7.879 0 0 1-7.875 7.875 7.879 7.879 0 0 1-7.875-7.875z", textTransform: "translate(227.167 206.155)" },
+  { id: 18, d: "M313.417 193.004a7.879 7.879 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.879 7.879 0 0 1-7.875 7.875 7.878 7.878 0 0 1-7.875-7.875z", textTransform: "translate(313.708 197.405)" },
+]
+
+const Sector = ({ d, id }) => (
+  <path
+    d={d}
+    id={`sector-${id}`}
+    vectorEffect="non-scaling-stroke"
+    className="Plan-sector"
+  />
+)
+
+const Badge = ({ d, id, textTransform }) => (
+  <g id={`badge-${id}`}>
+    <path
+      d={d}
+      vectorEffect="non-scaling-stroke"
+      stroke="#000"
+      strokeLinecap="square"
+      strokeMiterlimit={3}
+    />
+    <text
+      transform={textTransform}
+      fontFamily="Open Sans"
+      fontWeight={700}
+      fontSize={12}
+      fill="#fff"
+    >
+      {id}
+    </text>
+  </g>
+)
+
 const Plan = props => (
   <svg style={{ isolation: "isolate" }} viewBox="0 0 560 315" {...props}>
     <defs>
@@ -10,6 +82,7 @@ const Plan = props => (
       </clipPath>
     </defs>
     <g clipPath="url(#_clipPath_DS6Fbl1Pjoa77teAAsvmS6agZhjT8QYH)">
+
       <g
         style={{ isolation: "isolate" }}
         id="secteurs"
@@ -18,396 +91,13 @@ const Plan = props => (
         strokeLinecap="square"
         strokeMiterlimit={3}
       >
-        <path
-          d="M353 198l-30 23-38 2-2-70 23-8 47 53z"
-          vectorEffect="non-scaling-stroke"
-        />
-        <path
-          d="M285 223l-86 1v-63l84-8 2 70z"
-          vectorEffect="non-scaling-stroke"
-        />
-        <path
-          d="M199 224h-37l-49-37 33-43 29 15 24 2v63z"
-          vectorEffect="non-scaling-stroke"
-        />
-        <path
-          d="M146 144l-18-10.169V84h71v60h-53z"
-          vectorEffect="non-scaling-stroke"
-        />
-        <path d="M199 144l84-15V84h-84v60z" vectorEffect="non-scaling-stroke" />
-        <path
-          d="M315.853 134L283 129V84h32.853L353 94l-37.147 40z"
-          vectorEffect="non-scaling-stroke"
-        />
-        <path
-          d="M306 145l47-51 61 51-61 53-47-53z"
-          vectorEffect="non-scaling-stroke"
-        />
-        <path d="M309 315h-83v-66h83v66z" vectorEffect="non-scaling-stroke" />
-        <path d="M226 315v-66h-56v66h56z" vectorEffect="non-scaling-stroke" />
-        <path
-          d="M141 231.057L170 249v66h-65v-83.943h36z"
-          vectorEffect="non-scaling-stroke"
-        />
-        <path
-          d="M105 314.937v-83.88L0 232.08v82.857h105z"
-          vectorEffect="non-scaling-stroke"
-        />
-        <path
-          d="M-.14 232v-66h90.28l.86 65.057L-.14 232z"
-          vectorEffect="non-scaling-stroke"
-        />
-        <path
-          d="M90.14 166H-.187v-59H90.14v59z"
-          vectorEffect="non-scaling-stroke"
-        />
-        <path
-          d="M105 107V-.125L-.313 1.231V107H105z"
-          vectorEffect="non-scaling-stroke"
-        />
-        <path
-          d="M182 63.143L105 65V0h77v63.143z"
-          vectorEffect="non-scaling-stroke"
-        />
-        <path
-          d="M182 63.333l76-.833V0h-76v63.333z"
-          vectorEffect="non-scaling-stroke"
-        />
-        <path
-          d="M258 62.5V0h82v60.833L258 62.5z"
-          vectorEffect="non-scaling-stroke"
-        />
-        <path
-          d="M340 60.833V0h84l1 76.913h-26l-31-16.08h-28z"
-          vectorEffect="non-scaling-stroke"
-        />
+        { sectors.map(props => <Sector key={`sector-${props.id}`} {...props} />) }
       </g>
+
       <g style={{ isolation: "isolate" }} id="badges">
-        <g id="badge-18">
-          <path
-            d="M313.417 193.004a7.879 7.879 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.879 7.879 0 0 1-7.875 7.875 7.878 7.878 0 0 1-7.875-7.875z"
-            vectorEffect="non-scaling-stroke"
-            stroke="#000"
-            strokeLinecap="square"
-            strokeMiterlimit={3}
-          />
-          <text
-            transform="translate(313.708 197.405)"
-            fontFamily="Open Sans"
-            fontWeight={700}
-            fontSize={12}
-            fill="#fff"
-          >
-            18
-          </text>
-        </g>
-        <g id="badge-17">
-          <path
-            d="M226.75 202.004a7.88 7.88 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.879 7.879 0 0 1-7.875 7.875 7.879 7.879 0 0 1-7.875-7.875z"
-            vectorEffect="non-scaling-stroke"
-            stroke="#000"
-            strokeLinecap="square"
-            strokeMiterlimit={3}
-          />
-          <text
-            transform="translate(227.167 206.155)"
-            fontFamily="Open Sans"
-            fontWeight={700}
-            fontSize={12}
-            fill="#fff"
-          >
-            17
-          </text>
-        </g>
-        <g id="badge-16">
-          <path
-            d="M144.417 196.671a7.879 7.879 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.879 7.879 0 0 1-7.875-7.875z"
-            vectorEffect="non-scaling-stroke"
-            stroke="#000"
-            strokeLinecap="square"
-            strokeMiterlimit={3}
-          />
-          <text
-            transform="translate(144.833 200.822)"
-            fontFamily="Open Sans"
-            fontWeight={700}
-            fontSize={12}
-            fill="#fff"
-          >
-            16
-          </text>
-        </g>
-        <g id="badge-15">
-          <path
-            d="M152.625 103.675A7.88 7.88 0 0 1 160.5 95.8a7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.88 7.88 0 0 1-7.875-7.875z"
-            vectorEffect="non-scaling-stroke"
-            stroke="#000"
-            strokeLinecap="square"
-            strokeMiterlimit={3}
-          />
-          <text
-            transform="translate(153.042 107.826)"
-            fontFamily="Open Sans"
-            fontWeight={700}
-            fontSize={12}
-            fill="#fff"
-          >
-            15
-          </text>
-        </g>
-        <g id="badge-14">
-          <path
-            d="M226.75 103.675a7.88 7.88 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.88 7.88 0 0 1-7.875-7.875z"
-            vectorEffect="non-scaling-stroke"
-            stroke="#000"
-            strokeLinecap="square"
-            strokeMiterlimit={3}
-          />
-          <text
-            transform="translate(227.167 107.826)"
-            fontFamily="Open Sans"
-            fontWeight={700}
-            fontSize={12}
-            fill="#fff"
-          >
-            14
-          </text>
-        </g>
-        <g id="badge-13">
-          <path
-            d="M306 101.675a7.88 7.88 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.88 7.88 0 0 1-7.875-7.875z"
-            vectorEffect="non-scaling-stroke"
-            stroke="#000"
-            strokeLinecap="square"
-            strokeMiterlimit={3}
-          />
-          <text
-            transform="translate(306.417 105.826)"
-            fontFamily="Open Sans"
-            fontWeight={700}
-            fontSize={12}
-            fill="#fff"
-          >
-            13
-          </text>
-        </g>
-        <g id="badge-12">
-          <path
-            d="M361.417 151.338a7.878 7.878 0 0 1 7.875-7.875 7.879 7.879 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.879 7.879 0 0 1-7.875-7.875z"
-            vectorEffect="non-scaling-stroke"
-            stroke="#000"
-            strokeLinecap="square"
-            strokeMiterlimit={3}
-          />
-          <text
-            transform="translate(361.708 155.488)"
-            fontFamily="Open Sans"
-            fontWeight={700}
-            fontSize={12}
-            fill="#fff"
-          >
-            12
-          </text>
-        </g>
-        <g id="badge-11">
-          <path
-            d="M255.75 292.671a7.88 7.88 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.88 7.88 0 0 1-7.875-7.875z"
-            vectorEffect="non-scaling-stroke"
-            stroke="#000"
-            strokeLinecap="square"
-            strokeMiterlimit={3}
-          />
-          <text
-            transform="translate(256.375 297.155)"
-            fontFamily="Open Sans"
-            fontWeight={700}
-            fontSize={12}
-            fill="#fff"
-          >
-            11
-          </text>
-        </g>
-        <g id="badge-10">
-          <path
-            d="M187 295.342a7.879 7.879 0 0 1 7.875-7.875 7.879 7.879 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.88 7.88 0 0 1-7.875-7.875z"
-            vectorEffect="non-scaling-stroke"
-            stroke="#000"
-            strokeLinecap="square"
-            strokeMiterlimit={3}
-          />
-          <text
-            transform="translate(187.5 299.826)"
-            fontFamily="Open Sans"
-            fontWeight={700}
-            fontSize={12}
-            fill="#fff"
-          >
-            10
-          </text>
-        </g>
-        <g id="badge-9">
-          <path
-            d="M128 295.342a7.879 7.879 0 0 1 7.875-7.875 7.879 7.879 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.88 7.88 0 0 1-7.875-7.875z"
-            vectorEffect="non-scaling-stroke"
-            stroke="#000"
-            strokeLinecap="square"
-            strokeMiterlimit={3}
-          />
-          <text
-            transform="translate(132.25 299.826)"
-            fontFamily="Open Sans"
-            fontWeight={700}
-            fontSize={12}
-            fill="#fff"
-          >
-            9
-          </text>
-        </g>
-        <g id="badge-8">
-          <path
-            d="M25.5 291.421a7.88 7.88 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.88 7.88 0 0 1-7.875-7.875z"
-            vectorEffect="non-scaling-stroke"
-            stroke="#000"
-            strokeLinecap="square"
-            strokeMiterlimit={3}
-          />
-          <text
-            transform="translate(29.75 295.905)"
-            fontFamily="Open Sans"
-            fontWeight={700}
-            fontSize={12}
-            fill="#fff"
-          >
-            8
-          </text>
-        </g>
-        <g id="badge-7">
-          <path
-            d="M19 201.092a7.879 7.879 0 0 1 7.875-7.875 7.879 7.879 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875A7.88 7.88 0 0 1 19 201.092z"
-            vectorEffect="non-scaling-stroke"
-            stroke="#000"
-            strokeLinecap="square"
-            strokeMiterlimit={3}
-          />
-          <text
-            transform="translate(23.25 205.576)"
-            fontFamily="Open Sans"
-            fontWeight={700}
-            fontSize={12}
-            fill="#fff"
-          >
-            7
-          </text>
-        </g>
-        <g id="badge-6">
-          <path
-            d="M24.5 129.171a7.88 7.88 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.88 7.88 0 0 1-7.875-7.875z"
-            vectorEffect="non-scaling-stroke"
-            stroke="#000"
-            strokeLinecap="square"
-            strokeMiterlimit={3}
-          />
-          <text
-            transform="translate(28.75 133.655)"
-            fontFamily="Open Sans"
-            fontWeight={700}
-            fontSize={12}
-            fill="#fff"
-          >
-            6
-          </text>
-        </g>
-        <g id="badge-5">
-          <path
-            d="M30.5 35.171a7.88 7.88 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.88 7.88 0 0 1-7.875-7.875z"
-            vectorEffect="non-scaling-stroke"
-            stroke="#000"
-            strokeLinecap="square"
-            strokeMiterlimit={3}
-          />
-          <text
-            transform="translate(35.5 39.655)"
-            fontFamily="Open Sans"
-            fontWeight={700}
-            fontSize={12}
-            fill="#fff"
-          >
-            5
-          </text>
-        </g>
-        <g id="badge-4">
-          <path
-            d="M128 28.421a7.88 7.88 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875A7.88 7.88 0 0 1 128 28.421z"
-            vectorEffect="non-scaling-stroke"
-            stroke="#000"
-            strokeLinecap="square"
-            strokeMiterlimit={3}
-          />
-          <text
-            transform="translate(131.75 32.655)"
-            fontFamily="Open Sans"
-            fontWeight={700}
-            fontSize={12}
-            fill="#fff"
-          >
-            4
-          </text>
-        </g>
-        <g id="badge-3">
-          <path
-            d="M210 28.921a7.88 7.88 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875A7.88 7.88 0 0 1 210 28.921z"
-            vectorEffect="non-scaling-stroke"
-            stroke="#000"
-            strokeLinecap="square"
-            strokeMiterlimit={3}
-          />
-          <text
-            transform="translate(214.25 33.28)"
-            fontFamily="Open Sans"
-            fontWeight={700}
-            fontSize={12}
-            fill="#fff"
-          >
-            3
-          </text>
-        </g>
-        <g id="badge-2">
-          <path
-            d="M288 22.171a7.88 7.88 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875A7.88 7.88 0 0 1 288 22.171z"
-            vectorEffect="non-scaling-stroke"
-            stroke="#000"
-            strokeLinecap="square"
-            strokeMiterlimit={3}
-          />
-          <text
-            transform="translate(292.375 26.405)"
-            fontFamily="Open Sans"
-            fontWeight={700}
-            fontSize={12}
-            fill="#fff"
-          >
-            2
-          </text>
-        </g>
-        <g id="badge-1">
-          <path
-            d="M361.844 22.625a7.879 7.879 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.879 7.879 0 0 1-7.875-7.875z"
-            vectorEffect="non-scaling-stroke"
-            stroke="#000"
-            strokeLinecap="square"
-            strokeMiterlimit={3}
-          />
-          <text
-            transform="translate(366.125 27.155)"
-            fontFamily="Open Sans"
-            fontWeight={700}
-            fontSize={12}
-            fill="#fff"
-          >
-            1
-          </text>
-        </g>
+        { badges.map(props => <Badge key={`badge-${props.id}`} {...props} />) }
       </g>
+
       <g
         style={{ isolation: "isolate" }}
         id="contours"
