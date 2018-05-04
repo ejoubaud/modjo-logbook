@@ -49,7 +49,7 @@ const badges = [
 // the part on the wall to get highlighted, so we duplicate the path,
 // one for events/:hover, and a clipped one (with a mask) to actually get hightlighted
 const Sector = ({ d, id }) => (
-  <g className="Plan-sector">
+  <a className="Plan-sector" xlinkHref="" onClick={(e) => e.preventDefault()}> {/* must be a <a> with a xlink:href for CSS :hover */}
     <path
       d={d}
       id={`sector-${id}`}
@@ -61,7 +61,7 @@ const Sector = ({ d, id }) => (
       vectorEffect="non-scaling-stroke"
       mask="url(#highlight-mask)"
     />
-  </g>
+  </a>
 )
 
 const Badge = ({ d, id, textTransform }) => (

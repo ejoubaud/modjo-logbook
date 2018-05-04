@@ -1,8 +1,15 @@
 .Plan-sector {
-  pointer-events: all;
+  pointer-events: all; /* allows :hover events on fill="none" */
+  stroke: inherit; /* fixes strokes going black on <a> */
+  cursor: pointer;
 }
 
 .Plan-sector:hover .Plan-sector-highlight {
+  fill: red;
+  fill-opacity: .3;
+  box-shadow: 5px 10px;
+}
+.Plan-sector:focus .Plan-sector-highlight {
   fill: red;
   fill-opacity: .3;
 }
