@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
+import Button from 'muicss/lib/react/button';
+import Container from 'muicss/lib/react/container';
 import Plan from './Plan';
 import logo from './logo.svg';
+import colors from './colors';
 import './App.css';
 
 class App extends Component {
@@ -11,7 +14,12 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Welcome to React</h1>
         </header>
-        <Plan />
+        <Container>
+          { Object.keys(colors).map(color =>
+            <Button>{ colors[color].label }</Button>
+          ) }
+          <Plan />
+        </Container>
       </div>
     );
   }
