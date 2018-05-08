@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Button from 'muicss/lib/react/button';
+import Button from './ColoredButton';
 import Container from 'muicss/lib/react/container';
 import Plan from './Plan';
 import logo from './logo.svg';
@@ -16,7 +16,7 @@ class App extends Component {
         </header>
         <Container>
           { Object.keys(colors).map(color =>
-            <Button>{ colors[color].label }</Button>
+            <Button palette={ colors[color].palette} key={`button-${color}` }>{ colors[color].label }</Button>
           ) }
           <Plan />
         </Container>
