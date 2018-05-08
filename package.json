@@ -16,6 +16,7 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
+    "eslint-config-airbnb": "^16.1.0",
     "source-map-explorer": "^1.5.0",
     "webpack-bundle-analyzer": "^2.11.1"
   }
