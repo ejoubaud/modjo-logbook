@@ -7,7 +7,6 @@
 //      > src/Plan.js
 import React from 'react';
 import Sector from './Sector';
-import './Plan.css';
 
 const sectors = [
   { id: 1, d: 'M340 60.833V0h84l1 76.913h-26l-31-16.08h-28z' },
