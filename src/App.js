@@ -1,7 +1,7 @@
 import React from 'react';
 import Container from 'muicss/lib/react/container';
 
-import Button from './ColoredButton';
+import ColorButton from './ColorButton';
 import Plan from './Plan';
 import logo from './logo.svg';
 import colors from './colors';
@@ -15,7 +15,7 @@ const App = () => (
     </header>
     <Container>
       {Object.keys(colors).map(color => (
-        <Button palette={colors[color].palette} key={`button-${color}`}>{colors[color].label}</Button>
+        <ColorButton color={color} key={`button-${color}`} />
       ))}
       <Plan />
     </Container>
