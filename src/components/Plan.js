@@ -6,6 +6,7 @@
 //      | svgr --no-svgo \
 //      > src/Plan.js
 import React from 'react';
+import Sector from './Sector';
 import './Plan.css';
 
 const sectors = [
@@ -49,25 +50,6 @@ const badges = [
   { id: 17, d: 'M226.75 202.004a7.88 7.88 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.879 7.879 0 0 1-7.875 7.875 7.879 7.879 0 0 1-7.875-7.875z', textTransform: 'translate(227.167 206.155)' },
   { id: 18, d: 'M313.417 193.004a7.879 7.879 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.879 7.879 0 0 1-7.875 7.875 7.878 7.878 0 0 1-7.875-7.875z', textTransform: 'translate(313.708 197.405)' },
 ];
-
-// We want the whole sector area to trigger a hover/click, but we only want
-// the part on the wall to get highlighted, so we duplicate the path,
-// one for events/:hover, and a clipped one (with a mask) to actually get hightlighted
-const Sector = ({ d, id }) => (
-  <a className="Plan-sector" xlinkHref="" onClick={e => e.preventDefault()}> {/* must be a <a> with xlink:href attr present for CSS :hover */}
-    <path
-      d={d}
-      id={`sector-${id}`}
-      vectorEffect="non-scaling-stroke"
-    />
-    <path
-      d={d}
-      className="Plan-sector-highlight"
-      vectorEffect="non-scaling-stroke"
-      mask="url(#highlight-mask)"
-    />
-  </a>
-);
 
 const Badge = ({ d, id, textTransform }) => (
   <g id={`badge-${id}`}>
@@ -196,7 +178,13 @@ const Plan = props => (
         strokeLinecap="square"
         strokeMiterlimit={3}
       >
-        { sectors.map(sectorProps => <Sector key={`sector-${sectorProps.id}`} {...sectorProps} />) }
+        { sectors.map(sectorProps => (
+          <Sector
+            key={`sector-${sectorProps.id}`}
+            highlightMask="url(#highlight-mask)"
+            {...sectorProps}
+          />
+        )) }
       </g>
 
     </g>
