@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import Button from 'muicss/lib/react/button';
 import styled, { css } from 'styled-components';
 
-import { selectColor, unselectColor } from './actions';
-import colors from './colors';
+import { selectColor, unselectColor } from '../actions';
+import colors from '../colors';
 
 const fromPalette = colorRole => props => colors[props.color].palette[colorRole];
 

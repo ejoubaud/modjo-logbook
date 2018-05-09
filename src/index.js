@@ -5,7 +5,7 @@ import { createStore, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import 'muicss/dist/css/mui.css';
 
-import App from './App';
+import App from './components/App';
 import uiReducer from './ui-reducer';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';

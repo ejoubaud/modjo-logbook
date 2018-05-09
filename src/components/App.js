@@ -3,8 +3,8 @@ import Container from 'muicss/lib/react/container';
 
 import ColorButton from './ColorButton';
 import Plan from './Plan';
-import logo from './logo.svg';
-import colors from './colors';
+import logo from '../logo.svg';
+import colors from '../colors';
 import './App.css';
 
 const App = () => (
