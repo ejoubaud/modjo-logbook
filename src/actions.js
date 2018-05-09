@@ -1,17 +1,12 @@
 export const types = {
-  selectColor: 'SELECT_COLOR',
-  unselectColor: 'UNSELECT_COLOR',
+  toggleColor: 'TOGGLE_COLOR',
   toggleSector: 'TOGGLE_SECTOR',
 };
 
-export const selectColor = color => ({
-  type: types.selectColor,
+export const toggleColor = color => ({
+  type: types.toggleColor,
   payload: { color },
 });
-
-export const unselectColor = () => (
-  { type: types.unselectColor }
-);
 
 export const toggleSector = sectorId => ({
   type: types.toggleSector,

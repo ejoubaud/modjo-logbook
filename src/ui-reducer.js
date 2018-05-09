@@ -1,12 +1,10 @@
 import { types } from './actions';
 
 const reducers = {
-  [types.selectColor]: (state, { payload }) => (
-    { ...state, selectedColor: payload.color }
-  ),
-  [types.unselectColor]: state => (
-    { ...state, selectedColor: null }
-  ),
+  [types.toggleColor]: (state, { payload }) => {
+    const newColor = (state.selectedColor === payload.color ? null : payload.color);
+    return { ...state, selectedColor: newColor };
+  },
   [types.toggleSector]: (state, { payload }) => {
     const newSector = (state.selectedSector === payload.sectorId ? null : payload.sectorId);
     return { ...state, selectedSector: newSector };

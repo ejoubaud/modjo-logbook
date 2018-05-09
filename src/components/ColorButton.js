@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import Button from 'muicss/lib/react/button';
 import styled, { css } from 'styled-components';
 
-import { selectColor, unselectColor } from '../actions';
+import { toggleColor } from '../actions';
 import colors from '../colors';
 
 const fromPalette = colorRole => props => colors[props.color].palette[colorRole];
 
-const RawColorButton = ({ color, selected, selectColor, unselectColor, ...otherProps }) => (
-  <Button {...otherProps} onClick={() => (selected ? unselectColor() : selectColor(color))}>
+const RawColorButton = ({ color, selected, toggleColor, ...otherProps }) => (
+  <Button {...otherProps} onClick={() => toggleColor(color)}>
     {colors[color].label}
   </Button>
 );
@@ -54,6 +54,6 @@ const mapStateToProps = (state, props) => (
   { selected: state.ui.selectedColor === props.color }
 );
 
-const mapDispatchToProps = { selectColor, unselectColor };
+const mapDispatchToProps = { toggleColor };
 
 export default connect(mapStateToProps, mapDispatchToProps)(StyledButton);
