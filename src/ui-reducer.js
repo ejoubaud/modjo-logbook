@@ -7,9 +7,13 @@ const reducers = {
   [types.unselectColor]: state => (
     { ...state, selectedColor: null }
   ),
+  [types.toggleSector]: (state, { payload }) => {
+    const newSector = (state.selectedSector === payload.sectorId ? null : payload.sectorId);
+    return { ...state, selectedSector: newSector };
+  },
 };
 
-const defaultState = { selectedColor: null };
+const defaultState = { selectedColor: null, selectedSector: null };
 
 export default function uiReducer(state = defaultState, action) {
   const reducer = reducers[action.type];

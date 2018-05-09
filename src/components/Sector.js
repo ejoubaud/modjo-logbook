@@ -1,15 +1,16 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
+import { toggleSector } from '../actions';
 import colors from '../colors';
 
 // We want the whole sector area to trigger a hover/click, but we only want
 // the part on the wall to get highlighted, so we duplicate the path,
 // one for events/:hover, and a clipped one (with a mask) to actually get hightlighted
-const Sector = ({ d, id, highlightMask, className }) => (
+const Sector = ({ d, id, highlightMask, className, toggleSector }) => (
   <a
     xlinkHref=""
-    onClick={e => e.preventDefault()}
+    onClick={(e) => { e.preventDefault(); toggleSector(id); }}
     className={className}
   >{/* must be a <a> with xlink:href attr present for CSS :hover */}
     <path
@@ -37,16 +38,30 @@ const StyledSector = styled(Sector)`
   pointer-events: all;
   stroke: inherit;
   cursor: pointer;
-  &:hover, &:focus {
+  .Plan-sector-highlight {
+    fill: ${props => (props.isSelected ? selectedColorHue('dark')(props) : 'transparent')};
+    fill-opacity: .6;
+    transition: fill .2s;
+  }
+  &:hover:active {
     .Plan-sector-highlight {
-      fill: ${selectedColorHue('light')};
-      fill-opacity: .8;
+      fill: ${selectedColorHue('main')}
+    }
+  }
+  &:hover {
+    .Plan-sector-highlight {
+      fill: ${props => (props.isSelected ? selectedColorHue('dark')(props) : selectedColorHue('light')(props))};
     }
   }
 `;
 
-const mapStateToProps = state => ({ selectedColor: state.ui.selectedColor });
+const mapStateToProps = (state, props) => ({
+  selectedColor: state.ui.selectedColor,
+  isSelected: state.ui.selectedSector === props.id,
+});
 
-const ConnectedSector = connect(mapStateToProps)(StyledSector);
+const mapDispatchToProps = { toggleSector };
+
+const ConnectedSector = connect(mapStateToProps, mapDispatchToProps)(StyledSector);
 
 export default ConnectedSector;
