@@ -4,6 +4,9 @@ const reducers = {
   [types.selectColor]: (state, { payload }) => (
     { ...state, selectedColor: payload.color }
   ),
+  [types.unselectColor]: state => (
+    { ...state, selectedColor: null }
+  ),
 };
 
 const defaultState = { selectedColor: null };
