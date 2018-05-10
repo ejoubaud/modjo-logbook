@@ -1,16 +1,14 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import Button from 'muicss/lib/react/button';
 import styled, { css } from 'styled-components';
 
-import { toggleColor } from '../actions';
 import colors from '../colors';
 
 const fromPalette = colorRole => props => colors[props.color].palette[colorRole];
 
-const RawColorButton = ({ color, selected, toggleColor, ...otherProps }) => (
-  <Button {...otherProps} onClick={() => toggleColor(color)}>
-    {colors[color].label}
+const RawColorButton = ({ color, children, ...otherProps }) => (
+  <Button {...otherProps}>
+    {children}
   </Button>
 );
 
@@ -19,7 +17,7 @@ const base = css`
   background-color: ${fromPalette('main')};
 `;
 
-const baseStyle = css`
+const StyledButton = styled(RawColorButton)`
   ${base}
   &:hover, &:focus, &:active {
     color: ${fromPalette('contrastText')};
@@ -32,28 +30,4 @@ const baseStyle = css`
   }
 `;
 
-const selectedBase = css`
-  color: ${fromPalette('main')};
-  box-shadow: 0 0px 2px rgba(0, 0, 0, 0.12), 0 2px 2px rgba(0, 0, 0, 0.2);
-  background-color: transparent;
-`;
-
-const selectedStyle = css`
-  ${selectedBase}
-  &:focus, &:hover {
-    color: ${fromPalette('main')};
-    background-color: #F2F2F2;
-  }
-`;
-
-const StyledButton = styled(RawColorButton)`
-  ${props => (props.selected ? selectedStyle : baseStyle)}
-`;
-
-const mapStateToProps = (state, props) => (
-  { selected: state.ui.selectedColor === props.color }
-);
-
-const mapDispatchToProps = { toggleColor };
-
-export default connect(mapStateToProps, mapDispatchToProps)(StyledButton);
+export default StyledButton;
