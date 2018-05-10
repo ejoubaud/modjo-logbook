@@ -1,6 +1,8 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
+import find from 'lodash/fp/find';
+
 import { toggleSector } from '../actions';
 import colors from '../colors';
 
@@ -27,10 +29,21 @@ const Sector = ({ d, id, highlightMask, className, toggleSector }) => (
   </a>
 );
 
-export const selectedColorHue = paletteHueName => (
+// extracts `hueName` color from palette selectedColor prop
+const hue = hueName => (
   (props) => {
     if (!props.selectedColor) return 'grey';
-    return colors[props.selectedColor].palette[paletteHueName];
+    return colors[props.selectedColor].palette[hueName];
+  }
+);
+
+// cases: keys are props names, vals are color or hue functions
+// returns the first hue or color for which the key prop is truthy, or returns default
+const switchHue = (cases, defaultVal) => (
+  (props) => {
+    const match = find(k => !!props[k], Object.keys(cases));
+    const res = cases[match] || defaultVal;
+    return css`${res}`; // res can be a (props) => hue function
   }
 );
 
@@ -39,18 +52,18 @@ const StyledSector = styled(Sector)`
   stroke: inherit;
   cursor: pointer;
   .Plan-sector-highlight {
-    fill: ${props => (props.isSelected ? selectedColorHue('dark')(props) : 'transparent')};
+    fill: ${switchHue({ isSelected: hue('dark') }, 'transparent')};
     fill-opacity: .6;
     transition: fill .2s;
   }
   &:hover:active {
     .Plan-sector-highlight {
-      fill: ${selectedColorHue('main')}
+      fill: ${hue('main')}
     }
   }
   &:hover {
     .Plan-sector-highlight {
-      fill: ${props => (props.isSelected ? selectedColorHue('dark')(props) : selectedColorHue('light')(props))};
+      fill: ${switchHue({ isSelected: hue('dark') }, hue('light'))};
     }
   }
 `;
