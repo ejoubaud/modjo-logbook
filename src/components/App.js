@@ -3,6 +3,7 @@ import Container from 'muicss/lib/react/container';
 
 import ColorSelector from './ColorSelector';
 import Plan from './Plan';
+import BoulderForm from './BoulderForm';
 import logo from '../logo.svg';
 import colors from '../colors';
 import './App.css';
@@ -18,6 +19,7 @@ const App = () => (
         <ColorSelector color={color} key={`button-${color}`} />
       ))}
       <Plan />
+      <BoulderForm />
     </Container>
   </div>
 );

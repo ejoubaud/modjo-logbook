@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
+import get from 'lodash/fp/get';
 import find from 'lodash/fp/find';
 
 import { toggleSector } from '../actions';
@@ -52,13 +53,13 @@ const StyledSector = styled(Sector)`
   stroke: inherit;
   cursor: pointer;
   .Plan-sector-highlight {
-    fill: ${switchHue({ isSelected: hue('dark') }, 'transparent')};
+    fill: ${switchHue({ isSelected: hue('dark'), isSent: hue('main') }, 'transparent')};
     fill-opacity: .6;
     transition: fill .2s;
   }
   &:hover:active {
     .Plan-sector-highlight {
-      fill: ${hue('main')}
+      fill: ${switchHue({ isSent: hue('light') }, hue('main'))}
     }
   }
   &:hover {
@@ -68,10 +69,14 @@ const StyledSector = styled(Sector)`
   }
 `;
 
-const mapStateToProps = (state, props) => ({
-  selectedColor: state.ui.selectedColor,
-  isSelected: state.ui.selectedSector === props.id,
-});
+const mapStateToProps = (state, props) => {
+  const color = state.ui.selectedColor;
+  return {
+    selectedColor: color,
+    isSelected: state.ui.selectedSector === props.id,
+    isSent: !!(color && get(['myLastSends', color, props.id], state.ui)),
+  };
+};
 
 const mapDispatchToProps = { toggleSector };
 
