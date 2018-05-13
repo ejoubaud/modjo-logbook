@@ -2,9 +2,9 @@ import React from 'react';
 import Button from 'muicss/lib/react/button';
 import styled, { css } from 'styled-components';
 
-import colors from '../colors';
+import { getHue } from '../colors';
 
-const fromPalette = colorRole => props => colors[props.color].palette[colorRole];
+const fromPalette = hueName => props => getHue(props.color, hueName);
 
 const RawColorButton = ({ color, children, ...otherProps }) => (
   <Button {...otherProps}>
@@ -24,6 +24,8 @@ const StyledButton = styled(RawColorButton)`
     background-color: ${fromPalette('light')};
   }
   &[disabled] {
+    cursor: not-allowed;
+    pointer-events: all;
     &:hover, &:focus, &:active {
       ${base}
     }

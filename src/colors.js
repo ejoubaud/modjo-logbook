@@ -32,3 +32,10 @@ const colors = {
 };
 
 export default colors;
+
+const defaultColor = {
+  label: 'Default',
+  palette: palette('#9e9e9e', '#cfcfcf', '#707070', '#000000'),
+};
+
+export const getHue = (colorKey, hueName) => (colors[colorKey] || defaultColor).palette[hueName];

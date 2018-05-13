@@ -1,7 +1,7 @@
 export const types = {
   toggleColor: 'TOGGLE_COLOR',
   toggleSector: 'TOGGLE_SECTOR',
-  sendBoulder: 'SEND_BOULDER',
+  sendBoulders: 'SEND_BOULDERS',
 };
 
 export const toggleColor = color => ({
@@ -14,13 +14,15 @@ export const toggleSector = sectorId => ({
   payload: { sectorId },
 });
 
-export const sendBoulder = (color, sectorId, { type }) => ({
-  type: types.sendBoulder,
+export const sendBoulders = (color, sectors, { type }) => ({
+  type: types.sendBoulders,
   payload: {
-    color,
-    sectorId,
-    type,
-    sentAt: new Date(), // TODO: Implement in form
-    createdAt: new Date(),
+    sends: sectors.map(sectorId => ({
+      color,
+      sectorId,
+      type,
+      sentAt: new Date(), // TODO: Implement in form
+      createdAt: new Date(),
+    })),
   },
 });

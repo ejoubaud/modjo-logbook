@@ -1,33 +1,44 @@
-import setWith from 'lodash/fp/setWith';
-import unset from 'lodash/fp/unset';
-import updateWith from 'lodash/fp/updateWith';
-import compose from 'lodash/fp/compose';
+import xor from 'lodash/fp/xor';
 
 import { types } from './actions';
-
-const set = setWith(Object); // ensure works with number keys
-const update = updateWith(Object); // ensure works with number keys
+import * as sendMap from './send-map';
 
 const reducers = {
   [types.toggleColor]: (state, { payload }) => {
     const newColor = (state.selectedColor === payload.color ? null : payload.color);
-    return { ...state, selectedColor: newColor };
+    return {
+      ...state,
+      selectedColor: newColor,
+      // TODO: Restoring bg selections can lead to inconsistencies on the
+      // "homogeneous sent/unset select group" invariant if the list of sent boulders
+      // has been updated in-between, e.g. from the server/db
+      selectedSectors: state.backgroundSelections[newColor] || [],
+      backgroundSelections: {
+        ...state.backgroundSelections,
+        [state.selectedColor]: state.selectedSectors,
+      },
+    };
   },
-  [types.toggleSector]: (state, { payload }) => {
-    const newSector = (state.selectedSector === payload.sectorId ? null : payload.sectorId);
-    return { ...state, selectedSector: newSector };
-  },
-  [types.sendBoulder]: (state, { payload }) => {
-    const { color, sectorId } = payload;
-    return compose(
-      set(['myLastSends', color, sectorId], payload),
-      update(['mySends', color, sectorId], previousSends => [payload].concat(previousSends || [])),
-      unset('selectedSector'),
-    )(state);
-  },
+
+  [types.toggleSector]: (state, { payload }) => (
+    { ...state, selectedSectors: xor(state.selectedSectors, [payload.sectorId]) }
+  ),
+
+  [types.sendBoulders]: (state, { payload }) => (
+    {
+      ...state,
+      sendMap: sendMap.addAll(state.sendMap, payload.sends),
+      selectedSectors: [],
+    }
+  ),
 };
 
-const defaultState = { selectedColor: null, selectedSector: null, myLastSends: {}, mySends: {} };
+const defaultState = {
+  selectedColor: null,
+  selectedSectors: [],
+  sendMap: sendMap.empty,
+  backgroundSelections: {},
+};
 
 export default function uiReducer(state = defaultState, action) {
   const reducer = reducers[action.type];
