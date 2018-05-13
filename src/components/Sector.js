@@ -15,6 +15,10 @@ const Sector = ({ d, id, highlightMask, className, canSelect, toggleSector }) =>
     xlinkHref=""
     onClick={(e) => { e.preventDefault(); if (canSelect) toggleSector(id); }}
     className={className}
+    data-tip="S&eacute;lectionner une couleur d'abord"
+    data-tip-disable={canSelect}
+    data-effect="solid"
+    data-event="click"
   >{/* must be a <a> with xlink:href attr present for CSS :hover */}
     <path
       d={d}
@@ -31,7 +35,7 @@ const Sector = ({ d, id, highlightMask, className, canSelect, toggleSector }) =>
 );
 
 // extracts `hueName` color from palette selectedColor prop
-const hue = hueName => props => getHue(props.selectedColor, hueName);
+const hue = hueName => props => getHue(props.color, hueName);
 
 // cases: keys are props names, vals are color or hue functions
 // returns the first hue or color for which the key prop is truthy, or returns default
@@ -69,10 +73,10 @@ const mapStateToProps = (state, props) => {
   const sectors = state.ui.selectedSectors;
   const isSent = isSectorSent(state.ui.sendMap, color); // curried sendMap.isSent
   return {
-    selectedColor: color,
+    color,
     isSelected: sectors.indexOf(props.id) >= 0,
     // can only select groups of either sent or unsent sectors, not mix both in a selection
-    canSelect: color && (sectors.length === 0 || isSent(props.id) === isSent(sectors[0])),
+    canSelect: !!color,
     isSent: isSent(props.id),
   };
 };

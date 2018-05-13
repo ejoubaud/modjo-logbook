@@ -1,5 +1,6 @@
 import React from 'react';
 import Container from 'muicss/lib/react/container';
+import ReactTooltip from 'react-tooltip';
 
 import ColorSelector from './ColorSelector';
 import Plan from './Plan';
@@ -20,6 +21,7 @@ const App = () => (
       ))}
       <Plan />
       <BoulderForm />
+      <ReactTooltip isCapture="true" eventOff="mouseout focusout blur" scrollHide="true" />
     </Container>
   </div>
 );
