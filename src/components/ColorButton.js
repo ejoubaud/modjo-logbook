@@ -19,13 +19,14 @@ const base = css`
 
 const StyledButton = styled(RawColorButton)`
   ${base}
+
   &:hover, &:focus, &:active {
     color: ${fromPalette('contrastText')};
     background-color: ${fromPalette('light')};
   }
-  &[disabled] {
+  &[disabled], &.mui--is-disabled {
+    pointer-events: all; // needed for cursor type
     cursor: not-allowed;
-    pointer-events: all;
     &:hover, &:focus, &:active {
       ${base}
     }

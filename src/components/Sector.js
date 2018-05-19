@@ -17,8 +17,6 @@ const Sector = ({ d, id, highlightMask, className, canSelect, toggleSector }) =>
     className={className}
     data-tip="S&eacute;lectionner une couleur d'abord"
     data-tip-disable={canSelect}
-    data-effect="solid"
-    data-event="click"
   >{/* must be a <a> with xlink:href attr present for CSS :hover */}
     <path
       d={d}
@@ -55,6 +53,9 @@ const StyledSector = styled(Sector)`
     fill: ${switchHue({ isSelected: hue('dark'), isSent: hue('main') }, 'transparent')};
     fill-opacity: .6;
     transition: fill .2s;
+  }
+  &:focus, &:active {
+    outline: none;
   }
   &:hover:active {
     .Plan-sector-highlight {

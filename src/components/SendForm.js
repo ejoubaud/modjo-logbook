@@ -7,11 +7,26 @@ import ColorButton from './ColorButton';
 import { sendBoulders } from '../actions';
 import { isSent as isSentIn } from '../send-map';
 
+const disabledReason = (color, sectors) => {
+  if (!color) return "Sélectionner une couleur d'abord";
+  if (sectors.length === 0) return "Sélectionner des secteurs d'abord";
+  return "La sélection contient des blocs déjà enchaîné, les désélectionner ou les marquer comme démontés d'abord";
+};
+
+const onClick = ({ canSend, color, sectors, sendBoulders }) => (
+  (e) => {
+    e.preventDefault();
+    if (canSend) sendBoulders(color, sectors, { type: 'redpoint' });
+  }
+);
+
 const RawSendForm = ({ color, sectors, canSend, sendBoulders }) => (
   <ColorButton
     color={color}
-    disabled={!canSend}
-    onClick={() => sendBoulders(color, sectors, { type: 'redpoint' })}
+    className={canSend || 'mui--is-disabled'}
+    onClick={onClick({ canSend, color, sectors, sendBoulders })}
+    data-tip={disabledReason(color, sectors)}
+    data-tip-disable={canSend}
   >
     <LeftIcon icon="done" />Enchain&eacute;
   </ColorButton>
@@ -23,7 +38,7 @@ const mapStateToProps = (state) => {
   return {
     color,
     sectors,
-    canSend: color && sectors.length > 0 && !some(isSentIn(state.ui.sendMap, color), sectors),
+    canSend: !!color && sectors.length > 0 && !some(isSentIn(state.ui.sendMap, color), sectors),
   };
 };
 
