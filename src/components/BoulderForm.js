@@ -1,9 +1,9 @@
 import React from 'react';
 
-import SendForm from './SendForm';
+import SendButton from './SendButton';
 
 const BoulderForm = () => (
-  <SendForm />
+  <SendButton />
 );
 
 export default BoulderForm;

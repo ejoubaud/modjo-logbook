@@ -20,7 +20,7 @@ const onClick = ({ canSend, color, sectors, sendBoulders }) => (
   }
 );
 
-const RawSendForm = ({ color, sectors, canSend, sendBoulders }) => (
+const RawSendButton = ({ color, sectors, canSend, sendBoulders }) => (
   <ColorButton
     color={color}
     className={canSend || 'mui--is-disabled'}
@@ -44,4 +44,4 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = { sendBoulders };
 
-export default connect(mapStateToProps, mapDispatchToProps)(RawSendForm);
+export default connect(mapStateToProps, mapDispatchToProps)(RawSendButton);
