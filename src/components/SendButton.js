@@ -20,16 +20,16 @@ const onClick = ({ canSend, color, sectors, sendBoulders }) => (
   }
 );
 
-const RawSendButton = ({ color, sectors, canSend, sendBoulders }) => (
+const RawSendButton = ({ label, icon, sendType, color, sectors, canSend, sendBoulders }) => (
   <ColorButton
     color={color}
     className={canSend || 'mui--is-disabled'}
-    onClick={onClick({ canSend, color, sectors, sendBoulders })}
+    onClick={onClick({ canSend, color, sectors, sendType, sendBoulders })}
     data-tip={disabledReason(color, sectors)}
     data-tip-disable={canSend}
     data-html
   >
-    <LeftIcon icon="done" />Enchain&eacute;
+    <LeftIcon icon={icon} />{label}
   </ColorButton>
 );
 

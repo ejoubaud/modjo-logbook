@@ -18,7 +18,7 @@ const onClick = ({ canClear, color, sectors, clearBoulders }) => (
   }
 );
 
-const RawClearButton = ({ color, sectors, canClear, clearBoulders }) => (
+const RawClearButton = ({ label, icon, color, sectors, canClear, clearBoulders }) => (
   <ColorButton
     color={color}
     className={canClear || 'mui--is-disabled'}
@@ -26,7 +26,7 @@ const RawClearButton = ({ color, sectors, canClear, clearBoulders }) => (
     data-tip={tooltipContent(color, sectors)}
     data-html
   >
-    <LeftIcon icon="refresh" />D&eacute;mont&eacute;
+    <LeftIcon icon={icon} />{label}
   </ColorButton>
 );
 
