@@ -31,6 +31,14 @@ const reducers = {
       selectedSectors: [],
     }
   ),
+
+  [types.clearBoulders]: (state, { payload }) => (
+    {
+      ...state,
+      sendMap: sendMap.removeAll(state.sendMap, payload.color, payload.sectors),
+      selectedSectors: [],
+    }
+  ),
 };
 
 const defaultState = {

@@ -2,6 +2,7 @@ export const types = {
   toggleColor: 'TOGGLE_COLOR',
   toggleSector: 'TOGGLE_SECTOR',
   sendBoulders: 'SEND_BOULDERS',
+  clearBoulders: 'CLEAR_BOULDERS',
 };
 
 export const toggleColor = color => ({
@@ -24,5 +25,13 @@ export const sendBoulders = (color, sectors, { type }) => ({
       sentAt: new Date(), // TODO: Implement in form
       createdAt: new Date(),
     })),
+  },
+});
+
+export const clearBoulders = (color, sectors) => ({
+  type: types.clearBoulders,
+  payload: {
+    color,
+    sectors,
   },
 });

@@ -10,7 +10,7 @@ import { isSent as isSentIn } from '../send-map';
 const disabledReason = (color, sectors) => {
   if (!color) return "Sélectionner une couleur d'abord";
   if (sectors.length === 0) return "Sélectionner des secteurs d'abord";
-  return "La sélection contient des blocs déjà enchaîné, les désélectionner ou les marquer comme démontés d'abord";
+  return "La sélection contient des blocs déjà enchaînés<br />Désélectionnez-les ou marquez-les comme démontés d'abord";
 };
 
 const onClick = ({ canSend, color, sectors, sendBoulders }) => (
@@ -27,6 +27,7 @@ const RawSendButton = ({ color, sectors, canSend, sendBoulders }) => (
     onClick={onClick({ canSend, color, sectors, sendBoulders })}
     data-tip={disabledReason(color, sectors)}
     data-tip-disable={canSend}
+    data-html
   >
     <LeftIcon icon="done" />Enchain&eacute;
   </ColorButton>

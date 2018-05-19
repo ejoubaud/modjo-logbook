@@ -1,9 +1,13 @@
 import React from 'react';
 
 import SendButton from './SendButton';
+import ClearButton from './ClearButton';
 
 const BoulderForm = () => (
-  <SendButton />
+  <div>
+    <SendButton />
+    <ClearButton />
+  </div>
 );
 
 export default BoulderForm;
