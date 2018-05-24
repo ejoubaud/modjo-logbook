@@ -21,7 +21,7 @@ const App = () => (
       ))}
       <Plan />
       <BoulderForm />
-      <ReactTooltip event="mouseover click" eventOff="mouseout blur" effect="solid" isCapture />
+      <ReactTooltip event="mouseover click focus" eventOff="mouseout blur" effect="solid" isCapture />
     </Container>
   </div>
 );

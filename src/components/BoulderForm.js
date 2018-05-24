@@ -1,17 +1,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { compose, withProps, withHandlers } from 'recompose';
+import { compose, withStateHandlers, withProps } from 'recompose';
 import some from 'lodash/fp/some';
 
 import SubmitButton from './SubmitButton';
+import DateInput from './DateInput';
 import { sendBoulders, clearBoulders } from '../actions';
 import { isSent } from '../send-map';
 
 const BoulderForm = ({
   color,
   sectors,
+  date,
+  dateError,
   noSendReason,
   noClearReason,
+  handleChange,
   sendBoulders,
   clearBoulders,
 }) => {
@@ -20,6 +24,7 @@ const BoulderForm = ({
 
   return (
     <form>
+      <DateInput date={date} name="date" handleChange={handleChange} errorMsg={dateError} />
       <SubmitButton
         label="Encha&icirc;n&eacute;"
         icon="done"
@@ -46,7 +51,9 @@ const BoulderForm = ({
   );
 };
 
-const mapStateToProps = state => ({
+BoulderForm.defaultProps = { date: new Date().toISOString().substr(0, 10) };
+
+const mapStateToProps = (state, props) => (console.log("mapStateToProps", state, props) || {
   color: state.ui.selectedColor,
   sectors: state.ui.selectedSectors,
   sendMap: state.ui.sendMap,
@@ -65,20 +72,32 @@ const validations = {
     if (some(isSent(sendMap, color), sectors)) return "La s&eacute;lection contient des blocs d&eacute;j&agrave; encha&icirc;n&eacute;s<br />D&eacute;s&eacute;lectionnez-les ou marquez-les comme d&eacute;mont&eacute;s d'abord";
     return null;
   },
+
+  date({ date }) {
+    const match = date.match(/([0-9]{4})-([0-9]{2})-([0-9]{2})/);
+    if (!match) return 'Mauvais format de date: AAAA-MM-JJ';
+    if (Date.parse(date) > new Date()) return 'Date future interdite';
+    return null;
+  },
 };
 
 // inform feedback (field disablement, tooltips) props based on form inputs
-const validationProps = (props) => {
+const validatedProps = (props) => {
   const sharedValidation = validations.anyButton(props);
   return {
     ...props,
     noSendReason: sharedValidation || validations.sendButtons(props),
     noClearReason: sharedValidation,
+    dateError: validations.date(props),
   };
 };
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
-  withHandlers({ handleChange: props => e => ({ ...props, [e.target.name]: e.target.value }) }),
-  withProps(validationProps),
+  withStateHandlers({ date: new Date().toISOString().substr(0, 10) }, {
+    handleChange: () => e => (
+      { [e.target.name]: e.target.value }
+    ),
+  }),
+  withProps(validatedProps),
 )(BoulderForm);
