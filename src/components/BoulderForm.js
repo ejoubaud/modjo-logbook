@@ -4,18 +4,14 @@ import { compose, withStateHandlers, withProps } from 'recompose';
 import some from 'lodash/fp/some';
 
 import SubmitButton from './SubmitButton';
-import DateInput from './DateInput';
 import { sendBoulders, clearBoulders } from '../actions';
 import { isSent } from '../send-map';
 
 const BoulderForm = ({
   color,
   sectors,
-  date,
-  dateError,
   noSendReason,
   noClearReason,
-  handleChange,
   sendBoulders,
   clearBoulders,
 }) => {
@@ -24,7 +20,6 @@ const BoulderForm = ({
 
   return (
     <form>
-      <DateInput date={date} name="date" handleChange={handleChange} errorMsg={dateError} />
       <SubmitButton
         label="Encha&icirc;n&eacute;"
         icon="done"
@@ -53,7 +48,7 @@ const BoulderForm = ({
 
 BoulderForm.defaultProps = { date: new Date().toISOString().substr(0, 10) };
 
-const mapStateToProps = (state, props) => (console.log("mapStateToProps", state, props) || {
+const mapStateToProps = state => ({
   color: state.ui.selectedColor,
   sectors: state.ui.selectedSectors,
   sendMap: state.ui.sendMap,
@@ -88,13 +83,14 @@ const validatedProps = (props) => {
     ...props,
     noSendReason: sharedValidation || validations.sendButtons(props),
     noClearReason: sharedValidation,
-    dateError: validations.date(props),
   };
 };
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
-  withStateHandlers({ date: new Date().toISOString().substr(0, 10) }, {
+  // if we want to add states/form validation later,
+  // just add handleChange to BoulderForm props
+  withStateHandlers({}, {
     handleChange: () => e => (
       { [e.target.name]: e.target.value }
     ),
