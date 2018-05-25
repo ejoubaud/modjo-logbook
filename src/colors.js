@@ -1,3 +1,6 @@
+import mapValues from 'lodash/fp/mapValues';
+import { createMuiTheme } from '@material-ui/core/styles';
+
 const palette = (main, light, dark, contrastText) => ({ main, light, dark, contrastText });
 
 const colors = {
@@ -33,9 +36,16 @@ const colors = {
 
 export default colors;
 
-const defaultColor = {
+export const defaultColor = {
   label: 'Default',
   palette: palette('#9e9e9e', '#cfcfcf', '#707070', '#000000'),
 };
 
-export const getHue = (colorKey, hueName) => (colors[colorKey] || defaultColor).palette[hueName];
+const themeFromColor = ({ palette }) => createMuiTheme({ palette: { primary: palette } });
+
+const themes = mapValues(
+  themeFromColor,
+  { ...colors, [null]: defaultColor },
+);
+
+export const getMuiTheme = color => themes[color];

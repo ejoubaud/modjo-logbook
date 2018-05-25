@@ -6,7 +6,11 @@
 //      | svgr --no-svgo \
 //      > src/Plan.js
 import React from 'react';
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import { connect } from 'react-redux';
+
 import Sector from './Sector';
+import { getMuiTheme } from '../colors';
 
 const sectors = [
   { id: 1, d: 'M340 60.833V0h84l1 76.913h-26l-31-16.08h-28z' },
@@ -177,18 +181,21 @@ const Plan = props => (
         strokeLinecap="square"
         strokeMiterlimit={3}
       >
-        { sectors.map(sectorProps => (
-          <Sector
-            key={`sector-${sectorProps.id}`}
-            highlightMask="url(#highlight-mask)"
-            {...sectorProps}
-          />
-        )) }
+        <MuiThemeProvider theme={getMuiTheme(props.color)}>
+          { sectors.map(sectorProps => (
+            <Sector
+              key={`sector-${sectorProps.id}`}
+              highlightMask="url(#highlight-mask)"
+              {...sectorProps}
+            />
+          )) }
+        </MuiThemeProvider>
       </g>
 
     </g>
   </svg>
 );
 
-export default Plan;
+const mapStateToProps = state => ({ color: state.ui.selectedColor });
 
+export default connect(mapStateToProps)(Plan);

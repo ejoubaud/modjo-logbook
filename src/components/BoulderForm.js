@@ -40,7 +40,7 @@ const BoulderForm = ({
         color={color}
         disabledReason={noClearReason}
         doSubmit={doSubmitClear}
-        defaultTip="Indiquer qu'un bloc a &eacute;t&eacute; d&eacute;mont&eacute; ou r&eacute;ouvert depuis la derni&egrave;re fois o&ugrave; vous l'avez encha&icirc;n&eacute;.<br />Vous pourrez ensuite noter un passage du nouveau bloc."
+        defaultTip="Indiquer qu'un bloc a été démonté ou réouvert depuis la dernière fois où vous l'avez enchaîné. Vous pourrez ensuite noter un passage du nouveau bloc."
       />
     </form>
   );
@@ -58,13 +58,13 @@ const mapDispatchToProps = { sendBoulders, clearBoulders };
 
 const validations = {
   anyButton({ color, sectors }) {
-    if (!color) return "S&eacute;lectionner une couleur d'abord";
-    if (sectors.length === 0) return "S&eacute;lectionner des secteurs d'abord";
+    if (!color) return "Sélectionner une couleur d'abord";
+    if (sectors.length === 0) return "Sélectionner des secteurs d'abord";
     return null;
   },
 
   sendButtons({ color, sectors, sendMap }) {
-    if (some(isSent(sendMap, color), sectors)) return "La s&eacute;lection contient des blocs d&eacute;j&agrave; encha&icirc;n&eacute;s<br />D&eacute;s&eacute;lectionnez-les ou marquez-les comme d&eacute;mont&eacute;s d'abord";
+    if (some(isSent(sendMap, color), sectors)) return "La sélection contient des blocs déjà enchaînés: Désélectionnez-les ou marquez-les comme démontés d'abord";
     return null;
   },
 

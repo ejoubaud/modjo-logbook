@@ -1,4 +1,5 @@
 import React from 'react';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import LeftIcon from './LeftIcon';
 import ColorButton from './ColorButton';
@@ -11,17 +12,19 @@ const onClick = (enabled, doSubmit) => (
 );
 
 export default ({ label, icon, color, disabledReason, defaultTip, doSubmit }) => {
-  const enabled = !disabledReason;
+  const disabled = !!disabledReason;
+  const tip = disabledReason || defaultTip || '';
   return (
-    <ColorButton
-      color={color}
-      className={enabled || 'mui--is-disabled'}
-      onClick={onClick(enabled, doSubmit)}
-      data-tip={disabledReason || defaultTip}
-      data-tip-disable={enabled && !defaultTip}
-      data-html
-    >
-      <LeftIcon icon={icon} />{label}
-    </ColorButton>
+    <Tooltip title={tip}>
+      <span>
+        <ColorButton
+          color={color}
+          disabled={disabled}
+          onClick={onClick(!disabled, doSubmit)}
+        >
+          <LeftIcon icon={icon} />{label}
+        </ColorButton>
+      </span>
+    </Tooltip>
   );
 };

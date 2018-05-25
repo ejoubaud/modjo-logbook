@@ -1,36 +1,19 @@
 import React from 'react';
-import Button from 'muicss/lib/react/button';
-import styled, { css } from 'styled-components';
+import Button from '@material-ui/core/Button';
+import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 
-import { getHue } from '../colors';
+import { getMuiTheme } from '../colors';
 
-const fromPalette = hueName => props => getHue(props.color, hueName);
-
-const RawColorButton = ({ color, children, ...otherProps }) => (
-  <Button {...otherProps}>
-    {children}
-  </Button>
+const ColorButton = ({ color, children, classes, ...otherProps }) => (
+  <MuiThemeProvider theme={getMuiTheme(color)}>
+    <Button variant="raised" color="primary" className={classes.root} {...otherProps}>
+      {children}
+    </Button>
+  </MuiThemeProvider>
 );
 
-const base = css`
-  color: ${fromPalette('contrastText')};
-  background-color: ${fromPalette('main')};
-`;
+const rootStyles = { margin: '4px', marginLeft: 0 };
 
-const StyledButton = styled(RawColorButton)`
-  ${base}
+const StyledColorButton = withStyles({ root: rootStyles })(ColorButton);
 
-  &:hover, &:focus, &:active {
-    color: ${fromPalette('contrastText')};
-    background-color: ${fromPalette('light')};
-  }
-  &[disabled], &.mui--is-disabled {
-    pointer-events: all; // needed for cursor type
-    cursor: not-allowed;
-    &:hover, &:focus, &:active {
-      ${base}
-    }
-  }
-`;
-
-export default StyledButton;
+export default StyledColorButton;

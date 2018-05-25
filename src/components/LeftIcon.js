@@ -1,14 +1,18 @@
 import React from 'react';
-import styled from 'styled-components';
+import { withStyles } from '@material-ui/core/styles';
 
-const Icon = ({ icon, className }) => (
-  <i className={`material-icons ${className}`}>{icon}</i>
+const Icon = ({ icon, classes }) => (
+  <i className={`material-icons ${classes.root}`}>{icon}</i>
 );
 
-export default styled(Icon)`
-  line-height: inherit;
-  font-size: 1.3rem;
-  margin-right: 10px;
-  margin-left: -5px;
-  float: left;
-`;
+const styles = {
+  root: {
+    lineHeight: 'inherit',
+    fontSize: '1.3rem',
+    marginRight: '10px',
+    marginLeft: '-5px',
+    float: 'left',
+  },
+};
+
+export default withStyles(styles)(Icon);

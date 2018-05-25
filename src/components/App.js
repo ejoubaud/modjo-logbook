@@ -1,6 +1,4 @@
 import React from 'react';
-import Container from 'muicss/lib/react/container';
-import ReactTooltip from 'react-tooltip';
 
 import ColorSelector from './ColorSelector';
 import Plan from './Plan';
@@ -14,14 +12,15 @@ const App = () => (
     <header className="App-header">
       <img src={logo} alt="logo" />
     </header>
-    <Container>
-      {Object.keys(colors).map(color => (
-        <ColorSelector color={color} key={`button-${color}`} />
-      ))}
+    <div className="container">
+      <div className="button-bar">
+        {Object.keys(colors).map(color => (
+          <ColorSelector color={color} key={`button-${color}`} />
+        ))}
+      </div>
       <Plan />
       <BoulderForm />
-      <ReactTooltip event="mouseover click focus" eventOff="mouseout blur" effect="solid" isCapture />
-    </Container>
+    </div>
   </div>
 );
 
