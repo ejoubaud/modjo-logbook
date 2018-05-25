@@ -6,7 +6,7 @@
     "no-shadow": "off",
     "prefer-arrow-callback": [ "error", { "allowNamedFunctions": true } ],
     "no-console": "off",
-    "object-curly-newline": [ "error", { "ObjectPattern": { "multiline": true } } ],
+    "object-curly-newline": [ "error", { "ObjectExpression": { "consistent": true }, "ObjectPattern": { "multiline": true } } ],
     "function-paren-newline": [ "error", "consistent" ]
   }
 }
