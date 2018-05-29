@@ -1,5 +1,6 @@
 import React from 'react';
 
+import SignInButton from './SignInButton';
 import ColorSelector from './ColorSelector';
 import Plan from './Plan';
 import BoulderForm from './BoulderForm';
@@ -11,6 +12,7 @@ const App = () => (
   <div className="App">
     <header className="App-header">
       <img src={logo} alt="logo" />
+      <SignInButton />
     </header>
     <div className="container">
       <div className="button-bar">

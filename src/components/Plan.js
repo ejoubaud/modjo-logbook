@@ -198,4 +198,4 @@ const Plan = props => (
 
 const mapStateToProps = state => ({ color: state.ui.selectedColor });
 
-export default connect(mapStateToProps)(Plan);
+export default connect(mapStateToProps, {})(Plan);
