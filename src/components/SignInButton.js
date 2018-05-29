@@ -59,7 +59,7 @@ const SignInButton = (props) => {
                 {signedInUser.displayName}
               </Fragment>
             )
-            : 'Se connecter'
+            : 'Connexion'
           )
         }
       </Button>
