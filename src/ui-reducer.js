@@ -20,25 +20,22 @@ const reducers = {
     };
   },
 
-  [types.toggleSector]: (state, { payload }) => (
-    { ...state, selectedSectors: xor(state.selectedSectors, [payload.sectorId]) }
-  ),
+  [types.toggleSector]: (state, { payload }) => ({
+    ...state,
+    selectedSectors: xor(state.selectedSectors, [payload.sectorId]),
+  }),
 
-  [types.sendBoulders]: (state, { payload }) => (
-    {
-      ...state,
-      sendMap: sendMap.addAll(state.sendMap, payload.sends),
-      selectedSectors: [],
-    }
-  ),
+  [types.sendBoulders]: (state, { payload }) => ({
+    ...state,
+    sendMap: sendMap.addAll(state.sendMap, payload.sends),
+    selectedSectors: [],
+  }),
 
-  [types.clearBoulders]: (state, { payload }) => (
-    {
-      ...state,
-      sendMap: sendMap.removeAll(state.sendMap, payload.color, payload.sectors),
-      selectedSectors: [],
-    }
-  ),
+  [types.clearBoulders]: (state, { payload }) => ({
+    ...state,
+    sendMap: sendMap.removeAll(state.sendMap, payload.color, payload.sectors),
+    selectedSectors: [],
+  }),
 };
 
 const defaultState = {
