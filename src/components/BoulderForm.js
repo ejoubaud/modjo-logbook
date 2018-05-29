@@ -1,6 +1,8 @@
 import React from 'react';
+import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { compose, withStateHandlers, withProps } from 'recompose';
+import withStateHandlers from 'recompose/withStateHandlers';
+import withProps from 'recompose/withProps';
 import DoneIcon from '@material-ui/icons/Done';
 import FlashOnIcon from '@material-ui/icons/FlashOn';
 import RefreshIcon from '@material-ui/icons/Refresh';
