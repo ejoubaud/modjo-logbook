@@ -1,6 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, withStateHandlers, withProps } from 'recompose';
+import DoneIcon from '@material-ui/icons/Done';
+import FlashOnIcon from '@material-ui/icons/FlashOn';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import some from 'lodash/fp/some';
 
 import SubmitButton from './SubmitButton';
@@ -22,21 +25,21 @@ const BoulderForm = ({
     <form>
       <SubmitButton
         label="Encha&icirc;n&eacute;"
-        icon="done"
+        Icon={DoneIcon}
         color={color}
         disabledReason={noSendReason}
         doSubmit={doSubmitSend('redpoint')}
       />
       <SubmitButton
         label="Flash&eacute;"
-        icon="flash_on"
+        Icon={FlashOnIcon}
         color={color}
         disabledReason={noSendReason}
         doSubmit={doSubmitSend('flash')}
       />
       <SubmitButton
         label="D&eacute;mont&eacute;"
-        icon="refresh"
+        Icon={RefreshIcon}
         color={color}
         disabledReason={noClearReason}
         doSubmit={doSubmitClear}

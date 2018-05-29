@@ -1,7 +1,7 @@
 import React from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
+import { withStyles } from '@material-ui/core/styles';
 
-import LeftIcon from './LeftIcon';
 import ColorButton from './ColorButton';
 
 const onClick = (enabled, doSubmit) => (
@@ -11,7 +11,7 @@ const onClick = (enabled, doSubmit) => (
   }
 );
 
-export default ({ label, icon, color, disabledReason, defaultTip, doSubmit }) => {
+const SubmitButton = ({ label, Icon, color, disabledReason, defaultTip, classes, doSubmit }) => {
   const disabled = !!disabledReason;
   const tip = disabledReason || defaultTip || '';
   return (
@@ -22,9 +22,23 @@ export default ({ label, icon, color, disabledReason, defaultTip, doSubmit }) =>
           disabled={disabled}
           onClick={onClick(!disabled, doSubmit)}
         >
-          <LeftIcon icon={icon} />{label}
+          <Icon className={classes.icon} />{label}
         </ColorButton>
       </span>
     </Tooltip>
   );
 };
+
+const styles = {
+  icon: {
+    lineHeight: 'inherit',
+    fontSize: '1.3rem',
+    marginRight: '10px',
+    marginLeft: '-5px',
+    float: 'left',
+  },
+};
+
+const StyledSubmitButton = withStyles(styles)(SubmitButton);
+
+export default StyledSubmitButton;
