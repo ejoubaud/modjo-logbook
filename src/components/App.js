@@ -4,7 +4,7 @@ import SignInButton from './SignInButton';
 import ColorSelector from './ColorSelector';
 import Plan from './Plan';
 import BoulderForm from './BoulderForm';
-import logo from '../logo.png';
+import logo from '../images/logo.png';
 import colors from '../colors';
 import './App.css';
 

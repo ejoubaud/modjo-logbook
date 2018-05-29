@@ -16,7 +16,7 @@ import { firebaseConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 import withStateHandlers from 'recompose/withStateHandlers';
 
-import googleLogo from '../google.svg';
+import googleLogo from '../images/google.svg';
 
 const signIn = (login, toggleDrawer, showError) => () => {
   login({ provider: 'google' })
