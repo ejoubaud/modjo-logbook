@@ -3,6 +3,8 @@ export const types = {
   toggleSector: 'TOGGLE_SECTOR',
   sendBoulders: 'SEND_BOULDERS',
   clearBoulders: 'CLEAR_BOULDERS',
+  showError: 'SHOW_ERROR',
+  hideError: 'HIDE_ERROR',
 };
 
 export const toggleColor = color => ({
@@ -34,4 +36,13 @@ export const clearBoulders = (color, sectors) => ({
     color,
     sectors,
   },
+});
+
+export const showError = (error) => ({
+  type: types.showError,
+  payload: { error }
+});
+
+export const hideError = () => ({
+  type: types.hideError,
 });

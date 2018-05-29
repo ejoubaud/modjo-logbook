@@ -36,6 +36,17 @@ const reducers = {
     sendMap: sendMap.removeAll(state.sendMap, payload.color, payload.sectors),
     selectedSectors: [],
   }),
+
+  [types.showError]: (state, { payload }) => ({
+    ...state,
+    error: payload.error,
+    isErrorHidden: false,
+  }),
+
+  [types.hideError]: state => ({
+    ...state,
+    isErrorHidden: true,
+  }),
 };
 
 const defaultState = {
@@ -43,6 +54,8 @@ const defaultState = {
   selectedSectors: [],
   sendMap: sendMap.empty,
   backgroundSelections: {},
+  error: null,
+  isErrorHidden: null,
 };
 
 export default function uiReducer(state = defaultState, action) {

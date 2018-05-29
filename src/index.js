@@ -5,6 +5,7 @@ import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { reactReduxFirebase, firebaseReducer } from 'react-redux-firebase';
 import { reduxFirestore, firestoreReducer } from 'redux-firestore';
+import { showError } from './actions';
 
 import firebase from './firebase';
 import App from './components/App';
@@ -30,6 +31,9 @@ const store = createStore(
     applyMiddleware(...middlewares),
   ),
 );
+
+// Setup global error listeners
+firebase.auth().getRedirectResult().catch(e => store.dispatch(showError(e)));
 
 ReactDOM.render(
   <Provider store={store}>

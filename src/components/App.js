@@ -4,6 +4,7 @@ import SignInButton from './SignInButton';
 import ColorSelector from './ColorSelector';
 import Plan from './Plan';
 import BoulderForm from './BoulderForm';
+import ErrorFeedback from './ErrorFeedback';
 import logo from '../images/logo.png';
 import colors from '../colors';
 import './App.css';
@@ -23,6 +24,7 @@ const App = () => (
       <Plan />
       <BoulderForm />
     </div>
+    <ErrorFeedback />
   </div>
 );
 
