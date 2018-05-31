@@ -5,6 +5,7 @@ import ColorSelector from './ColorSelector';
 import Plan from './Plan';
 import BoulderForm from './BoulderForm';
 import ErrorFeedback from './ErrorFeedback';
+import LoadingFeedback from './LoadingFeedback';
 import logo from '../images/logo.png';
 import colors from '../colors';
 import './App.css';
@@ -25,6 +26,7 @@ const App = () => (
       <BoulderForm />
     </div>
     <ErrorFeedback />
+    <LoadingFeedback />
   </div>
 );
 

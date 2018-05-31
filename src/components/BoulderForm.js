@@ -6,42 +6,49 @@ import withStateHandlers from 'recompose/withStateHandlers';
 import DoneIcon from '@material-ui/icons/Done';
 import FlashOnIcon from '@material-ui/icons/FlashOn';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import promiseFinally from 'promise.prototype.finally';
 import some from 'lodash/fp/some';
 
 import SubmitButton from './SubmitButton';
-import { sendBoulders, clearBoulders, showError } from '../actions';
+import { sendBoulders, clearBoulders, showError, toggleLoading, rollback } from '../actions';
 import { empty as emptySendMap, isSent, addAll, populateWith } from '../send-map';
 
-const saveSends = (db, { userId, color, sectors, type }, showError) => {
+promiseFinally.shim();
+
+const saveSends = (db, { userId, color, sectors, type }) => {
   // TODO: Make this a transaction once https://github.com/prescottprue/redux-firestore/issues/108 is fixed
   const sendMapRef = db.collection('sendMaps').doc(userId);
   const sends = sectors.map(sectorId => (
     { userId, color, sectorId, type, createdAt: new Date() }
   ));
   const sendMap = addAll(emptySendMap, sends);
+
   return Promise.all(
     sends.map(send => db.collection('sends').add(send)),
-  ).then(() => sendMapRef.set(sendMap, { merge: true }))
-    .catch(e => showError(e));
+  ).then(() => sendMapRef.set(sendMap, { merge: true }));
 };
 
-const saveClears = (db, { userId, color, sectors }, showError) => {
+const saveClears = (db, { userId, color, sectors }) => {
   // TODO: Make this a transaction once https://github.com/prescottprue/redux-firestore/issues/108 is fixed
   const sendMapRef = db.collection('sendMaps').doc(userId);
   const clears = sectors.map(sectorId => (
     { userId, color, sectorId, createdAt: new Date() }
   ));
   const clearCommands = populateWith(emptySendMap, clears, db.FieldValue.delete());
+
   return Promise.all(
     clears.map(clear => db.collection('clears').add(clear)),
-  ).then(() => sendMapRef.set(clearCommands, { merge: true }))
-    .catch(e => showError(e));
+  ).then(() => sendMapRef.set(clearCommands, { merge: true }));
 };
 
 const sendSubmitter = props => type => () => {
-  const { firestore, signedInUser, color, sectors, sendBoulders, showError } = props;
+  const { firestore, signedInUser, color, sectors, sendMap, sendBoulders, toggleLoading, showError, rollback } = props;
   if (signedInUser) {
-    saveSends(firestore, { userId: signedInUser.uid, color, sectors, type }, showError);
+    sendBoulders(color, sectors, { type }); // optimistic local state update
+    toggleLoading(true);
+    saveSends(firestore, { userId: signedInUser.uid, color, sectors, type }, showError)
+      .catch(err => rollback(sendMap, err)) // rollback on error
+      .finally(() => toggleLoading(false));
   } else {
     sendBoulders(color, sectors, { type });
     showError("Vous n'êtes pas connecté, les changements ne seront pas sauvegardés.", { ignoreId: 'loggedOutChanges' });
@@ -49,9 +56,13 @@ const sendSubmitter = props => type => () => {
 };
 
 const clearSubmitter = props => () => {
-  const { firestore, signedInUser, color, sectors, clearBoulders, showError } = props;
+  const { firestore, signedInUser, color, sectors, sendMap, clearBoulders, toggleLoading, showError, rollback } = props;
   if (signedInUser) {
-    saveClears(firestore, { userId: signedInUser.uid, color, sectors }, showError);
+    clearBoulders(color, sectors); // optimistic local state update
+    toggleLoading(true);
+    saveClears(firestore, { userId: signedInUser.uid, color, sectors }, showError)
+      .catch(err => rollback(sendMap, err)) // rollback on error
+      .finally(() => toggleLoading(false));
   } else {
     clearBoulders(color, sectors);
     showError("Vous n'êtes pas connecté, les changements ne seront pas sauvegardés.", { ignoreId: 'loggedOutChanges' });
@@ -128,7 +139,7 @@ const mapStateToProps = ({
   signedInUser: !auth.isEmpty && auth,
 });
 
-const mapDispatchToProps = { sendBoulders, clearBoulders, showError };
+const mapDispatchToProps = { sendBoulders, clearBoulders, showError, rollback, toggleLoading };
 
 export default compose(
   withFirestore,

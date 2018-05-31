@@ -5,8 +5,10 @@ import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { reactReduxFirebase, firebaseReducer } from 'react-redux-firebase';
 import { reduxFirestore, firestoreReducer } from 'redux-firestore';
-import { showError, syncSendMap } from './actions';
+import isEmpty from 'lodash/fp/isEmpty';
 
+import { showError, syncSendMap } from './actions';
+import { isEquivalent } from './send-map';
 import firebase, { auth, firestore } from './firebase';
 import App from './components/App';
 import uiReducer from './ui-reducer';
@@ -41,10 +43,15 @@ auth.onAuthStateChanged((user) => {
     firestore.collection('sendMaps').doc(user.uid).onSnapshot((sendMap) => {
       if (sendMap.exists) {
         const newSendMap = sendMap.data();
-        store.dispatch(syncSendMap(newSendMap));
-        store.dispatch(showError('Nouveaux blocs synchronisés depuis le serveur'));
+        const oldSendMap = store.getState().ui.sendMap;
+        if (!isEquivalent(newSendMap, oldSendMap)) {
+          store.dispatch(syncSendMap(newSendMap));
+          if (!isEmpty(oldSendMap)) store.dispatch(showError('Blocs synchronisés depuis le serveur'));
+        }
       }
     });
+  } else {
+    store.dispatch(syncSendMap({}));
   }
 });
 

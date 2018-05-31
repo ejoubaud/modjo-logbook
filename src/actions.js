@@ -6,6 +6,8 @@ export const types = {
   syncSendMap: 'SYNC_SEND_MAP',
   showError: 'SHOW_ERROR',
   hideError: 'HIDE_ERROR',
+  toggleLoading: 'TOGGLE_LOADING',
+  rollback: 'ROLLBACK',
 };
 
 export const toggleColor = color => ({
@@ -44,6 +46,11 @@ export const syncSendMap = sendMap => ({
   payload: { sendMap },
 });
 
+export const rollback = (previousSendMap, error) => ({
+  type: types.rollback,
+  payload: { previousSendMap, error },
+});
+
 // ignoreId is optional
 export const showError = (error, ignoreId) => ({
   type: types.showError,
@@ -54,4 +61,9 @@ export const showError = (error, ignoreId) => ({
 export const hideError = ignoreId => ({
   type: types.hideError,
   payload: { ignoreId },
+});
+
+export const toggleLoading = on => ({
+  type: types.toggleLoading,
+  payload: { on },
 });

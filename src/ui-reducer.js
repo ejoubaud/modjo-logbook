@@ -43,6 +43,14 @@ const reducers = {
     selectedSectors: [],
   }),
 
+  [types.rollback]: (state, { payload }) => ({
+    ...state,
+    sendMap: payload.previousSendMap,
+    error: payload.error,
+    isErrorHidden: false,
+    selectedSectors: [],
+  }),
+
   [types.showError]: (state, { payload }) => {
     if (state.errorIgnoreList.indexOf(payload.ignoreId) >= 0) return state;
     return {
@@ -59,6 +67,11 @@ const reducers = {
     errorIgnoreList: state.errorIgnoreList.concat(payload.ignoreId || []),
     errorIgnoreId: null,
   }),
+
+  [types.toggleLoading]: (state, { payload }) => ({
+    ...state,
+    isLoading: payload.on,
+  }),
 };
 
 const defaultState = {
@@ -70,6 +83,7 @@ const defaultState = {
   isErrorHidden: null,
   errorIgnoreList: [],
   errorIgnoreId: null,
+  isLoading: false,
 };
 
 export default function uiReducer(state = defaultState, action) {

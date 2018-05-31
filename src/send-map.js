@@ -4,6 +4,9 @@ import setWith from 'lodash/fp/setWith';
 import unset from 'lodash/fp/unset';
 import curry from 'lodash/fp/curry';
 import reduce from 'lodash/fp/reduce';
+import union from 'lodash/fp/union';
+import keys from 'lodash/fp/keys';
+import some from 'lodash/fp/some';
 
 export const empty = {};
 
@@ -31,3 +34,13 @@ export const removeAll = (sendMap, color, sectorIds) => (
 export const isSent = curry((sendMap, color, sectorId) => (
   !!get([color, sectorId], sendMap)
 ));
+
+export const isEquivalent = (map1, map2) => {
+  const colors = union(keys(map1), keys(map2));
+  return !some((color) => {
+    const sectors = union(keys(map1[color]), keys(map2[color]));
+    return some(sectorId => (
+      isSent(map1, color, sectorId) !== isSent(map2, color, sectorId)
+    ), sectors);
+  }, colors);
+};

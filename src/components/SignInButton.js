@@ -21,13 +21,13 @@ import googleLogo from '../images/google.svg';
 const signIn = (login, toggleDrawer, showError) => () => {
   login({ provider: 'google' })
     .then(toggleDrawer)
-    .catch(err => console.log('firebase login error', err) || showError(`Error ${err.code}: ${err.message}`));
+    .catch(err => showError(`Error ${err.code}: ${err.message}`));
 };
 
 const signOut = (logout, toggleDrawer, showError) => () => {
   logout()
     .then(toggleDrawer)
-    .catch(err => console.log('firebase login error', err) || showError(`Error ${err.code}: ${err.message}`));
+    .catch(err => showError(`Error ${err.code}: ${err.message}`));
 };
 
 
