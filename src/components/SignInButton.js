@@ -7,6 +7,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Snackbar from '@material-ui/core/Snackbar';
+import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -49,14 +50,16 @@ const SignInButton = (props) => {
           ? (
             <Fragment>
               <CircularProgress className={classes.avatar} size={15} />
-              Chargement...
+              <span className={classes.name}>Chargement...</span>
             </Fragment>
           )
           : (signedInUser
             ? (
               <Fragment>
                 <img alt="avatar" src={signedInUser.photoURL} className={classes.avatar} />
-                {signedInUser.displayName}
+                <Hidden xsDown>
+                  <span className={classes.name}>{signedInUser.displayName}</span>
+                </Hidden>
               </Fragment>
             )
             : 'Connexion'
@@ -116,6 +119,7 @@ const styles = {
     right: '20px',
     top: '20px',
     color: 'white',
+    minWidth: 0,
     borderColor: 'rgba(255, 255, 255, 0.23)',
     '&:hover': {
       backgroundColor: 'rgba(255, 255, 255, 0.08)',
@@ -126,7 +130,9 @@ const styles = {
   },
   avatar: {
     width: '20px',
-    marginRight: '10px',
+  },
+  name: {
+    marginLeft: '10px',
   },
 };
 
