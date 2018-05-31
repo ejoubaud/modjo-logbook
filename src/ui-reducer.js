@@ -37,6 +37,12 @@ const reducers = {
     selectedSectors: [],
   }),
 
+  [types.syncSendMap]: (state, { payload }) => ({
+    ...state,
+    sendMap: payload.sendMap,
+    selectedSectors: [],
+  }),
+
   [types.showError]: (state, { payload }) => {
     if (state.errorIgnoreList.indexOf(payload.ignoreId) >= 0) return state;
     return {

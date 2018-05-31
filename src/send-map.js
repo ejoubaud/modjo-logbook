@@ -7,13 +7,17 @@ import reduce from 'lodash/fp/reduce';
 
 export const empty = {};
 
-export const add = (sendMap, send) => (
+export const add = (sendMap, send, value = send) => (
   // setWith(Object) ensures it works with num indices
-  setWith(Object, [send.color, send.sectorId], send, sendMap)
+  setWith(Object, [send.color, send.sectorId], value, sendMap)
 );
 
 export const addAll = (sendMap, sends) => (
   reduce(add, sendMap, sends)
+);
+
+export const populateWith = (sendMap, sends, value) => (
+  reduce((sendMap, send) => add(sendMap, send, value), sendMap, sends)
 );
 
 export const remove = (sendMap, color, sectorId) => (

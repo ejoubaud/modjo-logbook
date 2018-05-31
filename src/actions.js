@@ -3,6 +3,7 @@ export const types = {
   toggleSector: 'TOGGLE_SECTOR',
   sendBoulders: 'SEND_BOULDERS',
   clearBoulders: 'CLEAR_BOULDERS',
+  syncSendMap: 'SYNC_SEND_MAP',
   showError: 'SHOW_ERROR',
   hideError: 'HIDE_ERROR',
 };
@@ -38,7 +39,13 @@ export const clearBoulders = (color, sectors) => ({
   },
 });
 
-export const showError = (error) => ({
+export const syncSendMap = sendMap => ({
+  type: types.syncSendMap,
+  payload: { sendMap },
+});
+
+// ignoreId is optional
+export const showError = (error, ignoreId) => ({
   type: types.showError,
   payload: { error, ignoreId },
 });

@@ -10,7 +10,7 @@ import some from 'lodash/fp/some';
 
 import SubmitButton from './SubmitButton';
 import { sendBoulders, clearBoulders, showError } from '../actions';
-import { empty as emptySendMap, isSent, addAll } from '../send-map';
+import { empty as emptySendMap, isSent, addAll, populateWith } from '../send-map';
 
 const saveSends = (db, { userId, color, sectors, type }, showError) => {
   // TODO: Make this a transaction once https://github.com/prescottprue/redux-firestore/issues/108 is fixed
