@@ -5,7 +5,21 @@ service cloud.firestore {
     }
     match /users/{userId} {
       allow create, read: if request.auth.uid != null;
-      allow update, delete: if request.auth.uid == userId
+      allow update, delete: if request.auth.uid == userId;
+    }
+    match /sends/{send} {
+      allow read;
+      allow create: if request.auth.uid != null;
+      allow update, delete: if request.auth.uid == resource.data.userId;
+    }
+    match /clears/{send} {
+      allow read;
+      allow create: if request.auth.uid != null;
+      allow update, delete: if request.auth.uid == resource.data.userId;
+    }
+    match /sendMaps/{sendMap} {
+      allow read;
+      allow write: if request.auth.uid == sendMap;
     }
   }
 }

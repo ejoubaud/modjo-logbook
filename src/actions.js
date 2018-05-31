@@ -40,9 +40,11 @@ export const clearBoulders = (color, sectors) => ({
 
 export const showError = (error) => ({
   type: types.showError,
-  payload: { error }
+  payload: { error, ignoreId },
 });
 
-export const hideError = () => ({
+// ignoreId is optional, if passed this error won't be shown again
+export const hideError = ignoreId => ({
   type: types.hideError,
+  payload: { ignoreId },
 });

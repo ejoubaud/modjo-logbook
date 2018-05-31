@@ -37,15 +37,21 @@ const reducers = {
     selectedSectors: [],
   }),
 
-  [types.showError]: (state, { payload }) => ({
-    ...state,
-    error: payload.error,
-    isErrorHidden: false,
-  }),
+  [types.showError]: (state, { payload }) => {
+    if (state.errorIgnoreList.indexOf(payload.ignoreId) >= 0) return state;
+    return {
+      ...state,
+      error: payload.error,
+      isErrorHidden: false,
+      errorIgnoreId: payload.ignoreId,
+    };
+  },
 
-  [types.hideError]: state => ({
+  [types.hideError]: (state, { payload }) => ({
     ...state,
     isErrorHidden: true,
+    errorIgnoreList: state.errorIgnoreList.concat(payload.ignoreId || []),
+    errorIgnoreId: null,
   }),
 };
 
@@ -56,6 +62,8 @@ const defaultState = {
   backgroundSelections: {},
   error: null,
   isErrorHidden: null,
+  errorIgnoreList: [],
+  errorIgnoreId: null,
 };
 
 export default function uiReducer(state = defaultState, action) {
