@@ -10,16 +10,18 @@ import promiseFinally from 'promise.prototype.finally';
 import some from 'lodash/fp/some';
 
 import SubmitButton from './SubmitButton';
-import { sendBoulders, clearBoulders, showError, toggleLoading, rollback } from '../actions';
+import { sendBoulders, clearSectors, showError, toggleLoading, rollback } from '../actions';
 import { empty as emptySendMap, isSent, addAll, populateWith } from '../send-map';
+import { colorKeys as allColors } from '../colors';
+import { getColorMap } from '../selectors';
 
 promiseFinally.shim();
 
-const saveSends = (db, { userId, color, sectors, type }) => {
+const saveSends = (db, { signedInUser: { uid }, color, sectors, type }) => {
   // TODO: Make this a transaction once https://github.com/prescottprue/redux-firestore/issues/108 is fixed
-  const sendMapRef = db.collection('sendMaps').doc(userId);
+  const sendMapRef = db.collection('sendMaps').doc(uid);
   const sends = sectors.map(sectorId => (
-    { userId, color, sectorId, type, createdAt: new Date() }
+    { uid, color, sectorId, type, createdAt: new Date() }
   ));
   const sendMap = addAll(emptySendMap, sends);
 
@@ -28,13 +30,13 @@ const saveSends = (db, { userId, color, sectors, type }) => {
   ).then(() => sendMapRef.set(sendMap, { merge: true }));
 };
 
-const saveClears = (db, { userId, color, sectors }) => {
+const saveClears = (db, { signedInUser: { uid }, sectors }) => {
   // TODO: Make this a transaction once https://github.com/prescottprue/redux-firestore/issues/108 is fixed
-  const sendMapRef = db.collection('sendMaps').doc(userId);
+  const sendMapRef = db.collection('sendMaps').doc(uid);
   const clears = sectors.map(sectorId => (
-    { userId, color, sectorId, createdAt: new Date() }
+    { userId: uid, sectorId, createdAt: new Date() }
   ));
-  const clearCommands = populateWith(emptySendMap, clears, db.FieldValue.delete());
+  const clearCommands = populateWith(emptySendMap, allColors, sectors, db.FieldValue.delete());
 
   return Promise.all(
     clears.map(clear => db.collection('clears').add(clear)),
@@ -46,7 +48,7 @@ const sendSubmitter = props => type => () => {
   if (signedInUser) {
     sendBoulders(color, sectors, { type }); // optimistic local state update
     toggleLoading(true);
-    saveSends(firestore, { userId: signedInUser.uid, color, sectors, type }, showError)
+    saveSends(firestore, { signedInUser, color, sectors, type })
       .catch(err => rollback(sendMap, err)) // rollback on error
       .finally(() => toggleLoading(false));
   } else {
@@ -56,28 +58,37 @@ const sendSubmitter = props => type => () => {
 };
 
 const clearSubmitter = props => () => {
-  const { firestore, signedInUser, color, sectors, sendMap, clearBoulders, toggleLoading, showError, rollback } = props;
+  const { firestore, signedInUser, sectors, sendMap, clearSectors, toggleLoading, showError, rollback } = props;
   if (signedInUser) {
-    clearBoulders(color, sectors); // optimistic local state update
+    clearSectors(sectors); // optimistic local state update
     toggleLoading(true);
-    saveClears(firestore, { userId: signedInUser.uid, color, sectors }, showError)
+    saveClears(firestore, { signedInUser, sectors })
       .catch(err => rollback(sendMap, err)) // rollback on error
       .finally(() => toggleLoading(false));
   } else {
-    clearBoulders(color, sectors);
+    clearSectors(sectors);
     showError("Vous n'êtes pas connecté, les changements ne seront pas sauvegardés.", { ignoreId: 'loggedOutChanges' });
   }
 };
 
 const validations = {
-  anyButton({ color, sectors }) {
+  sendButtons({ color, sectors, sendMap }) {
     if (!color) return "Sélectionner une couleur d'abord";
     if (sectors.length === 0) return "Sélectionner des secteurs d'abord";
+    if (some(isSent(sendMap, color), sectors)) return "La sélection contient des blocs déjà enchaînés: Désélectionnez-les ou marquez-les comme démontés d'abord";
     return null;
   },
 
-  sendButtons({ color, sectors, sendMap }) {
-    if (some(isSent(sendMap, color), sectors)) return "La sélection contient des blocs déjà enchaînés: Désélectionnez-les ou marquez-les comme démontés d'abord";
+  clearButton({ color, sectors, sendMap, isColorMapMode, colorMap }) {
+    if (sectors.length === 0) return "Sélectionner des secteurs d'abord";
+    const unsentMessage = "La sélection contient des blocs non-enchaînés, pas besoin de les démonter: Désélectionnez-les ou marquez-les comme enchaînés d'abord";
+    if (isColorMapMode) {
+      const sentInColor = some(sectorId => !colorMap[sectorId], sectors);
+      if (sentInColor) return unsentMessage;
+    } else {
+      const sentInThisColor = (some(sector => !isSent(sendMap, color, sector), sectors));
+      if (sentInThisColor) return unsentMessage;
+    }
     return null;
   },
 
@@ -92,9 +103,8 @@ const validations = {
 const BoulderForm = (props) => {
   const { color } = props;
 
-  const sharedValidation = validations.anyButton(props);
-  const noSendReason = sharedValidation || validations.sendButtons(props);
-  const noClearReason = sharedValidation;
+  const noSendReason = validations.sendButtons(props);
+  const noClearReason = validations.clearButton(props);
 
   const doSubmitClear = clearSubmitter(props);
   const doSubmitSends = sendSubmitter(props);
@@ -129,17 +139,22 @@ const BoulderForm = (props) => {
 
 BoulderForm.defaultProps = { date: new Date().toISOString().substr(0, 10) };
 
-const mapStateToProps = ({
-  ui: { selectedColor, selectedSectors, sendMap },
-  firebase: { auth },
-}) => ({
-  color: selectedColor,
-  sectors: selectedSectors,
-  sendMap,
-  signedInUser: !auth.isEmpty && auth,
-});
+const mapStateToProps = (state) => {
+  const {
+    ui: { selectedColor, selectedSectors, sendMap },
+    firebase: { auth },
+  } = state;
+  return {
+    color: selectedColor,
+    sectors: selectedSectors,
+    sendMap,
+    isColorMapMode: !selectedColor,
+    colorMap: getColorMap(state),
+    signedInUser: !auth.isEmpty && auth,
+  };
+};
 
-const mapDispatchToProps = { sendBoulders, clearBoulders, showError, rollback, toggleLoading };
+const mapDispatchToProps = { sendBoulders, clearSectors, showError, rollback, toggleLoading };
 
 export default compose(
   withFirestore,

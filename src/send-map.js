@@ -7,6 +7,12 @@ import reduce from 'lodash/fp/reduce';
 import union from 'lodash/fp/union';
 import keys from 'lodash/fp/keys';
 import some from 'lodash/fp/some';
+import mapValues from 'lodash/fp/mapValues';
+import omit from 'lodash/fp/omit';
+import flatMap from 'lodash/fp/flatMap';
+import map from 'lodash/fp/map';
+
+const product = (a1, a2) => flatMap(e1 => map(e2 => [e1, e2], a2), a1);
 
 export const empty = {};
 
@@ -19,16 +25,29 @@ export const addAll = (sendMap, sends) => (
   reduce(add, sendMap, sends)
 );
 
-export const populateWith = (sendMap, sends, value) => (
-  reduce((sendMap, send) => add(sendMap, send, value), sendMap, sends)
+export const populateWith = (sendMap, colors, sectorIds, value) => (
+  reduce(
+    (sendMap, [color, sectorId]) => console.log(color, sectorId, product(colors, sectorIds)) || add(sendMap, { color, sectorId }, value),
+    sendMap,
+    product(colors, sectorIds),
+  )
 );
 
+// not used anymore (we clear sectors now, not just boulders)
 export const remove = (sendMap, color, sectorId) => (
   unset([color, sectorId], sendMap)
 );
 
-export const removeAll = (sendMap, color, sectorIds) => (
+// not used anymore (we clear sectors now, not just boulders)
+export const removeSectorsInColor = (sendMap, color, sectorIds) => (
   reduce((map, sector) => remove(map, color, sector), sendMap, sectorIds)
+);
+
+export const removeSectors = (sendMap, sectorIds) => (
+  mapValues(
+    colorSectors => omit(sectorIds, colorSectors),
+    sendMap,
+  )
 );
 
 export const isSent = curry((sendMap, color, sectorId) => (

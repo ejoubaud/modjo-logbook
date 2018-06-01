@@ -122,7 +122,7 @@ const mapStateToProps = (state, props) => {
   return {
     color,
     isSelected: sectors.indexOf(props.id) >= 0,
-    canSelect: !!selectedColor,
+    canSelect: true,
     isSent,
     tooltip: tooltipContent(isColorMapMode, isSent, color),
   };

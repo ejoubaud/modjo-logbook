@@ -1,5 +1,6 @@
 import mapValues from 'lodash/fp/mapValues';
 import { createMuiTheme } from '@material-ui/core/styles';
+import keys from 'lodash/fp/keys';
 
 const palette = (main, light, dark, contrastText) => ({ main, light, dark, contrastText });
 
@@ -35,6 +36,8 @@ const colors = {
 };
 
 export default colors;
+
+export const colorKeys = keys(colors);
 
 export const defaultColor = {
   label: 'Default',

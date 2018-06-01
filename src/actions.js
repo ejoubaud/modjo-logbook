@@ -2,7 +2,8 @@ export const types = {
   toggleColor: 'TOGGLE_COLOR',
   toggleSector: 'TOGGLE_SECTOR',
   sendBoulders: 'SEND_BOULDERS',
-  clearBoulders: 'CLEAR_BOULDERS',
+  clearBoulders: 'CLEAR_BOULDERS', // not used anymore
+  clearSectors: 'CLEAR_SECTORS',
   syncSendMap: 'SYNC_SEND_MAP',
   showError: 'SHOW_ERROR',
   hideError: 'HIDE_ERROR',
@@ -33,12 +34,18 @@ export const sendBoulders = (color, sectors, { type }) => ({
   },
 });
 
+// not used anymore (we clear sectors now, not just boulders)
 export const clearBoulders = (color, sectors) => ({
   type: types.clearBoulders,
   payload: {
     color,
     sectors,
   },
+});
+
+export const clearSectors = sectors => ({
+  type: types.clearSectors,
+  payload: { sectors },
 });
 
 export const syncSendMap = sendMap => ({

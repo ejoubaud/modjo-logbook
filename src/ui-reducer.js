@@ -31,9 +31,16 @@ const reducers = {
     selectedSectors: [],
   }),
 
+  // not used anymore (we clear sectors now, not just boulders)
   [types.clearBoulders]: (state, { payload }) => ({
     ...state,
-    sendMap: sendMap.removeAll(state.sendMap, payload.color, payload.sectors),
+    sendMap: sendMap.removeSectorsInColor(state.sendMap, payload.color, payload.sectors),
+    selectedSectors: [],
+  }),
+
+  [types.clearSectors]: (state, { payload }) => ({
+    ...state,
+    sendMap: sendMap.removeSectors(state.sendMap, payload.sectors),
     selectedSectors: [],
   }),
 
