@@ -7,7 +7,7 @@ import { reactReduxFirebase, firebaseReducer } from 'react-redux-firebase';
 import { reduxFirestore, firestoreReducer } from 'redux-firestore';
 import isEmpty from 'lodash/fp/isEmpty';
 
-import { showError, syncSendMap } from './actions';
+import { showError, syncSendMap, toggleLoading } from './actions';
 import { isEquivalent } from './send-map';
 import firebase, { auth, firestore } from './firebase';
 import App from './components/App';
@@ -40,6 +40,7 @@ auth.getRedirectResult().catch(e => store.dispatch(showError(e)));
 // Setup sendMap listener
 auth.onAuthStateChanged((user) => {
   if (user) {
+    store.dispatch(toggleLoading(true));
     firestore.collection('sendMaps').doc(user.uid).onSnapshot((sendMap) => {
       if (sendMap.exists) {
         const newSendMap = sendMap.data();
@@ -49,6 +50,7 @@ auth.onAuthStateChanged((user) => {
           if (!isEmpty(oldSendMap)) store.dispatch(showError('Blocs synchronisés depuis le serveur'));
         }
       }
+      store.dispatch(toggleLoading(false));
     });
   } else {
     store.dispatch(syncSendMap({}));
