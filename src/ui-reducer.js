@@ -9,14 +9,6 @@ const reducers = {
     return {
       ...state,
       selectedColor: newColor,
-      // TODO: Restoring bg selections can lead to inconsistencies on the
-      // "homogeneous sent/unset select group" invariant if the list of sent boulders
-      // has been updated in-between, e.g. from the server/db
-      selectedSectors: state.backgroundSelections[newColor] || [],
-      backgroundSelections: {
-        ...state.backgroundSelections,
-        [state.selectedColor]: state.selectedSectors,
-      },
     };
   },
 
@@ -85,7 +77,6 @@ const defaultState = {
   selectedColor: null,
   selectedSectors: [],
   sendMap: sendMap.empty,
-  backgroundSelections: {},
   error: null,
   isErrorHidden: null,
   errorIgnoreList: [],
