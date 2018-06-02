@@ -1,11 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Tooltip from '@material-ui/core/Tooltip';
 import { MuiThemeProvider, withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 
 import { toggleSector } from '../actions';
-import colors, { getMuiTheme } from '../colors';
+import { getMuiTheme } from '../colors';
 import { isSent as isSectorSent } from '../send-map';
 import { getColorMap } from '../selectors';
 
@@ -17,37 +16,34 @@ const Sector = ({
   id,
   highlightMask,
   classes,
-  tooltip,
   canSelect,
   isSent,
   isSelected,
   toggleSector,
 }) => (
-  <Tooltip title={tooltip}>
-    <a
-      xlinkHref=""
-      onClick={(e) => { e.preventDefault(); if (canSelect) toggleSector(id); }}
-      className={classNames(classes.root, { [classes.canSelect]: canSelect })}
-    >{/* must be a <a> with xlink:href attr present for CSS :hover */}
-      <path
-        d={d}
-        id={`sector-${id}`}
-        vectorEffect="non-scaling-stroke"
-      />
-      <path
-        d={d}
-        className={
-          classNames({
-            [classes.highlight]: true,
-            [classes.highlightSent]: isSent,
-            [classes.highlightSelected]: isSelected,
-          })
-        }
-        vectorEffect="non-scaling-stroke"
-        mask={highlightMask}
-      />
-    </a>
-  </Tooltip>
+  <a
+    xlinkHref=""
+    onClick={(e) => { e.preventDefault(); if (canSelect) toggleSector(id); }}
+    className={classNames(classes.root, { [classes.canSelect]: canSelect })}
+  >{/* must be a <a> with xlink:href attr present for CSS :hover */}
+    <path
+      d={d}
+      id={`sector-${id}`}
+      vectorEffect="non-scaling-stroke"
+    />
+    <path
+      d={d}
+      className={
+        classNames({
+          [classes.highlight]: true,
+          [classes.highlightSent]: isSent,
+          [classes.highlightSelected]: isSelected,
+        })
+      }
+      vectorEffect="non-scaling-stroke"
+      mask={highlightMask}
+    />
+  </a>
 );
 
 const styles = theme => ({
@@ -101,14 +97,6 @@ const ThemedSector = ({ children, color, ...props }) => (
   </MuiThemeProvider>
 );
 
-const tooltipContent = (isColorMapMode, isSent, color) => {
-  if (isColorMapMode) {
-    if (isSent) return `Bloc le plus difficile passé sur ce secteur: ${colors[color].label}`;
-    return 'Aucun bloc enchaîné, sélectionner une couleur pour marquer ce bloc comme enchaîné';
-  }
-  return '';
-};
-
 const mapStateToProps = (state, props) => {
   const { selectedColor, sendMap } = state.ui;
   const sectors = state.ui.selectedSectors;
@@ -124,7 +112,6 @@ const mapStateToProps = (state, props) => {
     isSelected: sectors.indexOf(props.id) >= 0,
     canSelect: true,
     isSent,
-    tooltip: tooltipContent(isColorMapMode, isSent, color),
   };
 };
 
