@@ -1,10 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { MuiThemeProvider, withStyles } from '@material-ui/core/styles';
-import classNames from 'classnames';
+import injectSheet from 'react-jss';
 
 import { toggleSector } from '../actions';
-import { getMuiTheme } from '../colors';
+import { getPalette } from '../colors';
 import { isSent as isSectorSent } from '../send-map';
 import { getColorMap } from '../selectors';
 
@@ -16,15 +15,12 @@ const Sector = ({
   id,
   highlightMask,
   classes,
-  canSelect,
-  isSent,
-  isSelected,
   toggleSector,
 }) => (
   <a
     xlinkHref=""
-    onClick={(e) => { e.preventDefault(); if (canSelect) toggleSector(id); }}
-    className={classNames(classes.root, { [classes.canSelect]: canSelect })}
+    onClick={(e) => { e.preventDefault(); toggleSector(id); }}
+    className={classes.root}
   >{/* must be a <a> with xlink:href attr present for CSS :hover */}
     <path
       d={d}
@@ -33,69 +29,57 @@ const Sector = ({
     />
     <path
       d={d}
-      className={
-        classNames({
-          [classes.highlight]: true,
-          [classes.highlightSent]: isSent,
-          [classes.highlightSelected]: isSelected,
-        })
-      }
+      className={classes.highlight}
       vectorEffect="non-scaling-stroke"
       mask={highlightMask}
     />
   </a>
 );
 
-const styles = theme => ({
+const getHighlightFill = ({ isSelected, isSent, anySectorSelected, color }) => {
+  const { main, light, dark } = getPalette(color);
+  return {
+    atRest: (() => {
+      if (isSelected) return dark;
+      if (isSent) {
+        if (anySectorSelected) return light;
+        return main;
+      }
+      return 'transparent';
+    })(),
+    onHover: isSelected ? dark : light,
+    onActive: main,
+  };
+};
+
+const styles = {
   root: {
     pointerEvents: 'all',
+    cursor: 'pointer',
     stroke: 'inherit',
-    cursor: 'not-allowed',
     '&:focus, &:active': {
       outline: 'none',
     },
     '&:hover:active': {
       '& $highlight': {
-        fill: theme.palette.primary.main,
-      },
-      '& $highlightSent': {
-        fill: theme.palette.primary.main,
+        fill: ({ highlightFill: { onActive } }) => onActive,
       },
     },
     '&:hover': {
       '& $highlight': {
-        fill: theme.palette.primary.light,
-      },
-      '& $highlightSelected': {
-        fill: theme.palette.primary.dark,
+        fill: ({ highlightFill: { onHover } }) => onHover,
       },
     },
   },
-  canSelect: {
-    cursor: 'pointer',
-  },
-  highlight: {
-    fill: 'transparent',
+
+  highlight: ({ highlightFill: { atRest } }) => ({
+    fill: atRest,
     fillOpacity: '.6',
     transition: 'fill .2s',
-  },
-  highlightSent: {
-    fill: theme.palette.primary.main,
-  },
-  highlightSelected: {
-    fill: theme.palette.primary.dark,
-  },
-});
+  }),
+};
 
-const StyledSector = withStyles(styles)(Sector);
-
-const ThemedSector = ({ children, color, ...props }) => (
-  <MuiThemeProvider theme={getMuiTheme(color || null)}>
-    <StyledSector color={color} {...props} >
-      {children}
-    </StyledSector>
-  </MuiThemeProvider>
-);
+const StyledSector = injectSheet(styles)(Sector);
 
 const mapStateToProps = (state, props) => {
   const { selectedColor, sendMap } = state.ui;
@@ -107,16 +91,19 @@ const mapStateToProps = (state, props) => {
   const isSent = isColorMapMode
     ? !!color
     : isSectorSent(sendMap, selectedColor, props.id);
+  const isSelected = sectors.indexOf(props.id) >= 0;
+  const anySectorSelected = sectors.length > 0;
+  const highlightFill = getHighlightFill({ isSelected, isSent, anySectorSelected, color });
   return {
     color,
-    isSelected: sectors.indexOf(props.id) >= 0,
-    canSelect: true,
     isSent,
+    isSelected,
+    highlightFill,
   };
 };
 
 const mapDispatchToProps = { toggleSector };
 
-const ConnectedSector = connect(mapStateToProps, mapDispatchToProps)(ThemedSector);
+const ConnectedSector = connect(mapStateToProps, mapDispatchToProps)(StyledSector);
 
 export default ConnectedSector;

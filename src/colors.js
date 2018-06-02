@@ -44,6 +44,8 @@ export const defaultColor = {
   palette: palette('#9e9e9e', '#cfcfcf', '#707070', '#000000'),
 };
 
+export const getPalette = color => (colors[color] || defaultColor).palette;
+
 const themeFromColor = ({ palette }) => createMuiTheme({ palette: { primary: palette } });
 
 const themes = mapValues(
