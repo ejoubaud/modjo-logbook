@@ -2,6 +2,7 @@ import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withFirestore } from 'react-redux-firebase';
+import withState from 'recompose/withState';
 import withStateHandlers from 'recompose/withStateHandlers';
 import DoneIcon from '@material-ui/icons/Done';
 import FlashOnIcon from '@material-ui/icons/FlashOn';
@@ -10,6 +11,7 @@ import promiseFinally from 'promise.prototype.finally';
 import some from 'lodash/fp/some';
 
 import SubmitButton from './SubmitButton';
+import ConfirmDialog from './ConfirmDialog';
 import { sendBoulders, clearSectors, showError, toggleLoading, rollback } from '../actions';
 import { empty as emptySendMap, isSent, addAll, populateWith } from '../send-map';
 import { colorKeys as allColors } from '../colors';
@@ -101,13 +103,15 @@ const validations = {
 };
 
 const BoulderForm = (props) => {
-  const { color } = props;
+  const { color, isColorMapMode } = props;
 
   const noSendReason = validations.sendButtons(props);
   const noClearReason = validations.clearButton(props);
 
   const doSubmitClear = clearSubmitter(props);
   const doSubmitSends = sendSubmitter(props);
+
+  const { isConfirmOpen, toggleConfirm } = props;
 
   return (
     <form>
@@ -130,8 +134,13 @@ const BoulderForm = (props) => {
         Icon={RefreshIcon}
         color={color}
         disabledReason={noClearReason}
-        doSubmit={doSubmitClear}
+        doSubmit={() => (isColorMapMode ? doSubmitClear() : toggleConfirm(true))}
         defaultTip="Indiquer qu'un bloc a été démonté ou réouvert depuis la dernière fois où vous l'avez enchaîné. Vous pourrez ensuite noter un passage du nouveau bloc."
+      />
+      <ConfirmDialog
+        isOpen={isConfirmOpen}
+        toggleConfirm={toggleConfirm}
+        onConfirm={doSubmitClear}
       />
     </form>
   );
@@ -157,6 +166,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = { sendBoulders, clearSectors, showError, rollback, toggleLoading };
 
 export default compose(
+  withState('isConfirmOpen', 'toggleConfirm', false),
   withFirestore,
   connect(mapStateToProps, mapDispatchToProps),
   // if we want to add states/form validation later,
