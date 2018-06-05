@@ -47,7 +47,11 @@ const getHighlightFill = ({ isSelected, isSent, anySectorSelected, color }) => {
       }
       return 'transparent';
     })(),
-    onHover: isSelected ? dark : light,
+    onHover: (() => {
+      if (isSelected) return dark;
+      if (anySectorSelected) return main;
+      return light;
+    })(),
     onActive: main,
   };
 };
