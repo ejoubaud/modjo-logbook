@@ -41,7 +41,7 @@ export const colorKeys = keys(colors);
 
 export const defaultColor = {
   label: 'Default',
-  palette: palette('#9e9e9e', '#cfcfcf', '#707070', '#000000'),
+  palette: palette('#33b1ac', '#6ee3de', '#00817d', '#000000'), // original modjo
 };
 
 export const getPalette = color => (colors[color] || defaultColor).palette;
