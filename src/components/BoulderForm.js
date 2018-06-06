@@ -13,23 +13,27 @@ import some from 'lodash/fp/some';
 import SubmitButton from './SubmitButton';
 import ConfirmDialog from './ConfirmDialog';
 import { sendBoulders, clearSectors, showError, toggleLoading, rollback } from '../actions';
-import { empty as emptySendMap, isSent, addAll, populateWith } from '../send-map';
+import { createSends } from '../send';
+import * as sendMapUtils from '../send-map';
+import * as sendListUtils from '../send-list';
 import { colorKeys as allColors } from '../colors';
 import { getColorMap } from '../selectors';
 
 promiseFinally.shim();
 
-const saveSends = (db, { signedInUser: { uid }, color, sectors, type }) => {
+const saveSends = (db, { signedInUser: { uid }, sends, sendList }) => {
   // TODO: Make this a transaction once https://github.com/prescottprue/redux-firestore/issues/108 is fixed
   const sendMapRef = db.collection('sendMaps').doc(uid);
-  const sends = sectors.map(sectorId => (
-    { uid, color, sectorId, type, createdAt: new Date() }
-  ));
-  const sendMap = addAll(emptySendMap, sends);
+  const sendListRef = db.collection('sendLists').doc(uid);
 
-  return Promise.all(
-    sends.map(send => db.collection('sends').add(send)),
-  ).then(() => sendMapRef.set(sendMap, { merge: true }));
+  const sendMap = sendMapUtils.addAll(sendMapUtils.empty, sends);
+  const sendListDiff = sendListUtils.addAllDiff(sendList, sends);
+
+  return Promise.all([
+    ...sends.map(send => db.collection('sends').doc(send.id).set(send)),
+    sendMapRef.set(sendMap, { merge: true }),
+    sendListRef.set(sendListDiff, { merge: true }),
+  ]);
 };
 
 const saveClears = (db, { signedInUser: { uid }, sectors }) => {
@@ -38,7 +42,9 @@ const saveClears = (db, { signedInUser: { uid }, sectors }) => {
   const clears = sectors.map(sectorId => (
     { userId: uid, sectorId, createdAt: new Date() }
   ));
-  const clearCommands = populateWith(emptySendMap, allColors, sectors, db.FieldValue.delete());
+  const clearCommands = sendMapUtils.populateWith(
+    sendMapUtils.empty, allColors, sectors, db.FieldValue.delete(),
+  );
 
   return Promise.all(
     clears.map(clear => db.collection('clears').add(clear)),
@@ -46,12 +52,13 @@ const saveClears = (db, { signedInUser: { uid }, sectors }) => {
 };
 
 const sendSubmitter = props => type => () => {
-  const { firestore, signedInUser, color, sectors, sendMap, sendBoulders, toggleLoading, showError, rollback } = props;
+  const { firestore, signedInUser, color, sectors, sendMap, sendList, sendBoulders, toggleLoading, showError, rollback } = props;
   if (signedInUser) {
-    sendBoulders(color, sectors, { type }); // optimistic local state update
+    const sends = createSends({ color, type, sectorIds: sectors, userId: signedInUser.uid });
+    sendBoulders(sends); // optimistic local state update
     toggleLoading(true);
-    saveSends(firestore, { signedInUser, color, sectors, type })
-      .catch(err => rollback(sendMap, err)) // rollback on error
+    saveSends(firestore, { signedInUser, sends, sendList })
+      .catch(error => rollback({ sendMap, sendList, error })) // rollback on error
       .finally(() => toggleLoading(false));
   } else {
     sendBoulders(color, sectors, { type });
@@ -65,7 +72,7 @@ const clearSubmitter = props => () => {
     clearSectors(sectors); // optimistic local state update
     toggleLoading(true);
     saveClears(firestore, { signedInUser, sectors })
-      .catch(err => rollback(sendMap, err)) // rollback on error
+      .catch(error => rollback({ sendMap, error })) // rollback on error
       .finally(() => toggleLoading(false));
   } else {
     clearSectors(sectors);
@@ -77,7 +84,9 @@ const validations = {
   sendButtons({ color, sectors, sendMap }) {
     if (!color) return "Sélectionner une couleur d'abord";
     if (sectors.length === 0) return "Sélectionner des secteurs d'abord";
-    if (some(isSent(sendMap, color), sectors)) return "La sélection contient des blocs déjà enchaînés: Désélectionnez-les ou marquez-les comme démontés d'abord";
+    if (some(sendMapUtils.isSent(sendMap, color), sectors)) {
+      return "La sélection contient des blocs déjà enchaînés: Désélectionnez-les ou marquez-les comme démontés d'abord";
+    }
     return null;
   },
 
@@ -88,7 +97,7 @@ const validations = {
       const sentInColor = some(sectorId => !colorMap[sectorId], sectors);
       if (sentInColor) return unsentMessage;
     } else {
-      const sentInThisColor = (some(sector => !isSent(sendMap, color, sector), sectors));
+      const sentInThisColor = some(sector => !sendMapUtils.isSent(sendMap, color, sector), sectors);
       if (sentInThisColor) return unsentMessage;
     }
     return null;
@@ -150,13 +159,14 @@ BoulderForm.defaultProps = { date: new Date().toISOString().substr(0, 10) };
 
 const mapStateToProps = (state) => {
   const {
-    ui: { selectedColor, selectedSectors, sendMap },
+    ui: { selectedColor, selectedSectors, sendMap, sendList },
     firebase: { auth },
   } = state;
   return {
     color: selectedColor,
     sectors: selectedSectors,
     sendMap,
+    sendList,
     isColorMapMode: !selectedColor,
     colorMap: getColorMap(state),
     signedInUser: !auth.isEmpty && auth,

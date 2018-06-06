@@ -2,8 +2,12 @@
 import { createSelector } from 'reselect';
 import colorMap from './color-map';
 
+const uiStateGetter = propName => state => state.ui[propName];
+
 const hasSelectedColor = state => !!state.ui.selectedColor;
-const getSendMap = state => state.ui.sendMap;
+
+export const getSendMap = uiStateGetter('sendMap');
+export const getSendList = uiStateGetter('sendList');
 
 export const getColorMap = createSelector(
   hasSelectedColor,

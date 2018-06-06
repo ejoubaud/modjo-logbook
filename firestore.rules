@@ -12,7 +12,7 @@ service cloud.firestore {
       allow create: if request.auth.uid != null;
       allow update, delete: if request.auth.uid == resource.data.userId;
     }
-    match /clears/{send} {
+    match /clears/{clear} {
       allow read;
       allow create: if request.auth.uid != null;
       allow update, delete: if request.auth.uid == resource.data.userId;
@@ -20,6 +20,10 @@ service cloud.firestore {
     match /sendMaps/{sendMap} {
       allow read;
       allow write: if request.auth.uid == sendMap;
+    }
+    match /sendLists/{sendList} {
+      allow read;
+      allow write: if request.auth.uid == sendList;
     }
   }
 }

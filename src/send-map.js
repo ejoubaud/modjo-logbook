@@ -1,4 +1,4 @@
-// List of functions to manage the sendMap state in Redux
+// Send maps store the latest state of each color/sector pair (sent or not)
 import get from 'lodash/fp/get';
 import setWith from 'lodash/fp/setWith';
 import unset from 'lodash/fp/unset';
@@ -11,10 +11,13 @@ import mapValues from 'lodash/fp/mapValues';
 import omit from 'lodash/fp/omit';
 import flatMap from 'lodash/fp/flatMap';
 import map from 'lodash/fp/map';
+import _isEmpty from 'lodash/fp/isEmpty';
 
 const product = (a1, a2) => flatMap(e1 => map(e2 => [e1, e2], a2), a1);
 
 export const empty = {};
+
+export const isEmpty = _isEmpty;
 
 export const add = (sendMap, send, value = send) => (
   // setWith(Object) ensures it works with num indices
@@ -27,7 +30,7 @@ export const addAll = (sendMap, sends) => (
 
 export const populateWith = (sendMap, colors, sectorIds, value) => (
   reduce(
-    (sendMap, [color, sectorId]) => console.log(color, sectorId, product(colors, sectorIds)) || add(sendMap, { color, sectorId }, value),
+    (sendMap, [color, sectorId]) => add(sendMap, { color, sectorId }, value),
     sendMap,
     product(colors, sectorIds),
   )

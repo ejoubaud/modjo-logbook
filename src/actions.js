@@ -5,6 +5,7 @@ export const types = {
   clearBoulders: 'CLEAR_BOULDERS', // not used anymore
   clearSectors: 'CLEAR_SECTORS',
   syncSendMap: 'SYNC_SEND_MAP',
+  syncSendList: 'SYNC_SEND_LIST',
   showError: 'SHOW_ERROR',
   hideError: 'HIDE_ERROR',
   toggleLoading: 'TOGGLE_LOADING',
@@ -21,17 +22,9 @@ export const toggleSector = sectorId => ({
   payload: { sectorId },
 });
 
-export const sendBoulders = (color, sectors, { type }) => ({
+export const sendBoulders = sends => ({
   type: types.sendBoulders,
-  payload: {
-    sends: sectors.map(sectorId => ({
-      color,
-      sectorId,
-      type,
-      sentAt: new Date(), // TODO: Implement in form
-      createdAt: new Date(),
-    })),
-  },
+  payload: { sends },
 });
 
 // not used anymore (we clear sectors now, not just boulders)
@@ -53,9 +46,14 @@ export const syncSendMap = sendMap => ({
   payload: { sendMap },
 });
 
-export const rollback = (previousSendMap, error) => ({
+export const syncSendList = sendList => ({
+  type: types.syncSendList,
+  payload: { sendList },
+});
+
+export const rollback = ({ sendMap, sendList, error }) => ({
   type: types.rollback,
-  payload: { previousSendMap, error },
+  payload: { previousSendMap: sendMap, previousSendList: sendList, error },
 });
 
 // ignoreId is optional

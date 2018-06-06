@@ -2,6 +2,7 @@ import xor from 'lodash/fp/xor';
 
 import { types } from './actions';
 import * as sendMap from './send-map';
+import * as sendList from './send-list';
 
 const reducers = {
   [types.toggleColor]: (state, { payload }) => {
@@ -20,6 +21,7 @@ const reducers = {
   [types.sendBoulders]: (state, { payload }) => ({
     ...state,
     sendMap: sendMap.addAll(state.sendMap, payload.sends),
+    sendList: sendList.addAll(state.sendList, payload.sends),
     selectedSectors: [],
   }),
 
@@ -42,9 +44,15 @@ const reducers = {
     selectedSectors: [],
   }),
 
+  [types.syncSendList]: (state, { payload }) => ({
+    ...state,
+    sendList: payload.sendList,
+  }),
+
   [types.rollback]: (state, { payload }) => ({
     ...state,
     sendMap: payload.previousSendMap,
+    sendList: payload.previousSendList || state.previousSendList,
     error: payload.error,
     isErrorHidden: false,
     selectedSectors: [],
@@ -77,6 +85,7 @@ const defaultState = {
   selectedColor: null,
   selectedSectors: [],
   sendMap: sendMap.empty,
+  sendList: sendList.empty,
   error: null,
   isErrorHidden: null,
   errorIgnoreList: [],
