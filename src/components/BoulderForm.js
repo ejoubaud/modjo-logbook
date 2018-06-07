@@ -17,7 +17,7 @@ import { createSends } from '../send';
 import * as sendMapUtils from '../send-map';
 import * as sendListUtils from '../send-list';
 import { colorKeys as allColors } from '../colors';
-import { getColorMap } from '../selectors';
+import { getColorMap, getSignedInUser, getSelection, getSendMap, getSendList } from '../selectors';
 
 promiseFinally.shim();
 
@@ -158,18 +158,15 @@ const BoulderForm = (props) => {
 BoulderForm.defaultProps = { date: new Date().toISOString().substr(0, 10) };
 
 const mapStateToProps = (state) => {
-  const {
-    ui: { selectedColor, selectedSectors, sendMap, sendList },
-    firebase: { auth },
-  } = state;
+  const { color, sectorIds } = getSelection(state);
   return {
-    color: selectedColor,
-    sectors: selectedSectors,
-    sendMap,
-    sendList,
-    isColorMapMode: !selectedColor,
+    color,
+    sectors: sectorIds,
+    sendMap: getSendMap(state),
+    sendList: getSendList(state),
+    isColorMapMode: !color,
     colorMap: getColorMap(state),
-    signedInUser: !auth.isEmpty && auth,
+    signedInUser: getSignedInUser(state),
   };
 };
 

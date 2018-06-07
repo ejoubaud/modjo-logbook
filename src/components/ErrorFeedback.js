@@ -7,11 +7,12 @@ import { connect } from 'react-redux';
 import toPairs from 'lodash/fp/toPairs';
 
 import { hideError } from '../actions';
+import { getErrorStates } from '../selectors';
 
-const ErrorFeedback = ({ errorMsg, isErrorHidden, hideError, ignoreId }) => (
+const ErrorFeedback = ({ errorMsg, isHidden, hideError, ignoreId }) => (
   <Snackbar
     anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-    open={!isErrorHidden && !!errorMsg}
+    open={!isHidden && !!errorMsg}
     autoHideDuration={6000}
     onClose={hideError}
     ContentProps={{ 'aria-describedby': 'message-id' }}
@@ -49,11 +50,14 @@ const errorToMsg = (error) => {
   return error.toString();
 };
 
-const mapStateToProps = ({ ui: { error, errorIgnoreId, isErrorHidden } }) => ({
-  errorMsg: errorToMsg(error),
-  ignoreId: errorIgnoreId,
-  isErrorHidden,
-});
+const mapStateToProps = (state) => {
+  const { error, ignoreId, isHidden } = getErrorStates(state);
+  return {
+    errorMsg: errorToMsg(error),
+    ignoreId,
+    isHidden,
+  };
+};
 
 const mapDispatchToProps = { hideError };
 

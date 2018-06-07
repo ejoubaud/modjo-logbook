@@ -17,6 +17,7 @@ import { firebaseConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 import withStateHandlers from 'recompose/withStateHandlers';
 
+import { getSignedInUser, getIsAuthLoading } from '../selectors';
 import googleLogo from '../images/google.svg';
 
 const signIn = (login, toggleDrawer, showError) => () => {
@@ -143,9 +144,9 @@ const StatefulSignInButton = withStateHandlers({ isOpenDrawer: false }, {
   showError: () => msg => ({ errorMsg: msg }),
 })(StyledSignInButton);
 
-const mapStateToProps = ({ firebase: { auth } }) => ({
-  signedInUser: !auth.isEmpty && auth,
-  isLoading: !auth.isLoaded,
+const mapStateToProps = state => ({
+  signedInUser: getSignedInUser(state),
+  isLoading: getIsAuthLoading(state),
 });
 
 const ConnectedSignInButton = compose(

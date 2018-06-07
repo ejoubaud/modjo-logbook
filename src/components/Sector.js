@@ -5,7 +5,7 @@ import injectSheet from 'react-jss';
 import { toggleSector } from '../actions';
 import { getPalette } from '../colors';
 import { isSent as isSectorSent } from '../send-map';
-import { getColorMap } from '../selectors';
+import { getColorMap, getSelectedColor, getSelectedSectors, getSendMap } from '../selectors';
 
 // We want the whole sector area to trigger a hover/click, but we only want
 // the part on the wall to get highlighted, so we duplicate the path,
@@ -86,8 +86,9 @@ const styles = {
 const StyledSector = injectSheet(styles)(Sector);
 
 const mapStateToProps = (state, props) => {
-  const { selectedColor, sendMap } = state.ui;
-  const sectors = state.ui.selectedSectors;
+  const selectedColor = getSelectedColor(state);
+  const selectedSectorIds = getSelectedSectors(state);
+  const sendMap = getSendMap(state);
   // when no color is selected, we show the colors from the colorMap
   const isColorMapMode = !selectedColor;
   const color = isColorMapMode ? getColorMap(state)[props.id] : selectedColor;
@@ -95,8 +96,8 @@ const mapStateToProps = (state, props) => {
   const isSent = isColorMapMode
     ? !!color
     : isSectorSent(sendMap, selectedColor, props.id);
-  const isSelected = sectors.indexOf(props.id) >= 0;
-  const anySectorSelected = sectors.length > 0;
+  const isSelected = selectedSectorIds.indexOf(props.id) >= 0;
+  const anySectorSelected = selectedSectorIds.length > 0;
   const highlightFill = getHighlightFill({ isSelected, isSent, anySectorSelected, color });
   return {
     color,

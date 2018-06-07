@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import ColorButton from './ColorButton';
 import { toggleColor } from '../actions';
+import { getSelectedColor } from '../selectors';
 import colors from '../colors';
 
 const ColorSelector = ({ color, isSelected, toggleColor, ...otherProps }) => (
@@ -12,7 +13,7 @@ const ColorSelector = ({ color, isSelected, toggleColor, ...otherProps }) => (
 );
 
 const mapStateToProps = (state, props) => (
-  { isSelected: state.ui.selectedColor === props.color }
+  { isSelected: getSelectedColor(state) === props.color }
 );
 
 const mapDispatchToProps = { toggleColor };
