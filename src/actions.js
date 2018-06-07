@@ -10,6 +10,9 @@ export const HIDE_ERROR = 'HIDE_ERROR';
 export const TOGGLE_LOADING = 'TOGGLE_LOADING';
 export const ROLLBACK = 'ROLLBACK';
 
+// saga actions
+export const SUBMIT_SENDS = 'SUBMIT_SENDS';
+
 export const toggleColor = color => ({
   type: TOGGLE_COLOR,
   payload: { color },
@@ -69,4 +72,11 @@ export const hideError = ignoreId => ({
 export const toggleLoading = on => ({
   type: TOGGLE_LOADING,
   payload: { on },
+});
+
+// === SAGA ACTIONS ====
+
+export const submitSends = type => ({
+  type: SUBMIT_SENDS,
+  payload: { type },
 });

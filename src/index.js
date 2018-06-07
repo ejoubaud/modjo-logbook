@@ -5,6 +5,7 @@ import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { reactReduxFirebase, firebaseReducer } from 'react-redux-firebase';
 import { reduxFirestore, firestoreReducer } from 'redux-firestore';
+import createSagaMiddleware from 'redux-saga';
 
 import { showError, syncSendMap, syncSendList } from './actions';
 import * as sendMap from './send-map';
@@ -12,29 +13,38 @@ import * as sendList from './send-list';
 import firebase, { auth, firestore } from './firebase';
 import App from './components/App';
 import uiReducer from './ui-reducer';
+import rootSaga from './sagas';
 import { getSendMap, getSendList } from './selectors';
 import createStoreSyncer from './store-syncer';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
 
-// Setup redux store with firebase (and logger in dev)
+// Setup redux store with firebase, redux-saga (and logger in dev)
 const rootReducer = combineReducers({
   ui: uiReducer,
   firebase: firebaseReducer,
   firestore: firestoreReducer,
 });
 
-const middlewares = [];
+const sagaMiddleware = createSagaMiddleware();
+const middlewares = [
+  sagaMiddleware,
+];
+
 if (process.env.NODE_ENV === 'development') middlewares.push(require('redux-logger').logger); // eslint-disable-line global-require, import/newline-after-import
 
-const store = createStore(
+const createStoreWithFirebase = compose(
+  reactReduxFirebase(firebase, { userProfile: 'users', useFirestoreForProfile: true }),
+  reduxFirestore(firebase),
+)(createStore);
+
+const store = createStoreWithFirebase(
   rootReducer,
-  compose(
-    reactReduxFirebase(firebase, { userProfile: 'users', useFirestoreForProfile: true }),
-    reduxFirestore(firebase),
-    applyMiddleware(...middlewares),
-  ),
+  {},
+  applyMiddleware(...middlewares),
 );
+
+sagaMiddleware.run(rootSaga);
 
 // Setup global error listeners
 auth.getRedirectResult().catch(e => store.dispatch(showError(e)));

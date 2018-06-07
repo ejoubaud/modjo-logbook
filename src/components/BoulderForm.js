@@ -12,29 +12,12 @@ import some from 'lodash/fp/some';
 
 import SubmitButton from './SubmitButton';
 import ConfirmDialog from './ConfirmDialog';
-import { sendBoulders, clearSectors, showError, toggleLoading, rollback } from '../actions';
-import { createSends } from '../send';
-import * as sendMapUtils from '../send-map';
-import * as sendListUtils from '../send-list';
-import { colorKeys as allColors } from '../colors';
+import { submitSends, clearSectors, showError, toggleLoading, rollback } from '../actions';
 import { getColorMap, getSignedInUser, getSelection, getSendMap, getSendList } from '../selectors';
+import * as sendMapUtils from '../send-map';
+import { colorKeys as allColors } from '../colors';
 
 promiseFinally.shim();
-
-const saveSends = (db, { signedInUser: { uid }, sends, sendList }) => {
-  // TODO: Make this a transaction once https://github.com/prescottprue/redux-firestore/issues/108 is fixed
-  const sendMapRef = db.collection('sendMaps').doc(uid);
-  const sendListRef = db.collection('sendLists').doc(uid);
-
-  const sendMap = sendMapUtils.addAll(sendMapUtils.empty, sends);
-  const sendListDiff = sendListUtils.addAllDiff(sendList, sends);
-
-  return Promise.all([
-    ...sends.map(send => db.collection('sends').doc(send.id).set(send)),
-    sendMapRef.set(sendMap, { merge: true }),
-    sendListRef.set(sendListDiff, { merge: true }),
-  ]);
-};
 
 const saveClears = (db, { signedInUser: { uid }, sectors }) => {
   // TODO: Make this a transaction once https://github.com/prescottprue/redux-firestore/issues/108 is fixed
@@ -49,21 +32,6 @@ const saveClears = (db, { signedInUser: { uid }, sectors }) => {
   return Promise.all(
     clears.map(clear => db.collection('clears').add(clear)),
   ).then(() => sendMapRef.set(clearCommands, { merge: true }));
-};
-
-const sendSubmitter = props => type => () => {
-  const { firestore, signedInUser, color, sectors, sendMap, sendList, sendBoulders, toggleLoading, showError, rollback } = props;
-  if (signedInUser) {
-    const sends = createSends({ color, type, sectorIds: sectors, userId: signedInUser.uid });
-    sendBoulders(sends); // optimistic local state update
-    toggleLoading(true);
-    saveSends(firestore, { signedInUser, sends, sendList })
-      .catch(error => rollback({ sendMap, sendList, error })) // rollback on error
-      .finally(() => toggleLoading(false));
-  } else {
-    sendBoulders(color, sectors, { type });
-    showError("Vous n'êtes pas connecté, les changements ne seront pas sauvegardés.", { ignoreId: 'loggedOutChanges' });
-  }
 };
 
 const clearSubmitter = props => () => {
@@ -112,15 +80,12 @@ const validations = {
 };
 
 const BoulderForm = (props) => {
-  const { color, isColorMapMode } = props;
+  const { color, isColorMapMode, isConfirmOpen, toggleConfirm, submitSends } = props;
 
   const noSendReason = validations.sendButtons(props);
   const noClearReason = validations.clearButton(props);
 
   const doSubmitClear = clearSubmitter(props);
-  const doSubmitSends = sendSubmitter(props);
-
-  const { isConfirmOpen, toggleConfirm } = props;
 
   return (
     <form>
@@ -129,14 +94,14 @@ const BoulderForm = (props) => {
         Icon={DoneIcon}
         color={color}
         disabledReason={noSendReason}
-        doSubmit={doSubmitSends('redpoint')}
+        doSubmit={() => submitSends('redpoint')}
       />
       <SubmitButton
         label="Flash&eacute;"
         Icon={FlashOnIcon}
         color={color}
         disabledReason={noSendReason}
-        doSubmit={doSubmitSends('flash')}
+        doSubmit={() => submitSends('flash')}
       />
       <SubmitButton
         label="D&eacute;mont&eacute;"
@@ -170,7 +135,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = { sendBoulders, clearSectors, showError, rollback, toggleLoading };
+const mapDispatchToProps = { submitSends, clearSectors, showError, rollback, toggleLoading };
 
 export default compose(
   withState('isConfirmOpen', 'toggleConfirm', false),
