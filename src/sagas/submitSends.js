@@ -1,11 +1,11 @@
-import { all, call, put, select, takeEvery } from 'redux-saga/effects';
+import { all, call, put, select } from 'redux-saga/effects';
 
-import { SUBMIT_SENDS, sendBoulders, toggleLoading, showError, rollback } from './actions';
-import { getSendSubmitStates } from './selectors';
-import { firestore as db } from './firebase';
-import { createSends } from './send';
-import * as sendMapUtils from './send-map';
-import * as sendListUtils from './send-list';
+import { sendBoulders, toggleLoading, showError, rollback } from '../actions';
+import { getSendSubmitStates } from '../selectors';
+import { firestore as db } from '../firebase';
+import { createSends } from '../send';
+import * as sendMapUtils from '../send-map';
+import * as sendListUtils from '../send-list';
 
 const docRef = (collection, docId) => db.collection(collection).doc(docId);
 
@@ -38,10 +38,4 @@ function* submitSends({ payload: { type } }) {
   }
 }
 
-function* rootSaga() {
-  yield all([
-    takeEvery(SUBMIT_SENDS, submitSends),
-  ]);
-}
-
-export default rootSaga;
+export default submitSends;
