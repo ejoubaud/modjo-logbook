@@ -4,8 +4,8 @@ import { sendBoulders, toggleLoading, showError, rollback } from '../actions';
 import { getSendSubmitStates } from '../selectors';
 import { firestore as db } from '../firebase';
 import { createSends } from '../send';
-import * as sendMapUtils from '../send-map';
-import * as sendListUtils from '../send-list';
+import * as sendMapUtils from '../sendMap';
+import * as sendListUtils from '../sendList';
 
 const docRef = (collection, docId) => db.collection(collection).doc(docId);
 

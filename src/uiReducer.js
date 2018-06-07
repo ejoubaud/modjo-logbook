@@ -1,8 +1,8 @@
 import xor from 'lodash/fp/xor';
 
 import * as actions from './actions';
-import * as sendMap from './send-map';
-import * as sendList from './send-list';
+import * as sendMap from './sendMap';
+import * as sendList from './sendList';
 
 const reducers = {
   [actions.TOGGLE_COLOR]: (state, { payload }) => {

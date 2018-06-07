@@ -14,7 +14,7 @@ import SubmitButton from './SubmitButton';
 import ConfirmDialog from './ConfirmDialog';
 import { submitSends, clearSectors, showError, toggleLoading, rollback } from '../actions';
 import { getColorMap, getSignedInUser, getSelection, getSendMap, getSendList } from '../selectors';
-import * as sendMapUtils from '../send-map';
+import * as sendMapUtils from '../sendMap';
 import { colorKeys as allColors } from '../colors';
 
 promiseFinally.shim();

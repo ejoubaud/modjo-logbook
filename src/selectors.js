@@ -1,7 +1,7 @@
 // Represents the highest sent boulder color for each sector
 import { createSelector } from 'reselect';
-import colorMap from './color-map';
-import { getPage } from './send-list';
+import colorMap from './colorMap';
+import { getPage } from './sendList';
 
 // Firebase state getters
 

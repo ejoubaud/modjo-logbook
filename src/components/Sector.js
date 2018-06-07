@@ -4,7 +4,7 @@ import injectSheet from 'react-jss';
 
 import { toggleSector } from '../actions';
 import { getPalette } from '../colors';
-import { isSent as isSectorSent } from '../send-map';
+import { isSent as isSectorSent } from '../sendMap';
 import { getColorMap, getSelectedColor, getSelectedSectors, getSendMap } from '../selectors';
 
 // We want the whole sector area to trigger a hover/click, but we only want

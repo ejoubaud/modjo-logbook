@@ -8,14 +8,14 @@ import { reduxFirestore, firestoreReducer } from 'redux-firestore';
 import createSagaMiddleware from 'redux-saga';
 
 import { showError, syncSendMap, syncSendList } from './actions';
-import * as sendMap from './send-map';
-import * as sendList from './send-list';
+import * as sendMap from './sendMap';
+import * as sendList from './sendList';
 import firebase, { auth, firestore } from './firebase';
 import App from './components/App';
-import uiReducer from './ui-reducer';
+import uiReducer from './uiReducer';
 import rootSaga from './sagas';
 import { getSendMap, getSendList } from './selectors';
-import createStoreSyncer from './store-syncer';
+import createStoreSyncer from './storeSyncer';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
 
