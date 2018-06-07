@@ -12,41 +12,11 @@ import some from 'lodash/fp/some';
 
 import SubmitButton from './SubmitButton';
 import ConfirmDialog from './ConfirmDialog';
-import { submitSends, clearSectors, showError, toggleLoading, rollback } from '../actions';
+import { submitSends, submitClears } from '../actions';
 import { getColorMap, getSignedInUser, getSelection, getSendMap, getSendList } from '../selectors';
 import * as sendMapUtils from '../sendMap';
-import { colorKeys as allColors } from '../colors';
 
 promiseFinally.shim();
-
-const saveClears = (db, { signedInUser: { uid }, sectors }) => {
-  // TODO: Make this a transaction once https://github.com/prescottprue/redux-firestore/issues/108 is fixed
-  const sendMapRef = db.collection('sendMaps').doc(uid);
-  const clears = sectors.map(sectorId => (
-    { userId: uid, sectorId, createdAt: new Date() }
-  ));
-  const clearCommands = sendMapUtils.populateWith(
-    sendMapUtils.empty, allColors, sectors, db.FieldValue.delete(),
-  );
-
-  return Promise.all(
-    clears.map(clear => db.collection('clears').add(clear)),
-  ).then(() => sendMapRef.set(clearCommands, { merge: true }));
-};
-
-const clearSubmitter = props => () => {
-  const { firestore, signedInUser, sectors, sendMap, clearSectors, toggleLoading, showError, rollback } = props;
-  if (signedInUser) {
-    clearSectors(sectors); // optimistic local state update
-    toggleLoading(true);
-    saveClears(firestore, { signedInUser, sectors })
-      .catch(error => rollback({ sendMap, error })) // rollback on error
-      .finally(() => toggleLoading(false));
-  } else {
-    clearSectors(sectors);
-    showError("Vous n'êtes pas connecté, les changements ne seront pas sauvegardés.", { ignoreId: 'loggedOutChanges' });
-  }
-};
 
 const validations = {
   sendButtons({ color, sectors, sendMap }) {
@@ -80,12 +50,10 @@ const validations = {
 };
 
 const BoulderForm = (props) => {
-  const { color, isColorMapMode, isConfirmOpen, toggleConfirm, submitSends } = props;
+  const { color, isColorMapMode, isConfirmOpen, toggleConfirm, submitSends, submitClears } = props;
 
   const noSendReason = validations.sendButtons(props);
   const noClearReason = validations.clearButton(props);
-
-  const doSubmitClear = clearSubmitter(props);
 
   return (
     <form>
@@ -108,13 +76,14 @@ const BoulderForm = (props) => {
         Icon={RefreshIcon}
         color={color}
         disabledReason={noClearReason}
-        doSubmit={() => (isColorMapMode ? doSubmitClear() : toggleConfirm(true))}
+        doSubmit={() => (isColorMapMode ? submitClears() : toggleConfirm(true))}
         defaultTip="Indiquer qu'un bloc a été démonté ou réouvert depuis la dernière fois où vous l'avez enchaîné. Vous pourrez ensuite noter un passage du nouveau bloc."
       />
+
       <ConfirmDialog
         isOpen={isConfirmOpen}
         toggleConfirm={toggleConfirm}
-        onConfirm={doSubmitClear}
+        onConfirm={submitClears}
       />
     </form>
   );
@@ -135,7 +104,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = { submitSends, clearSectors, showError, rollback, toggleLoading };
+const mapDispatchToProps = { submitSends, submitClears };
 
 export default compose(
   withState('isConfirmOpen', 'toggleConfirm', false),

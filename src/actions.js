@@ -12,6 +12,7 @@ export const ROLLBACK = 'ROLLBACK';
 
 // saga actions
 export const SUBMIT_SENDS = 'SUBMIT_SENDS';
+export const SUBMIT_CLEARS = 'SUBMIT_CLEARS';
 
 export const toggleColor = color => ({
   type: TOGGLE_COLOR,
@@ -79,4 +80,8 @@ export const toggleLoading = on => ({
 export const submitSends = type => ({
   type: SUBMIT_SENDS,
   payload: { type },
+});
+
+export const submitClears = () => ({
+  type: SUBMIT_CLEARS,
 });
