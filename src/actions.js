@@ -1,35 +1,33 @@
-export const types = {
-  toggleColor: 'TOGGLE_COLOR',
-  toggleSector: 'TOGGLE_SECTOR',
-  sendBoulders: 'SEND_BOULDERS',
-  clearBoulders: 'CLEAR_BOULDERS', // not used anymore
-  clearSectors: 'CLEAR_SECTORS',
-  syncSendMap: 'SYNC_SEND_MAP',
-  syncSendList: 'SYNC_SEND_LIST',
-  showError: 'SHOW_ERROR',
-  hideError: 'HIDE_ERROR',
-  toggleLoading: 'TOGGLE_LOADING',
-  rollback: 'ROLLBACK',
-};
+export const TOGGLE_COLOR = 'TOGGLE_COLOR';
+export const TOGGLE_SECTOR = 'TOGGLE_SECTOR';
+export const SEND_BOULDERS = 'SEND_BOULDERS';
+export const CLEAR_BOULDERS = 'CLEAR_BOULDERS'; // not used anymore
+export const CLEAR_SECTORS = 'CLEAR_SECTORS';
+export const SYNC_SEND_MAP = 'SYNC_SEND_MAP';
+export const SYNC_SEND_LIST = 'SYNC_SEND_LIST';
+export const SHOW_ERROR = 'SHOW_ERROR';
+export const HIDE_ERROR = 'HIDE_ERROR';
+export const TOGGLE_LOADING = 'TOGGLE_LOADING';
+export const ROLLBACK = 'ROLLBACK';
 
 export const toggleColor = color => ({
-  type: types.toggleColor,
+  type: TOGGLE_COLOR,
   payload: { color },
 });
 
 export const toggleSector = sectorId => ({
-  type: types.toggleSector,
+  type: TOGGLE_SECTOR,
   payload: { sectorId },
 });
 
 export const sendBoulders = sends => ({
-  type: types.sendBoulders,
+  type: SEND_BOULDERS,
   payload: { sends },
 });
 
 // not used anymore (we clear sectors now, not just boulders)
 export const clearBoulders = (color, sectors) => ({
-  type: types.clearBoulders,
+  type: CLEAR_BOULDERS,
   payload: {
     color,
     sectors,
@@ -37,38 +35,38 @@ export const clearBoulders = (color, sectors) => ({
 });
 
 export const clearSectors = sectors => ({
-  type: types.clearSectors,
+  type: CLEAR_SECTORS,
   payload: { sectors },
 });
 
 export const syncSendMap = sendMap => ({
-  type: types.syncSendMap,
+  type: SYNC_SEND_MAP,
   payload: { sendMap },
 });
 
 export const syncSendList = sendList => ({
-  type: types.syncSendList,
+  type: SYNC_SEND_LIST,
   payload: { sendList },
 });
 
 export const rollback = ({ sendMap, sendList, error }) => ({
-  type: types.rollback,
+  type: ROLLBACK,
   payload: { previousSendMap: sendMap, previousSendList: sendList, error },
 });
 
 // ignoreId is optional
 export const showError = (error, ignoreId) => ({
-  type: types.showError,
+  type: SHOW_ERROR,
   payload: { error, ignoreId },
 });
 
 // ignoreId is optional, if passed this error won't be shown again
 export const hideError = ignoreId => ({
-  type: types.hideError,
+  type: HIDE_ERROR,
   payload: { ignoreId },
 });
 
 export const toggleLoading = on => ({
-  type: types.toggleLoading,
+  type: TOGGLE_LOADING,
   payload: { on },
 });

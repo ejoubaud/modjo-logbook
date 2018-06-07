@@ -1,11 +1,11 @@
 import xor from 'lodash/fp/xor';
 
-import { types } from './actions';
+import * as actions from './actions';
 import * as sendMap from './send-map';
 import * as sendList from './send-list';
 
 const reducers = {
-  [types.toggleColor]: (state, { payload }) => {
+  [actions.TOGGLE_COLOR]: (state, { payload }) => {
     const newColor = (state.selectedColor === payload.color ? null : payload.color);
     return {
       ...state,
@@ -13,12 +13,12 @@ const reducers = {
     };
   },
 
-  [types.toggleSector]: (state, { payload }) => ({
+  [actions.TOGGLE_SECTOR]: (state, { payload }) => ({
     ...state,
     selectedSectors: xor(state.selectedSectors, [payload.sectorId]),
   }),
 
-  [types.sendBoulders]: (state, { payload }) => ({
+  [actions.SEND_BOULDERS]: (state, { payload }) => ({
     ...state,
     sendMap: sendMap.addAll(state.sendMap, payload.sends),
     sendList: sendList.addAll(state.sendList, payload.sends),
@@ -26,30 +26,30 @@ const reducers = {
   }),
 
   // not used anymore (we clear sectors now, not just boulders)
-  [types.clearBoulders]: (state, { payload }) => ({
+  [actions.CLEAR_BOULDERS]: (state, { payload }) => ({
     ...state,
     sendMap: sendMap.removeSectorsInColor(state.sendMap, payload.color, payload.sectors),
     selectedSectors: [],
   }),
 
-  [types.clearSectors]: (state, { payload }) => ({
+  [actions.CLEAR_SECTORS]: (state, { payload }) => ({
     ...state,
     sendMap: sendMap.removeSectors(state.sendMap, payload.sectors),
     selectedSectors: [],
   }),
 
-  [types.syncSendMap]: (state, { payload }) => ({
+  [actions.SYNC_SEND_MAP]: (state, { payload }) => ({
     ...state,
     sendMap: payload.sendMap,
     selectedSectors: [],
   }),
 
-  [types.syncSendList]: (state, { payload }) => ({
+  [actions.SYNC_SEND_LIST]: (state, { payload }) => ({
     ...state,
     sendList: payload.sendList,
   }),
 
-  [types.rollback]: (state, { payload }) => ({
+  [actions.ROLLBACK]: (state, { payload }) => ({
     ...state,
     sendMap: payload.previousSendMap,
     sendList: payload.previousSendList || state.previousSendList,
@@ -58,7 +58,7 @@ const reducers = {
     selectedSectors: [],
   }),
 
-  [types.showError]: (state, { payload }) => {
+  [actions.SHOW_ERROR]: (state, { payload }) => {
     if (state.errorIgnoreList.indexOf(payload.ignoreId) >= 0) return state;
     return {
       ...state,
@@ -68,14 +68,14 @@ const reducers = {
     };
   },
 
-  [types.hideError]: (state, { payload }) => ({
+  [actions.HIDE_ERROR]: (state, { payload }) => ({
     ...state,
     isErrorHidden: true,
     errorIgnoreList: state.errorIgnoreList.concat(payload.ignoreId || []),
     errorIgnoreId: null,
   }),
 
-  [types.toggleLoading]: (state, { payload }) => ({
+  [actions.TOGGLE_LOADING]: (state, { payload }) => ({
     ...state,
     isLoading: payload.on,
   }),
