@@ -15,23 +15,26 @@ function* submitSends({ payload: { type } }) {
 
   if (signedInUser) {
     yield put(sendBoulders(sends));
-    yield put(toggleLoading(true));
-
-    const sendMapDiff = sendMapUtils.addAll(sendMapUtils.empty, sends);
-    const sendListDiff = sendListUtils.addAllDiff(sendList, sends);
-
-    const { uid } = signedInUser;
-    // TODO: Make this a transaction once https://github.com/prescottprue/redux-firestore/issues/108 is fixed
     try {
-      yield all([
-        ...sends.map(send => call([docRef('sends', send.id), 'set'], send)),
-        call([docRef('sendMaps', uid), 'set'], sendMapDiff, { merge: true }),
-        call([docRef('sendLists', uid), 'set'], sendListDiff, { merge: true }),
-      ]);
-    } catch (error) {
-      yield put(rollback({ sendMap, sendList, error }));
+      yield put(toggleLoading(true));
+
+      const sendMapDiff = sendMapUtils.addAll(sendMapUtils.empty, sends);
+      const sendListDiff = sendListUtils.addAllDiff(sendList, sends);
+
+      const { uid } = signedInUser;
+      // TODO: Make this a transaction once https://github.com/prescottprue/redux-firestore/issues/108 is fixed
+      try {
+        yield all([
+          ...sends.map(send => call([docRef('sends', send.id), 'set'], send)),
+          call([docRef('sendMaps', uid), 'set'], sendMapDiff, { merge: true }),
+          call([docRef('sendLists', uid), 'set'], sendListDiff, { merge: true }),
+        ]);
+      } catch (error) {
+        yield put(rollback({ sendMap, sendList, error }));
+      }
+    } finally {
+      yield put(toggleLoading(false));
     }
-    yield put(toggleLoading(false));
   } else {
     yield put(sendBoulders(sends));
     yield put(showError("Vous n'êtes pas connecté, les changements ne seront pas sauvegardés.", { ignoreId: 'loggedOutChanges' }));

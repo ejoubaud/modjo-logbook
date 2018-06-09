@@ -13,26 +13,29 @@ function* submitClears() {
 
   if (signedInUser) {
     yield put(clearSectors(sectorIds));
-    yield put(toggleLoading(true));
-
-    const { uid } = signedInUser;
-    const sendMapDiff = sendMapUtils.populateWith(
-      sendMapUtils.empty, allColors, sectorIds, db.FieldValue.delete(),
-    );
-    const clears = sectorIds.map(sectorId => (
-      { userId: uid, sectorId, createdAt: new Date() }
-    ));
-
-    // TODO: Make this a transaction once https://github.com/prescottprue/redux-firestore/issues/108 is fixed
     try {
-      yield all([
-        ...clears.map(clear => call([db.collection('clears'), 'add'], clear)),
-        call([docRef('sendMaps', uid), 'set'], sendMapDiff, { merge: true }),
-      ]);
-    } catch (error) {
-      yield put(rollback({ sendMap, error }));
+      yield put(toggleLoading(true));
+
+      const { uid } = signedInUser;
+      const sendMapDiff = sendMapUtils.populateWith(
+        sendMapUtils.empty, allColors, sectorIds, db.FieldValue.delete(),
+      );
+      const clears = sectorIds.map(sectorId => (
+        { userId: uid, sectorId, createdAt: new Date() }
+      ));
+
+      // TODO: Make this a transaction once https://github.com/prescottprue/redux-firestore/issues/108 is fixed
+      try {
+        yield all([
+          ...clears.map(clear => call([db.collection('clears'), 'add'], clear)),
+          call([docRef('sendMaps', uid), 'set'], sendMapDiff, { merge: true }),
+        ]);
+      } catch (error) {
+        yield put(rollback({ sendMap, error }));
+      }
+    } finally {
+      yield put(toggleLoading(false));
     }
-    yield put(toggleLoading(false));
   } else {
     yield put(clearSectors(sectorIds));
     yield put(showError("Vous n'êtes pas connecté, les changements ne seront pas sauvegardés.", { ignoreId: 'loggedOutChanges' }));
