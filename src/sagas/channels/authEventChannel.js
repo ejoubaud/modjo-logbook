@@ -1,9 +1,9 @@
 import { eventChannel } from 'redux-saga';
-import { takeEvery, put, take, call, fork, all } from 'redux-saga/effects';
+import { takeEvery, put, take, call, apply, fork, all } from 'redux-saga/effects';
 
 import createSendMapChannel from './sendMapEventChannel';
 import createSendListChannel from './sendListEventChannel';
-import { toggleLoading } from '../../actions';
+import { toggleLoading, showError } from '../../actions';
 import { auth } from '../../firebase';
 
 export const authEventChannel = () => (
@@ -23,21 +23,24 @@ function* takeOne(channel, handler) {
   yield call(handler, action);
 }
 
+function* stopAll(subChannels) {
+  yield all(subChannels.map(c => call(c.stop)));
+}
+
 function* startWatching(channels) {
   // Show loading progress during first load
   yield put(toggleLoading(true));
   try {
     yield all(channels.map(c => call(takeOne, c.channel, c.handleEvent)));
+  } catch (error) {
+    yield put(showError('Le chargement des blocs a échoué, réessayer'));
+    yield apply(auth, 'signOut');
   } finally {
     yield put(toggleLoading(false));
   }
 
   // Then catch subsequent updates of snapshots as they happen
   yield all(channels.map(c => takeEvery(c.channel, c.handleEvent)));
-}
-
-function* stopAll(subChannels) {
-  yield all(subChannels.map(c => call(c.stop)));
 }
 
 function* createOrReplaceSubChannels(user, subChannels) {
