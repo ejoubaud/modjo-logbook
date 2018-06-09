@@ -59,9 +59,9 @@ export const rollback = ({ sendMap, sendList, error }) => ({
 });
 
 // ignoreId is optional
-export const showError = (error, ignoreId) => ({
+export const showError = (error, options) => ({
   type: SHOW_ERROR,
-  payload: { error, ignoreId },
+  payload: { error, ignoreId: options && options.ignoreId },
 });
 
 // ignoreId is optional, if passed this error won't be shown again

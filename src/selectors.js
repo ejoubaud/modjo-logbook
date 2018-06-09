@@ -24,8 +24,8 @@ export const getSelection = state => ({
 });
 export const getErrorStates = ({ ui: { error, errorIgnoreId, isErrorHidden } }) => ({
   error,
-  errorIgnoreId,
-  isErrorHidden,
+  ignoreId: errorIgnoreId,
+  isHidden: isErrorHidden,
 });
 export const getSendSubmitStates = state => ({
   color: getSelectedColor(state),
