@@ -4,6 +4,7 @@ import SignInButton from './SignInButton';
 import ColorSelector from './ColorSelector';
 import Plan from './Plan';
 import BoulderForm from './BoulderForm';
+import SendListTable from './SendListTable';
 import ErrorFeedback from './ErrorFeedback';
 import LoadingFeedback from './LoadingFeedback';
 import logo from '../images/logo.png';
@@ -24,6 +25,7 @@ const App = () => (
       </div>
       <Plan />
       <BoulderForm />
+      <SendListTable />
     </div>
     <ErrorFeedback />
     <LoadingFeedback />

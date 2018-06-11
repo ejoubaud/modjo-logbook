@@ -58,6 +58,14 @@ const reducers = {
     selectedSectors: [],
   }),
 
+  [actions.CHANGE_SEND_LIST_PAGE]: (state, { payload }) => {
+    const page = payload.page || 1;
+    return {
+      ...state,
+      sendListPage: (page >= 1 ? page : 1),
+    };
+  },
+
   [actions.SHOW_ERROR]: (state, { payload }) => {
     if (state.errorIgnoreList.indexOf(payload.ignoreId) >= 0) return state;
     return {
@@ -86,6 +94,7 @@ const defaultState = {
   selectedSectors: [],
   sendMap: sendMap.empty,
   sendList: sendList.empty,
+  sendListPage: 1,
   error: null,
   isErrorHidden: null,
   errorIgnoreList: [],

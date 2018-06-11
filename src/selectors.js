@@ -1,7 +1,7 @@
 // Represents the highest sent boulder color for each sector
 import { createSelector } from 'reselect';
 import colorMap from './colorMap';
-import { getPage } from './sendList';
+import { getPage, size } from './sendList';
 
 // Firebase state getters
 
@@ -17,6 +17,9 @@ export const getSelectedSectors = uiStateGetter('selectedSectors');
 export const getSendMap = uiStateGetter('sendMap');
 export const getSendList = uiStateGetter('sendList');
 export const getIsLoading = uiStateGetter('isLoading');
+export const getSendListPage = uiStateGetter('sendListPage');
+
+export const getSendListSize = state => size(getSendList(state));
 
 export const getSelection = state => ({
   color: getSelectedColor(state),
@@ -48,9 +51,10 @@ export const getColorMap = createSelector(
   (isColorMapMode, sendMap) => (isColorMapMode ? colorMap(sendMap) : null),
 );
 
-export const getUserSendPager = createSelector(
+export const getPaginatedSendList = createSelector(
   getSendList,
   getSelectedColor,
   getSelectedSectors,
-  (sendList, color, sectorIds) => getPage(sendList, { colors: color, sectorIds }),
+  getSendListPage,
+  (sendList, color, sectorIds, page) => getPage(sendList, { colors: color, sectorIds, page }),
 );

@@ -38,11 +38,20 @@ import { generateSendId } from './send';
 
 // home-made obj-based Set with wide browser support
 const toSet = compose(
-  toPairs,
+  fromPairs,
   map(v => [v, true]),
 );
 
+const id = (v) => v;
+
+const toDate = (val) => {
+  if (!val) return null;
+  if (val instanceof Date) return val;
+  if (typeof val.toDate === 'function') return val.toDate();
+  return null;
+};
 const compressColor = color => colors[color].abbrev;
+
 const compressType = type => sendTypes[type].abbrev;
 
 const sortByAbbrev = compose(
@@ -56,11 +65,11 @@ const typesByAbbrev = sortByAbbrev(sendTypes);
 const uncompressColor = abbrev => colorsByAbbrev[abbrev];
 const uncompressType = abbrev => typesByAbbrev[abbrev];
 
-const compressSend = ({ color, sectorId, type }) => (
-  { c: compressColor(color), s: sectorId, t: compressType(type) }
+const compressSend = ({ color, sectorId, type, createdAt }) => (
+  { c: compressColor(color), s: sectorId, t: compressType(type), d: createdAt }
 );
-const uncompressSend = ({ c, s, t }) => (
-  { color: uncompressColor(c), sectorId: s, type: uncompressType(t) }
+const uncompressSend = ({ c, s, t, d }, id) => (
+  { id, color: uncompressColor(c), sectorId: s, type: uncompressType(t), createdAt: toDate(d) }
 );
 
 // set unused fields to null to avoid Firestore failure when
@@ -123,10 +132,11 @@ export const applyAddDiff = (source, diff) => ({
   l: { ...source.l, ...diff.l },
 });
 
-const makePageFilter = ({ abbrev, value }) => {
-  if (!value) return null;
-  const values = toSet([].concat(value));
-  return elem => values[elem[abbrev]];
+const makePageFilter = ({ abbrev, value, compressValue = id }) => {
+  if (_isEmpty(value)) return null;
+  const compressedValuesArray = map(compressValue, [].concat(value));
+  const valuesSet = toSet(compressedValuesArray);
+  return elem => valuesSet[elem[abbrev]];
 };
 
 const combinePageFilters = (definitions) => {
@@ -137,22 +147,40 @@ const combinePageFilters = (definitions) => {
   return elem => every(filter => filter(elem), filters);
 };
 
-export const getPage = (sendList, { limit = 10, colors = null, sectorIds = null }) => {
-  if (!(sendList && !sendList.h)) return [];
-  const list = sendList.h;
-  const res = [];
+export const size = sendList => sendList['#'];
+
+export const getPage = (sendList, { page = 1, pageSize = 10, colors = null, sectorIds = null }) => {
+  if (!(sendList && sendList.h)) return { sends: [], totalSize: 0, page, pageSize };
+  const list = sendList.l;
+  const sends = [];
   let nextId = sendList.h;
-  const filter = combinePageFilters([
-    { abbrev: 'c', value: colors },
-    { abbrev: 't', value: sectorIds },
+  const matchesfilters = combinePageFilters([
+    { abbrev: 'c', value: colors, compressValue: compressColor },
+    { abbrev: 's', value: sectorIds },
   ]);
-  while (nextId && res.length < limit) {
+  let count = 0;
+  let skip = (page - 1) * pageSize;
+  // if filters passed, we need to iterate over the whole thing to get total count after filtering
+  const keepCounting = !(_isEmpty(colors) && _isEmpty(sectorIds));
+  while (nextId && (keepCounting || sends.length < pageSize)) {
     const node = list[nextId];
     const compressedSend = node.e;
-    if (filter(compressedSend)) res.push(uncompressSend(compressedSend));
+    if (matchesfilters(compressedSend)) {
+      count += 1;
+      if (skip > 0) {
+        skip -= 1;
+      } else if (sends.length < pageSize) {
+        sends.push(uncompressSend(compressedSend, nextId));
+      }
+    }
     nextId = node.n;
   }
-  return res;
+  return {
+    sends,
+    page,
+    pageSize,
+    totalSize: keepCounting ? count : sendList['#'],
+  };
 };
 
 // checks for race-condition-induced inconsistencies,

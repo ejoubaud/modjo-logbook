@@ -4,9 +4,9 @@ import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 
 import { getMuiTheme } from '../colors';
 
-const ColorButton = ({ color, children, classes, ...otherProps }) => (
+const ColorButton = ({ color, children, classes, variant = 'raised', ...otherProps }) => (
   <MuiThemeProvider theme={getMuiTheme(color)}>
-    <Button variant="raised" color="primary" className={classes.root} {...otherProps}>
+    <Button variant={variant} color="primary" className={classes.root} {...otherProps}>
       {children}
     </Button>
   </MuiThemeProvider>

@@ -5,10 +5,11 @@ export const CLEAR_BOULDERS = 'CLEAR_BOULDERS'; // not used anymore
 export const CLEAR_SECTORS = 'CLEAR_SECTORS';
 export const SYNC_SEND_MAP = 'SYNC_SEND_MAP';
 export const SYNC_SEND_LIST = 'SYNC_SEND_LIST';
+export const ROLLBACK = 'ROLLBACK';
+export const CHANGE_SEND_LIST_PAGE = 'CHANGE_SEND_LIST_PAGE';
 export const SHOW_ERROR = 'SHOW_ERROR';
 export const HIDE_ERROR = 'HIDE_ERROR';
 export const TOGGLE_LOADING = 'TOGGLE_LOADING';
-export const ROLLBACK = 'ROLLBACK';
 
 // saga actions
 export const SUBMIT_SENDS = 'SUBMIT_SENDS';
@@ -56,6 +57,11 @@ export const syncSendList = sendList => ({
 export const rollback = ({ sendMap, sendList, error }) => ({
   type: ROLLBACK,
   payload: { previousSendMap: sendMap, previousSendList: sendList, error },
+});
+
+export const changeSendListPage = page => ({
+  type: CHANGE_SEND_LIST_PAGE,
+  payload: { page },
 });
 
 // ignoreId is optional

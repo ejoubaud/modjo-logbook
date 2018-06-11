@@ -3,7 +3,7 @@
 import map from 'lodash/fp/map';
 import nanoid from 'nanoid';
 
-export const generateSendId = () => nanoid(9);
+export const generateSendId = () => nanoid(10);
 
 export const createSend = ({ color, sectorId, type, createdAt, userId, id }) => ({
   id: id || generateSendId(),
