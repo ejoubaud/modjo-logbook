@@ -149,37 +149,43 @@ const combinePageFilters = (definitions) => {
 
 export const size = sendList => sendList['#'];
 
+// low-level iterator on the chained list, returns an array of sends
+const select = (sendList, filterCb, { until = () => false }) => {
+  if (!sendList) return [];
+  const { l, h } = sendList;
+  if (!(l || h)) return [];
+  let id = h;
+  const res = [];
+  while (id) {
+    const node = l[id];
+    const compressedSend = node.e;
+    if (filterCb(compressedSend, id, node)) res.push([compressedSend, id, node]);
+    if (until(res)) break;
+    id = node.n;
+  }
+  return res;
+};
+
 export const getPage = (sendList, { page = 1, pageSize = 10, colors = null, sectorIds = null }) => {
-  if (!(sendList && sendList.h)) return { sends: [], totalSize: 0, page, pageSize };
-  const list = sendList.l;
-  const sends = [];
-  let nextId = sendList.h;
-  const matchesfilters = combinePageFilters([
+  const matchesFilters = combinePageFilters([
     { abbrev: 'c', value: colors, compressValue: compressColor },
     { abbrev: 's', value: sectorIds },
   ]);
-  let count = 0;
-  let skip = (page - 1) * pageSize;
-  // if filters passed, we need to iterate over the whole thing to get total count after filtering
+  const offset = (page - 1) * pageSize;
+  const limit = offset + pageSize;
+  // if filtering occurs, must iterate over the whole list to count the total match count
+  // if there's no filter, we can just use the cached length of the length
   const keepCounting = !(_isEmpty(colors) && _isEmpty(sectorIds));
-  while (nextId && (keepCounting || sends.length < pageSize)) {
-    const node = list[nextId];
-    const compressedSend = node.e;
-    if (matchesfilters(compressedSend)) {
-      count += 1;
-      if (skip > 0) {
-        skip -= 1;
-      } else if (sends.length < pageSize) {
-        sends.push(uncompressSend(compressedSend, nextId));
-      }
-    }
-    nextId = node.n;
-  }
+  const until = keepCounting ? (() => false) : (res => res.length >= limit);
+  const matches = select(sendList, matchesFilters, { until });
+  const sends = matches
+    .slice(offset, limit)
+    .map(([compressed, id]) => uncompressSend(compressed, id));
   return {
     sends,
     page,
     pageSize,
-    totalSize: keepCounting ? count : sendList['#'],
+    totalSize: keepCounting ? matches.length : sendList['#'],
   };
 };
 
