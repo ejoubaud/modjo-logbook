@@ -5,4 +5,7 @@ export default {
   flash: {
     abbrev: 'f',
   },
+  clear: {
+    abbrev: 'c',
+  },
 };

@@ -11,9 +11,9 @@ const docRef = (collection, docId) => db.collection(collection).doc(docId);
 
 function* submitSends({ payload: { type } }) {
   const { color, sectorIds, sendMap, sendList, signedInUser } = yield select(getSendSubmitStates);
-  const sends = createSends({ color, type, sectorIds, userId: signedInUser.uid });
 
   if (signedInUser) {
+    const sends = createSends({ color, type, sectorIds, userId: signedInUser.uid });
     yield put(sendBoulders(sends));
     try {
       yield put(toggleLoading(true));
@@ -36,6 +36,7 @@ function* submitSends({ payload: { type } }) {
       yield put(toggleLoading(false));
     }
   } else {
+    const sends = createSends({ color, type, sectorIds });
     yield put(sendBoulders(sends));
     yield put(showError("Vous n'êtes pas connecté, les changements ne seront pas sauvegardés.", { ignoreId: 'loggedOutChanges' }));
   }

@@ -12,6 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import FlashIcon from '@material-ui/icons/FlashOn';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import formatDistance from 'date-fns/distance_in_words';
 import differenceInDays from 'date-fns/difference_in_days';
 import format from 'date-fns/format';
@@ -22,16 +23,19 @@ import { changeSendListPage, toggleColor, toggleSector } from '../actions';
 import colors from '../colors';
 import ColorButton from './ColorButton';
 
-const formatColor = (colorKey, toggleColor) => (
-  <ColorButton
-    variant="flat"
-    size="small"
-    color={colorKey}
-    onClick={() => toggleColor(colorKey)}
-  >
-    {colors[colorKey].label}
-  </ColorButton>
-);
+const formatColor = (colorKey, toggleColor) => {
+  if (!colorKey) return null;
+  return (
+    <ColorButton
+      variant="flat"
+      size="small"
+      color={colorKey}
+      onClick={() => toggleColor(colorKey)}
+    >
+      {colors[colorKey].label}
+    </ColorButton>
+  );
+};
 
 const formatSector = (sectorId, classes, toggleSector) => (
   <IconButton
@@ -115,6 +119,13 @@ const styles = {
 
   typeIcon: {
     verticalAlign: 'middle',
+  },
+
+  clearIcon: {
+    verticalAlign: 'middle',
+    // to align with the color buttons
+    width: '64px',
+    marginRight: '4px',
   },
 };
 

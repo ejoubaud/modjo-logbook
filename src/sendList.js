@@ -66,10 +66,18 @@ const uncompressColor = abbrev => colorsByAbbrev[abbrev];
 const uncompressType = abbrev => typesByAbbrev[abbrev];
 
 const compressSend = ({ color, sectorId, type, createdAt }) => (
-  { c: compressColor(color), s: sectorId, t: compressType(type), d: createdAt }
+  Object.assign(
+    {},
+    color && { c: compressColor(color) },
+    { s: sectorId, t: compressType(type), d: createdAt },
+  )
 );
 const uncompressSend = ({ c, s, t, d }, id) => (
-  { id, color: uncompressColor(c), sectorId: s, type: uncompressType(t), createdAt: toDate(d) }
+  Object.assign(
+    {},
+    c && { color: uncompressColor(c) },
+    { id, sectorId: s, type: uncompressType(t), createdAt: toDate(d) },
+  )
 );
 
 // set unused fields to null to avoid Firestore failure when

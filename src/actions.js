@@ -44,9 +44,9 @@ export const clearBoulders = (color, sectors) => ({
   },
 });
 
-export const clearSectors = sectors => ({
+export const clearSectors = clearSends => ({
   type: CLEAR_SECTORS,
-  payload: { sectors },
+  payload: { clearSends },
 });
 
 export const syncSendMap = sendMap => ({

@@ -40,7 +40,8 @@ const reducers = {
 
   [actions.CLEAR_SECTORS]: (state, { payload }) => ({
     ...state,
-    sendMap: sendMap.removeSectors(state.sendMap, payload.sectors),
+    sendMap: sendMap.removeSectors(state.sendMap, payload.clearSends.map(s => s.sectorId)),
+    sendList: sendList.addAll(state.sendList, payload.clearSends),
     selectedSectors: [],
   }),
 
