@@ -60,4 +60,4 @@ const themes = mapValues(
   { ...colors, [null]: defaultColor },
 );
 
-export const getMuiTheme = color => themes[color];
+export const getMuiTheme = color => themes[color] || themes.null;

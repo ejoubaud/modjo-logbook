@@ -3,6 +3,7 @@ import xor from 'lodash/fp/xor';
 import * as actions from './actions';
 import * as sendMap from './sendMap';
 import * as sendList from './sendList';
+import { allIds as allSectorIds } from './sectors';
 
 const reducers = {
   [actions.TOGGLE_COLOR]: (state, { payload }) => {
@@ -16,6 +17,11 @@ const reducers = {
   [actions.TOGGLE_SECTOR]: (state, { payload }) => ({
     ...state,
     selectedSectors: xor(state.selectedSectors, [payload.sectorId]),
+  }),
+
+  [actions.TOGGLE_ALL_SECTORS]: state => ({
+    ...state,
+    selectedSectors: (state.selectedSectors.length > 0 ? [] : allSectorIds),
   }),
 
   [actions.SEND_BOULDERS]: (state, { payload }) => ({

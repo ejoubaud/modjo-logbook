@@ -12,6 +12,7 @@ import some from 'lodash/fp/some';
 
 import SubmitButton from './SubmitButton';
 import ConfirmDialog from './ConfirmDialog';
+import ToggleAllSectors from './ToggleAllSectors';
 import { submitSends, submitClears } from '../actions';
 import { getColorMap, getSignedInUser, getSelection, getSendMap, getSendList } from '../selectors';
 import * as sendMapUtils from '../sendMap';
@@ -79,6 +80,7 @@ const BoulderForm = (props) => {
         doSubmit={() => (isColorMapMode ? submitClears() : toggleConfirm(true))}
         defaultTip="Indiquer qu'un bloc a été démonté ou réouvert depuis la dernière fois où vous l'avez enchaîné. Vous pourrez ensuite noter un passage du nouveau bloc."
       />
+      <ToggleAllSectors />
 
       <ConfirmDialog
         isOpen={isConfirmOpen}

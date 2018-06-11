@@ -1,5 +1,6 @@
 export const TOGGLE_COLOR = 'TOGGLE_COLOR';
 export const TOGGLE_SECTOR = 'TOGGLE_SECTOR';
+export const TOGGLE_ALL_SECTORS = 'TOGGLE_ALL_SECTORS';
 export const SEND_BOULDERS = 'SEND_BOULDERS';
 export const CLEAR_BOULDERS = 'CLEAR_BOULDERS'; // not used anymore
 export const CLEAR_SECTORS = 'CLEAR_SECTORS';
@@ -23,6 +24,10 @@ export const toggleColor = color => ({
 export const toggleSector = sectorId => ({
   type: TOGGLE_SECTOR,
   payload: { sectorId },
+});
+
+export const toggleAllSectors = () => ({
+  type: TOGGLE_ALL_SECTORS,
 });
 
 export const sendBoulders = sends => ({

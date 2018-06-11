@@ -1,3 +1,5 @@
+import map from 'lodash/fp/map';
+
 const sectors = [
   { id: 1, d: 'M340 60.833V0h84l1 76.913h-26l-31-16.08h-28z' },
   { id: 2, d: 'M258 62.5V0h82v60.833L258 62.5z' },
@@ -20,3 +22,6 @@ const sectors = [
 ];
 
 export default sectors;
+
+export const allIds = map(sector => sector.id, sectors);
+export const count = allIds.length;
