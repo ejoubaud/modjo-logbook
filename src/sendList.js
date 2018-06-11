@@ -42,7 +42,7 @@ const toSet = compose(
   map(v => [v, true]),
 );
 
-const id = (v) => v;
+const id = v => v;
 
 const toDate = (val) => {
   if (!val) return null;
@@ -222,5 +222,5 @@ export const fixDiff = (source) => {
 
 // fast equality change to see if update is warranted
 export const isEquivalent = (list1, list2) => (
-  every(propName => list1[propName] === list2[propName], ['#', 'h'])
+  every(propName => list1[propName] === list2[propName], ['#', 'h', '$'])
 );
