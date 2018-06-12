@@ -29,6 +29,9 @@ const App = () => (
     </div>
     <ErrorFeedback />
     <LoadingFeedback />
+    <footer className="App-header">
+      Modjo Logbook &ndash; Non-officiel
+    </footer>
   </div>
 );
 
