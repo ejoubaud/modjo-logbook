@@ -2,13 +2,11 @@ import { all, call, put, select } from 'redux-saga/effects';
 
 import { clearSectors, toggleLoading, showError, rollback } from '../actions';
 import { getSendSubmitStates } from '../selectors';
-import { firestore as db } from '../firebase';
+import { firestore as db, docRef, deletionMarker } from '../firebase';
 import * as sendMapUtils from '../sendMap';
 import * as sendListUtils from '../sendList';
 import { colorKeys as allColors } from '../colors';
 import { createSends } from '../send';
-
-const docRef = (collection, docId) => db.collection(collection).doc(docId);
 
 function* submitClears() {
   const { sectorIds, sendMap, sendList, signedInUser } = yield select(getSendSubmitStates);
@@ -22,24 +20,29 @@ function* submitClears() {
 
       const { uid } = signedInUser;
       const sendMapDiff = sendMapUtils.populateWith(
-        sendMapUtils.empty, allColors, sectorIds, db.FieldValue.delete(),
+        sendMapUtils.empty, allColors, sectorIds, deletionMarker,
       );
-      const sendListDiff = sendListUtils.addAllDiff(sendList, clearSends);
       // these go into the clear collection, while clearSends go into the sendList doc
       const clears = sectorIds.map(sectorId => (
         { userId: uid, sectorId, createdAt: new Date() }
       ));
 
-      // TODO: Make this a transaction once https://github.com/prescottprue/redux-firestore/issues/108 is fixed
       try {
+        // Firestore has no cross-doc trx ; call sendList trx before as it can fail
+        yield call([db, 'runTransaction'], transaction => (
+          transaction.get(docRef('sendLists', uid)).then((sendListDoc) => {
+            const latestSendList = sendListDoc.data() || sendListUtils.empty;
+            const sendListDiff = sendListUtils.addAllDiff(latestSendList, clearSends);
+            return transaction.set(sendListDoc.ref, sendListDiff, { merge: true });
+          })
+        ));
         yield all([
           ...clears.map(clear => call([db.collection('clears'), 'add'], clear)),
           call([docRef('sendMaps', uid), 'set'], sendMapDiff, { merge: true }),
-          call([docRef('sendLists', uid), 'set'], sendListDiff, { merge: true }),
         ]);
       } catch (error) {
         console.log('submitClears error', error);
-        yield put(rollback({ sendMap, error }));
+        yield put(rollback({ sendMap, sendList, error }));
       }
     } finally {
       yield put(toggleLoading(false));

@@ -23,3 +23,6 @@ if (process.env.NODE_ENV === 'development') window.firebase = firebase;
 export default firebase;
 export const firestore = firebase.firestore();
 export const auth = firebase.auth();
+
+export const deletionMarker = firebase.firestore.FieldValue.delete();
+export const docRef = (collection, docId) => firestore.collection(collection).doc(docId);

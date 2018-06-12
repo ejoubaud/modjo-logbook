@@ -27,7 +27,6 @@ import compose from 'lodash/fp/compose';
 import compact from 'lodash/fp/compact';
 import every from 'lodash/fp/every';
 import keys from 'lodash/fp/keys';
-import merge from 'lodash/fp/merge';
 import filter from 'lodash/fp/filter';
 import reduce from 'lodash/fp/reduce';
 import unset from 'lodash/fp/unset';
@@ -36,7 +35,6 @@ import _isEmpty from 'lodash/fp/isEmpty';
 import colors from './colors';
 import sendTypes from './send-types';
 import { generateSendId } from './send';
-import { firestore } from './firebase';
 
 // home-made obj-based Set with wide browser support
 const toSet = compose(
@@ -128,13 +126,13 @@ export const addAll = (sendList, sends) => (
   reduce(add, sendList, sends)
 );
 
-export const removeDiff = (sendList, send) => {
+export const removeDiff = (sendList, send, deletionMarker) => {
   const { id } = send;
   const { l, h, $ } = sendList;
   const currentNode = l[id];
   if (!currentNode) return {};
   const count = sendList['#'];
-  const deleteEntry = { [id]: firestore.FieldValue.delete() };
+  const deleteEntry = { [id]: deletionMarker };
   if (count === 1) return { ...empty, l: deleteEntry };
   if (h === id) {
     return {
@@ -143,7 +141,7 @@ export const removeDiff = (sendList, send) => {
       l: deleteEntry,
     };
   }
-  const [, previousSendId] = selectFirst(sendList, (_send, _id, node) => node.n === id);;
+  const [, previousSendId] = selectFirst(sendList, (_send, _id, node) => node.n === id);
   if ($ === id) {
     return {
       '#': count - 1,
@@ -277,37 +275,6 @@ export const getPage = (sendList, { page = 1, pageSize = 10, colors = null, sect
     pageSize,
     totalSize: keepCounting ? matches.length : sendList['#'],
   };
-};
-
-// checks for race-condition-induced inconsistencies,
-// where the count doesn't match the number of records
-// means 2 batches of sends were either:
-// 1. added on the same cached counter, so there are orphan
-//    sends in the linked list (not referenced in any next)
-// 2. removed on the same cached counter, so the count should
-//    by updated
-// returns a diff, i.e. an object of just the fields that
-// need to be added/updated/deep-merged to fix the list
-export const fixDiff = (source) => {
-  const cachedCount = source['#'];
-  if (typeof cachedCount === 'undefined') return null;
-  const actualCount = keys(source.l).length;
-  if (cachedCount === actualCount) return null;
-  if (cachedCount < actualCount) return { '#': actualCount };
-  // if more records in the list than accounted for,
-  // there must be orphans: we need to fix the "next"s chain
-  const { l } = source;
-  const referencedIds = compose(
-    merge({ h: true, $: true }),
-    toSet,
-    map(({ n }) => n),
-  )(l);
-  const orphanSends = compose(
-    map(id => ({ ...uncompressSend(source.l[id]), id })),
-    filter(id => !referencedIds[id]),
-    keys,
-  )(l);
-  return addAllDiff(source, orphanSends);
 };
 
 // fast equality change to see if update is warranted

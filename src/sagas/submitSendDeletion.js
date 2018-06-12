@@ -1,12 +1,10 @@
 import { all, call, put, select } from 'redux-saga/effects';
 
 import { removeSend, toggleLoading, showError, rollback } from '../actions';
-import { firestore as db } from '../firebase';
+import { firestore as db, docRef, deletionMarker } from '../firebase';
 import * as sendMapUtils from '../sendMap';
 import * as sendListUtils from '../sendList';
 import { getSignedInUser, getSendSummaries } from '../selectors';
-
-const docRef = (collection, docId) => db.collection(collection).doc(docId);
 
 function* submitSendDeletion({ payload: { send } }) {
   const signedInUser = yield select(getSignedInUser);
@@ -22,17 +20,23 @@ function* submitSendDeletion({ payload: { send } }) {
         sendMapUtils.empty,
         [color],
         [sectorId],
-        db.FieldValue.delete(),
+        deletionMarker,
       );
-      const sendListDiff = sendListUtils.removeDiff(sendList, send);
 
       const { uid } = signedInUser;
-      // TODO: Make this a transaction once https://github.com/prescottprue/redux-firestore/issues/108 is fixed
       try {
+        // Firestore has no cross-doc trx ; call sendList trx before as it can fail
+        yield call([db, 'runTransaction'], transaction => (
+          transaction.get(docRef('sendLists', uid)).then((sendListDoc) => {
+            const latestSendList = sendListDoc.data() || sendListUtils.empty;
+            const sendListDiff = sendListUtils.removeDiff(latestSendList, send, deletionMarker);
+            console.log(sendMapDiff, sendListDiff);
+            return transaction.set(sendListDoc.ref, sendListDiff, { merge: true });
+          })
+        ));
         yield all([
           call([docRef('sends', send.id), 'delete']),
           call([docRef('sendMaps', uid), 'set'], sendMapDiff, { merge: true }),
-          call([docRef('sendLists', uid), 'set'], sendListDiff, { merge: true }),
         ]);
       } catch (error) {
         console.log('submitSendDeletion error', error);
