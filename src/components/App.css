@@ -36,6 +36,12 @@
   clear: both;
 }
 
+@media (max-width: 543px) {
+  .container {
+    padding: 0;
+  }
+}
+
 @media (min-width: 544px) {
   .container {
     max-width: 570px;
