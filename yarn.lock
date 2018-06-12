@@ -6250,13 +6250,6 @@ reduce-function-call@^1.0.1:
   dependencies:
     balanced-match "^0.4.2"
 
-redux-firestore@^0.5.4:
-  version "0.5.4"
-  resolved "https://registry.yarnpkg.com/redux-firestore/-/redux-firestore-0.5.4.tgz#23c4fe42068d294829c16ae62b8232c4981df03a"
-  dependencies:
-    lodash "^4.17.10"
-    prop-types "^15.6.1"
-
 redux-logger@^3.0.6:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/redux-logger/-/redux-logger-3.0.6.tgz#f7555966f3098f3c88604c449cf0baf5778274bf"

@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { reactReduxFirebase, firebaseReducer } from 'react-redux-firebase';
-import { reduxFirestore, firestoreReducer } from 'redux-firestore';
 import createSagaMiddleware from 'redux-saga';
 
 import { showError } from './actions';
@@ -19,7 +18,6 @@ import './index.css';
 const rootReducer = combineReducers({
   ui: uiReducer,
   firebase: firebaseReducer,
-  firestore: firestoreReducer,
 });
 
 const sagaMiddleware = createSagaMiddleware();
@@ -31,7 +29,6 @@ if (process.env.NODE_ENV === 'development') middlewares.push(require('redux-logg
 
 const createStoreWithFirebase = compose(
   reactReduxFirebase(firebase, { userProfile: 'users', useFirestoreForProfile: true }),
-  reduxFirestore(firebase),
 )(createStore);
 
 const store = createStoreWithFirebase(

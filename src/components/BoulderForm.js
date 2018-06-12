@@ -1,7 +1,6 @@
 import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withFirestore } from 'react-redux-firebase';
 import withState from 'recompose/withState';
 import withStateHandlers from 'recompose/withStateHandlers';
 import DoneIcon from '@material-ui/icons/Done';
@@ -115,7 +114,6 @@ const mapDispatchToProps = { submitSends, submitClears };
 
 export default compose(
   withState('isConfirmOpen', 'toggleConfirm', false),
-  withFirestore,
   connect(mapStateToProps, mapDispatchToProps),
   // if we want to add states/form validation later,
   // just add handleChange to BoulderForm props
