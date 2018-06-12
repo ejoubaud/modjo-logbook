@@ -83,10 +83,15 @@ const BoulderForm = (props) => {
       <ToggleAllSectors />
 
       <ConfirmDialog
+        title="Toutes les couleurs seront démontées"
         isOpen={isConfirmOpen}
         toggleConfirm={toggleConfirm}
         onConfirm={submitClears}
-      />
+      >
+        Le d&eacute;montage concerne un secteur entier, pas seulement cette couleur.
+        Les blocs de toutes les couleurs seront marqu&eacute;es comme d&eacute;mont&eacute;s
+        pour les secteurs s&eacute;lectionn&eacute;s. Continuer&nbsp;?
+      </ConfirmDialog>
     </form>
   );
 };

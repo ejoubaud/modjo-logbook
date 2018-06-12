@@ -38,6 +38,7 @@ function* submitClears() {
           call([docRef('sendLists', uid), 'set'], sendListDiff, { merge: true }),
         ]);
       } catch (error) {
+        console.log('submitClears error', error);
         yield put(rollback({ sendMap, error }));
       }
     } finally {

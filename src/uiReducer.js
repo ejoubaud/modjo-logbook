@@ -45,6 +45,12 @@ const reducers = {
     selectedSectors: [],
   }),
 
+  [actions.REMOVE_SEND]: (state, { payload }) => ({
+    ...state,
+    sendMap: sendMap.remove(state.sendMap, payload.send.color, payload.send.sectorId),
+    sendList: sendList.remove(state.sendList, payload.send),
+  }),
+
   [actions.SYNC_SEND_MAP]: (state, { payload }) => ({
     ...state,
     sendMap: payload.sendMap,

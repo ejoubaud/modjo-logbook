@@ -1,3 +1,4 @@
+/* global window */
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
@@ -16,6 +17,8 @@ firebase.initializeApp({
 firebase.firestore().settings({
   timestampsInSnapshots: true,
 });
+
+if (process.env.NODE_ENV === 'development') window.firebase = firebase;
 
 export default firebase;
 export const firestore = firebase.firestore();

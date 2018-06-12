@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import withState from 'recompose/withState';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -12,6 +13,7 @@ import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import FlashIcon from '@material-ui/icons/FlashOn';
+import DeleteIcon from '@material-ui/icons/Delete';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import formatDistance from 'date-fns/distance_in_words';
 import differenceInDays from 'date-fns/difference_in_days';
@@ -19,9 +21,10 @@ import format from 'date-fns/format';
 import fr from 'date-fns/locale/fr';
 
 import { getPaginatedSendList } from '../selectors';
-import { changeSendListPage, toggleColor, toggleSector } from '../actions';
+import { changeSendListPage, toggleColor, toggleSector, submitSendDeletion } from '../actions';
 import colors from '../colors';
 import ColorButton from './ColorButton';
+import ConfirmDialog from './ConfirmDialog';
 
 const formatColor = (colorKey, toggleColor) => {
   if (!colorKey) return null;
@@ -39,7 +42,6 @@ const formatColor = (colorKey, toggleColor) => {
 
 const formatSector = (sectorId, classes, toggleSector) => (
   <IconButton
-    variant="fab"
     onClick={() => toggleSector(sectorId)}
     className={classes.sectorButton}
   >
@@ -59,7 +61,15 @@ const formatDate = (date) => {
 };
 
 const formatType = (type, classes) => (
-  type === 'flash' && <Tooltip title="Flash&eacute;"><FlashIcon className={classes.typeIcon} /></Tooltip>
+  (type === 'flash') && <Tooltip title="Flash&eacute;"><FlashIcon className={classes.typeIcon} /></Tooltip>
+);
+
+const formatClear = (type, classes) => (
+  (type === 'clear') && (
+    <Tooltip title="Secteur d&eacute;mont&eacute;">
+      <RefreshIcon className={classes.clearIcon} />
+    </Tooltip>
+  )
 );
 
 const SendListTable = ({
@@ -69,27 +79,39 @@ const SendListTable = ({
   totalSize,
   changeSendListPage,
   classes,
+  deletionConfirmTarget,
+  toggleDeletionConfirmWithTarget,
+  submitSendDeletion,
   toggleColor,
   toggleSector,
 }) => (
-  <Paper>
+  <Paper className={classes.container}>
     <Table>
       <TableHead>
         <TableRow>
-          <TableCell>Blocs encha&icirc;n&eacute;s</TableCell>
-          <TableCell>Date</TableCell>
+          <TableCell padding="dense">Blocs encha&icirc;n&eacute;s</TableCell>
+          <TableCell padding="dense">Date</TableCell>
+          <TableCell numeric padding="dense">Supprimer</TableCell>
         </TableRow>
       </TableHead>
 
       <TableBody>
         { sends.map(send => (
           <TableRow key={send.id}>
-            <TableCell>
-              {formatSector(send.sectorId, classes, toggleSector)}
+            <TableCell padding="dense">
               {formatColor(send.color, toggleColor)}
+              {formatClear(send.type, classes)}
+              {formatSector(send.sectorId, classes, toggleSector)}
               {formatType(send.type, classes)}
             </TableCell>
-            <TableCell>{formatDate(send.createdAt)}</TableCell>
+            <TableCell padding="dense">{formatDate(send.createdAt)}</TableCell>
+            <TableCell numeric padding="dense">
+              { send.type !== 'clear' && (
+                <IconButton onClick={() => toggleDeletionConfirmWithTarget(send)}>
+                  <DeleteIcon />
+                </IconButton>
+              ) }
+            </TableCell>
           </TableRow>
         )) }
       </TableBody>
@@ -97,7 +119,7 @@ const SendListTable = ({
       <TableFooter>
         <TableRow>
           <TablePagination
-            colSpan={3}
+            colSpan={2}
             count={totalSize}
             rowsPerPage={pageSize}
             page={page - 1}
@@ -107,10 +129,30 @@ const SendListTable = ({
         </TableRow>
       </TableFooter>
     </Table>
+
+    <ConfirmDialog
+      title="Suppression définitive de l'historique"
+      isOpen={!!deletionConfirmTarget}
+      toggleConfirm={() => toggleDeletionConfirmWithTarget(null)}
+      onConfirm={() => submitSendDeletion(deletionConfirmTarget)}
+    >
+      La suppression du passage est d&eacute;finitive et le supprimera de l&apos;historique.
+      Elle n&apos;est recommand&eacute;e qu&apos;en cas d&apos;erreur de saisie.<br />
+      Pour enregistrer l&apos;encha&icirc;nement d&apos;un nouveau bloc sur un secteur qui a
+      &eacute;t&eacute; r&eacute;ouvert depuis le passage pr&eacute;c&eacute;dent
+      tout en conservant celui-ci dans l&apos;historique,
+      privil&eacute;gier le bouton <strong>D&eacute;mont&eacute;</strong>.<br />
+      Continuer&nbsp;?
+    </ConfirmDialog>
   </Paper>
 );
 
 const styles = {
+  container: {
+    marginTop: '15px',
+    marginBottom: '15px',
+  },
+
   sectorButton: {
     height: '28px',
     width: '28px',
@@ -119,6 +161,7 @@ const styles = {
 
   typeIcon: {
     verticalAlign: 'middle',
+    marginLeft: '7px',
   },
 
   clearIcon: {
@@ -141,8 +184,8 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = { changeSendListPage, toggleColor, toggleSector };
+const mapDispatchToProps = { changeSendListPage, toggleColor, toggleSector, submitSendDeletion };
 
 const ConnectedSendListTable = connect(mapStateToProps, mapDispatchToProps)(StyledSendListTable);
 
-export default ConnectedSendListTable;
+export default withState('deletionConfirmTarget', 'toggleDeletionConfirmWithTarget', false)(ConnectedSendListTable);

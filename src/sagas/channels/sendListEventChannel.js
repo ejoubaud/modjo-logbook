@@ -11,6 +11,7 @@ function* handleEvent({ doc }) {
   if (doc.exists) {
     const oldDoc = yield select(getSendList);
     if (!isEquivalent(newDoc, oldDoc)) {
+      console.log('sendList discrepancy', oldDoc, newDoc);
       yield put(syncSendList(newDoc));
       if (!isEmpty(oldDoc)) yield put(showError('Liste de blocs enchaînés synchronisée depuis le serveur'));
     }

@@ -6,7 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-const ConfirmDialog = ({ isOpen, onConfirm, toggleConfirm }) => (
+const ConfirmDialog = ({ isOpen, onConfirm, toggleConfirm, title, children }) => (
   <Dialog
     open={isOpen}
     onClose={() => toggleConfirm(false)}
@@ -14,13 +14,11 @@ const ConfirmDialog = ({ isOpen, onConfirm, toggleConfirm }) => (
     aria-describedby="alert-dialog-description"
   >
     <DialogTitle id="alert-dialog-title">
-      Toutes les couleurs seront d&eacute;mont&eacute;es
+      {title}
     </DialogTitle>
     <DialogContent>
       <DialogContentText id="alert-dialog-description">
-        Le d&eacute;montage concerne un secteur entier, pas seulement cette couleur.
-        Les blocs de toutes les couleurs seront marqu&eacute;es comme d&eacute;mont&eacute;s
-        pour les secteurs s&eacute;lectionn&eacute;s. Continuer&nbsp;?
+        {children}
       </DialogContentText>
     </DialogContent>
     <DialogActions>

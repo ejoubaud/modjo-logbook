@@ -30,11 +30,13 @@ import keys from 'lodash/fp/keys';
 import merge from 'lodash/fp/merge';
 import filter from 'lodash/fp/filter';
 import reduce from 'lodash/fp/reduce';
+import unset from 'lodash/fp/unset';
 import _isEmpty from 'lodash/fp/isEmpty';
 
 import colors from './colors';
 import sendTypes from './send-types';
 import { generateSendId } from './send';
+import { firestore } from './firebase';
 
 // home-made obj-based Set with wide browser support
 const toSet = compose(
@@ -86,6 +88,27 @@ export const empty = { '#': 0, l: {}, h: null, $: null };
 
 export const isEmpty = ({ l }) => !l || _isEmpty(l);
 
+// low-level iterator on the chained list, returns an array of sends
+const select = (sendList, filterCb, { until = () => false }) => {
+  if (!sendList) return [];
+  const { l, h } = sendList;
+  if (!(l || h)) return [];
+  let id = h;
+  const res = [];
+  while (id) {
+    const node = l[id];
+    const compressedSend = node.e;
+    if (filterCb(compressedSend, id, node)) res.push([compressedSend, id, node]);
+    if (until(res)) break;
+    id = node.n;
+  }
+  return res;
+};
+
+const selectFirst = (sendList, filterCb) => (
+  select(sendList, filterCb, { until: res => res.length > 0 })[0]
+);
+
 export const add = (sendList, send) => {
   const id = send.id || generateSendId();
   const { h, l, $ } = sendList;
@@ -104,6 +127,82 @@ export const add = (sendList, send) => {
 export const addAll = (sendList, sends) => (
   reduce(add, sendList, sends)
 );
+
+export const removeDiff = (sendList, send) => {
+  const { id } = send;
+  const { l, h, $ } = sendList;
+  const currentNode = l[id];
+  if (!currentNode) return {};
+  const count = sendList['#'];
+  const deleteEntry = { [id]: firestore.FieldValue.delete() };
+  if (count === 1) return { ...empty, l: deleteEntry };
+  if (h === id) {
+    return {
+      '#': count - 1,
+      h: currentNode.n,
+      l: deleteEntry,
+    };
+  }
+  const [, previousSendId] = selectFirst(sendList, (_send, _id, node) => node.n === id);;
+  if ($ === id) {
+    return {
+      '#': count - 1,
+      $: previousSendId,
+      l: {
+        ...deleteEntry,
+        [previousSendId]: { n: null },
+      },
+    };
+  }
+  return {
+    '#': count - 1,
+    l: {
+      ...deleteEntry,
+      [previousSendId]: { n: currentNode.n },
+    },
+  };
+};
+
+export const remove = (sendList, send) => {
+  const { id } = send;
+  const { l, h, $ } = sendList;
+  const currentNode = l[id];
+  if (!currentNode) return {};
+  const count = sendList['#'];
+  const removedL = unset(id, l);
+  if (count === 1) return { ...empty, l: removedL };
+  if (h === id) {
+    return {
+      ...sendList,
+      '#': count - 1,
+      h: currentNode.n,
+      l: removedL,
+    };
+  }
+  const [, previousSendId, previousNode] = selectFirst(
+    sendList,
+    (_send, _id, node) => node.n === id,
+  );
+  if ($ === id) {
+    return {
+      ...sendList,
+      '#': count - 1,
+      $: previousSendId,
+      l: {
+        ...removedL,
+        [previousSendId]: { ...previousNode, n: null },
+      },
+    };
+  }
+  return {
+    ...sendList,
+    '#': count - 1,
+    l: {
+      ...removedL,
+      [previousSendId]: { ...previousNode, n: currentNode.n },
+    },
+  };
+};
 
 // Counts elem intersection by id, faster if arg 1 is shorter
 const countSharedIds = (sendList1, sendList2) => (
@@ -156,23 +255,6 @@ const combinePageFilters = (definitions) => {
 };
 
 export const size = sendList => sendList['#'];
-
-// low-level iterator on the chained list, returns an array of sends
-const select = (sendList, filterCb, { until = () => false }) => {
-  if (!sendList) return [];
-  const { l, h } = sendList;
-  if (!(l || h)) return [];
-  let id = h;
-  const res = [];
-  while (id) {
-    const node = l[id];
-    const compressedSend = node.e;
-    if (filterCb(compressedSend, id, node)) res.push([compressedSend, id, node]);
-    if (until(res)) break;
-    id = node.n;
-  }
-  return res;
-};
 
 export const getPage = (sendList, { page = 1, pageSize = 10, colors = null, sectorIds = null }) => {
   const matchesFilters = combinePageFilters([

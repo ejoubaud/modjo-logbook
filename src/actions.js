@@ -4,6 +4,7 @@ export const TOGGLE_ALL_SECTORS = 'TOGGLE_ALL_SECTORS';
 export const SEND_BOULDERS = 'SEND_BOULDERS';
 export const CLEAR_BOULDERS = 'CLEAR_BOULDERS'; // not used anymore
 export const CLEAR_SECTORS = 'CLEAR_SECTORS';
+export const REMOVE_SEND = 'REMOVE_SEND';
 export const SYNC_SEND_MAP = 'SYNC_SEND_MAP';
 export const SYNC_SEND_LIST = 'SYNC_SEND_LIST';
 export const ROLLBACK = 'ROLLBACK';
@@ -14,6 +15,7 @@ export const TOGGLE_LOADING = 'TOGGLE_LOADING';
 
 // saga actions
 export const SUBMIT_SENDS = 'SUBMIT_SENDS';
+export const SUBMIT_SEND_DELETION = 'SUBMIT_SEND_DELETION';
 export const SUBMIT_CLEARS = 'SUBMIT_CLEARS';
 
 export const toggleColor = color => ({
@@ -47,6 +49,11 @@ export const clearBoulders = (color, sectors) => ({
 export const clearSectors = clearSends => ({
   type: CLEAR_SECTORS,
   payload: { clearSends },
+});
+
+export const removeSend = send => ({
+  type: REMOVE_SEND,
+  payload: { send },
 });
 
 export const syncSendMap = sendMap => ({
@@ -95,4 +102,9 @@ export const submitSends = type => ({
 
 export const submitClears = () => ({
   type: SUBMIT_CLEARS,
+});
+
+export const submitSendDeletion = send => ({
+  type: SUBMIT_SEND_DELETION,
+  payload: { send },
 });
