@@ -241,7 +241,9 @@ const makePageFilter = ({ abbrev, value, compressValue = id }) => {
   if (_isEmpty(value)) return null;
   const compressedValuesArray = map(compressValue, [].concat(value));
   const valuesSet = toSet(compressedValuesArray);
-  return elem => valuesSet[elem[abbrev]];
+  // if send has no value for property (e.g. clear with no color),
+  // consider it has all values and return true
+  return elem => !elem[abbrev] || valuesSet[elem[abbrev]];
 };
 
 const combinePageFilters = (definitions) => {
