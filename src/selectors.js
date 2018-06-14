@@ -16,10 +16,10 @@ export const getSelectedColor = uiStateGetter('selectedColor');
 export const getSelectedSectors = uiStateGetter('selectedSectors');
 export const getSendMap = uiStateGetter('sendMap');
 export const getSendList = uiStateGetter('sendList');
-export const getIsLoading = uiStateGetter('isLoading');
 export const getSendListPage = uiStateGetter('sendListPage');
 
 export const getSendListSize = state => size(getSendList(state));
+export const getIsLoading = ({ ui: { loadingProcessIds } }) => loadingProcessIds.length > 0;
 
 export const getSelection = state => ({
   color: getSelectedColor(state),

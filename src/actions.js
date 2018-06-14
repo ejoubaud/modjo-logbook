@@ -88,9 +88,15 @@ export const hideError = ignoreId => ({
   payload: { ignoreId },
 });
 
-export const toggleLoading = on => ({
+// processId is optional, if passed lets you identify a single process
+// to turn off loading for, so a concurrent loading finishing before
+// doesn't remove the loading indicator for an unfinished other
+export const toggleLoading = (on, processId) => ({
   type: TOGGLE_LOADING,
-  payload: { on },
+  payload: {
+    on,
+    processId,
+  },
 });
 
 // === SAGA ACTIONS ====

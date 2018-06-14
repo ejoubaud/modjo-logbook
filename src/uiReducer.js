@@ -1,4 +1,6 @@
 import xor from 'lodash/fp/xor';
+import union from 'lodash/fp/union';
+import without from 'lodash/fp/without';
 
 import * as actions from './actions';
 import * as sendMap from './sendMap';
@@ -96,10 +98,17 @@ const reducers = {
     errorIgnoreId: null,
   }),
 
-  [actions.TOGGLE_LOADING]: (state, { payload }) => ({
-    ...state,
-    isLoading: payload.on,
-  }),
+  [actions.TOGGLE_LOADING]: (state, { payload }) => {
+    const loadingProcessIds = ((on, id, ids) => {
+      if (on) return (id ? union([id], ids) : union(['@@global@@'], ids));
+      // toggle-off with an empty ID turns off all ongoing loadings
+      return (id ? without(ids, id) : []);
+    })(payload.on, payload.processId, state.processIds);
+    return {
+      ...state,
+      loadingProcessIds,
+    };
+  },
 };
 
 const defaultState = {

@@ -1,5 +1,6 @@
 import { all, call, put, select } from 'redux-saga/effects';
 
+import { generateLoadingId } from './utils';
 import { removeSend, toggleLoading, showError, rollback } from '../actions';
 import { firestore as db, docRef, deletionMarker } from '../firebase';
 import * as sendMapUtils from '../sendMap';
@@ -12,9 +13,10 @@ function* submitSendDeletion({ payload: { send } }) {
   const { color, sectorId } = send;
 
   if (signedInUser) {
+    const loadingId = generateLoadingId('submitSendDeletion');
     yield put(removeSend(send));
     try {
-      yield put(toggleLoading(true));
+      yield put(toggleLoading(true, loadingId));
 
       const sendMapDiff = sendMapUtils.populateWith(
         sendMapUtils.empty,
@@ -43,7 +45,7 @@ function* submitSendDeletion({ payload: { send } }) {
         yield put(rollback({ sendMap, sendList, error }));
       }
     } finally {
-      yield put(toggleLoading(false));
+      yield put(toggleLoading(false, loadingId));
     }
   } else {
     yield put(removeSend(send));

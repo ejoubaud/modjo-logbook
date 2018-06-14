@@ -1,5 +1,6 @@
 import { all, call, put, select } from 'redux-saga/effects';
 
+import { generateLoadingId } from './utils';
 import { sendBoulders, toggleLoading, showError, rollback } from '../actions';
 import { getSendSubmitStates } from '../selectors';
 import { firestore as db, docRef } from '../firebase';
@@ -11,10 +12,11 @@ function* submitSends({ payload: { type } }) {
   const { color, sectorIds, sendMap, sendList, signedInUser } = yield select(getSendSubmitStates);
 
   if (signedInUser) {
+    const loadingId = generateLoadingId('submitSends');
     const sends = createSends({ color, type, sectorIds, userId: signedInUser.uid });
     yield put(sendBoulders(sends));
     try {
-      yield put(toggleLoading(true));
+      yield put(toggleLoading(true, loadingId));
 
       const sendMapDiff = sendMapUtils.addAll(sendMapUtils.empty, sends);
 
@@ -37,7 +39,7 @@ function* submitSends({ payload: { type } }) {
         yield put(rollback({ sendMap, sendList, error }));
       }
     } finally {
-      yield put(toggleLoading(false));
+      yield put(toggleLoading(false, loadingId));
     }
   } else {
     const sends = createSends({ color, type, sectorIds });

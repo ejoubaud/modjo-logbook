@@ -3,6 +3,7 @@ import { takeEvery, put, take, call, apply, fork, all } from 'redux-saga/effects
 
 import createSendMapChannel from './sendMapEventChannel';
 import createSendListChannel from './sendListEventChannel';
+import { generateLoadingId } from '../utils';
 import { toggleLoading, showError } from '../../actions';
 import { auth } from '../../firebase';
 
@@ -29,14 +30,15 @@ function* stopAll(subChannels) {
 
 function* startWatching(channels) {
   // Show loading progress during first load
-  yield put(toggleLoading(true));
+  const loadingId = generateLoadingId('authStates');
+  yield put(toggleLoading(true, loadingId));
   try {
     yield all(channels.map(c => call(takeOne, c.channel, c.handleEvent)));
   } catch (error) {
     yield put(showError('Le chargement des blocs a échoué, réessayer'));
     yield apply(auth, 'signOut');
   } finally {
-    yield put(toggleLoading(false));
+    yield put(toggleLoading(false, loadingId));
   }
 
   // Then catch subsequent updates of snapshots as they happen
