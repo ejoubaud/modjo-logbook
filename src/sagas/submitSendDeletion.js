@@ -5,6 +5,7 @@ import { removeSend, toggleLoading, showError, rollback } from '../actions';
 import { firestore as db, docRef, deletionMarker } from '../firebase';
 import * as sendMapUtils from '../sendMap';
 import * as sendListUtils from '../sendList';
+import * as sendSummaryUtils from '../sendSummary';
 import { getSignedInUser, getSendSummaries } from '../selectors';
 
 function* submitSendDeletion({ payload: { send } }) {
@@ -28,15 +29,21 @@ function* submitSendDeletion({ payload: { send } }) {
       const { uid } = signedInUser;
       try {
         // Firestore has no cross-doc trx ; call sendList trx before as it can fail
-        yield call([db, 'runTransaction'], transaction => (
-          transaction.get(docRef('sendLists', uid)).then((sendListDoc) => {
-            const latestSendList = sendListDoc.data() || sendListUtils.empty;
-            const sendListDiff = sendListUtils.removeDiff(latestSendList, send, deletionMarker);
-            console.log(sendMapDiff, sendListDiff);
-            return transaction.set(sendListDoc.ref, sendListDiff, { merge: true });
-          })
-        ));
         yield all([
+          call([db, 'runTransaction'], transaction => (
+            transaction.get(docRef('sendLists', uid)).then((sendListDoc) => {
+              const latestSendList = sendListDoc.data() || sendListUtils.empty;
+              const sendListDiff = sendListUtils.removeDiff(latestSendList, send, deletionMarker);
+              return transaction.set(sendListDoc.ref, sendListDiff, { merge: true });
+            })
+          )),
+          call([db, 'runTransaction'], transaction => (
+            transaction.get(docRef('sendSummary', 'current')).then((summaryDoc) => {
+              const latestSummary = summaryDoc.data() || sendSummaryUtils.empty;
+              const summaryDiff = sendSummaryUtils.removeDiff(latestSummary, send, deletionMarker);
+              return transaction.set(summaryDoc.ref, summaryDiff, { merge: true });
+            })
+          )),
           call([docRef('sends', send.id), 'delete']),
           call([docRef('sendMaps', uid), 'set'], sendMapDiff, { merge: true }),
         ]);

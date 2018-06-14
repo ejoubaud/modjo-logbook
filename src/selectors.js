@@ -16,6 +16,7 @@ export const getSelectedColor = uiStateGetter('selectedColor');
 export const getSelectedSectors = uiStateGetter('selectedSectors');
 export const getSendMap = uiStateGetter('sendMap');
 export const getSendList = uiStateGetter('sendList');
+export const getSendSummary = uiStateGetter('sendSummary');
 export const getSendListPage = uiStateGetter('sendListPage');
 
 export const getSendListSize = state => size(getSendList(state));

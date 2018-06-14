@@ -7,6 +7,7 @@ export const CLEAR_SECTORS = 'CLEAR_SECTORS';
 export const REMOVE_SEND = 'REMOVE_SEND';
 export const SYNC_SEND_MAP = 'SYNC_SEND_MAP';
 export const SYNC_SEND_LIST = 'SYNC_SEND_LIST';
+export const SYNC_SEND_SUMMARY = 'SYNC_SEND_SUMMARY';
 export const ROLLBACK = 'ROLLBACK';
 export const CHANGE_SEND_LIST_PAGE = 'CHANGE_SEND_LIST_PAGE';
 export const SHOW_ERROR = 'SHOW_ERROR';
@@ -32,9 +33,9 @@ export const toggleAllSectors = () => ({
   type: TOGGLE_ALL_SECTORS,
 });
 
-export const sendBoulders = sends => ({
+export const sendBoulders = (sends, user) => ({
   type: SEND_BOULDERS,
-  payload: { sends },
+  payload: { sends, user },
 });
 
 // not used anymore (we clear sectors now, not just boulders)
@@ -64,6 +65,11 @@ export const syncSendMap = sendMap => ({
 export const syncSendList = sendList => ({
   type: SYNC_SEND_LIST,
   payload: { sendList },
+});
+
+export const syncSendSummary = sendSummary => ({
+  type: SYNC_SEND_SUMMARY,
+  payload: { sendSummary },
 });
 
 export const rollback = ({ sendMap, sendList, error }) => ({

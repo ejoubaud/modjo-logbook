@@ -3,9 +3,11 @@ import { takeEvery, put, take, call, apply, fork, all } from 'redux-saga/effects
 
 import createSendMapChannel from './sendMapEventChannel';
 import createSendListChannel from './sendListEventChannel';
+import createSendSummaryChannel, { sendSummaryFirstLoad } from './sendSummaryEventChannel';
 import { generateLoadingId } from '../utils';
 import { toggleLoading, showError } from '../../actions';
 import { auth } from '../../firebase';
+
 
 export const authEventChannel = () => (
   eventChannel(emit => (
@@ -48,7 +50,8 @@ function* startWatching(channels) {
 function* createOrReplaceSubChannels(user, subChannels) {
   if (subChannels.length > 0) yield call(stopAll, subChannels);
   return [createSendMapChannel, createSendListChannel]
-    .map(createChannel => createChannel(user));
+    .map(createChannel => createChannel(user))
+    .concat(createSendSummaryChannel()); // summary doesn't need the user
 }
 
 export default function* handleAuthEventChannel() {
@@ -60,9 +63,11 @@ export default function* handleAuthEventChannel() {
     if (user) {
       subChannels = yield call(createOrReplaceSubChannels, user, subChannels);
       yield fork(startWatching, subChannels);
-    } else {
+    } else if (subChannels.length > 0) {
       yield call(stopAll, subChannels);
       subChannels = [];
+    } else {
+      yield call(sendSummaryFirstLoad);
     }
   }
 }

@@ -25,5 +25,9 @@ service cloud.firestore {
       allow read;
       allow write: if request.auth.uid == sendList;
     }
+    match /sendSummary/{summary} {
+      allow read;
+      allow write: if request.auth.uid != null;
+    }
   }
 }

@@ -17,6 +17,7 @@
 // s: sectorId
 // t: type
 // d: date
+// u: userId
 // #: count
 //
 // Sends are ordered by last added first (fifo)
@@ -65,17 +66,19 @@ const typesByAbbrev = sortByAbbrev(sendTypes);
 const uncompressColor = abbrev => colorsByAbbrev[abbrev];
 const uncompressType = abbrev => typesByAbbrev[abbrev];
 
-const compressSend = ({ color, sectorId, type, createdAt }) => (
+const compressSend = ({ color, sectorId, type, userId, createdAt }) => (
   Object.assign(
     {},
     color && { c: compressColor(color) },
+    userId && { u: userId },
     { s: sectorId, t: compressType(type), d: createdAt },
   )
 );
-const uncompressSend = ({ c, s, t, d }, id) => (
+const uncompressSend = ({ c, s, t, d, u }, id) => (
   Object.assign(
     {},
     c && { color: uncompressColor(c) },
+    u && { userId: u },
     { id, sectorId: s, type: uncompressType(t), createdAt: toDate(d) },
   )
 );
@@ -107,6 +110,15 @@ const selectFirst = (sendList, filterCb) => (
   select(sendList, filterCb, { until: res => res.length > 0 })[0]
 );
 
+export const firstByUserId = (sendList, userId) => selectFirst(sendList, ({ u }) => u === userId);
+export const hasSeveralByUserId = (sendList, userId) => (
+  select(
+    sendList,
+    ({ u }) => u === userId,
+    res => res.length >= 2,
+  ).length >= 2
+);
+
 export const add = (sendList, send) => {
   const id = send.id || generateSendId();
   const { h, l, $ } = sendList;
@@ -126,6 +138,7 @@ export const addAll = (sendList, sends) => (
   reduce(add, sendList, sends)
 );
 
+// Returns an object to remove just the relevant fields from Firestore doc
 export const removeDiff = (sendList, send, deletionMarker) => {
   const { id } = send;
   const { l, h, $ } = sendList;
@@ -212,7 +225,7 @@ const countSharedIds = (sendList1, sendList2) => (
 
 // accepts either a list of send with id ([send1, send2, ...])
 // or without [{id: id1, send: send1}, ...]
-// returns a diff, i.e. only the fields that would change in the sendList
+// returns an object to add just the relevant to Firestore doc, with deep merge
 export const addAllDiff = (sendList, sends) => {
   const diffBase = addAll(empty, sends);
   const readditions = countSharedIds(diffBase, sendList);

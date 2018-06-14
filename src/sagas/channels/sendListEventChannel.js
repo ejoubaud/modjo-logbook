@@ -13,7 +13,7 @@ function* handleEvent({ doc }) {
     if (!isEquivalent(newDoc, oldDoc)) {
       console.log('sendList discrepancy', oldDoc, newDoc);
       yield put(syncSendList(newDoc));
-      if (!isEmpty(oldDoc)) yield put(showError('Liste de blocs enchaînés synchronisée depuis le serveur'));
+      if (!isEmpty(oldDoc)) yield put(showError('Liste de vos blocs enchaînés synchronisée depuis le serveur'));
     }
   }
 }

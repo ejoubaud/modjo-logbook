@@ -5,6 +5,7 @@ import without from 'lodash/fp/without';
 import * as actions from './actions';
 import * as sendMap from './sendMap';
 import * as sendList from './sendList';
+import * as sendSummary from './sendSummary';
 import { allIds as allSectorIds } from './sectors';
 
 const reducers = {
@@ -30,6 +31,7 @@ const reducers = {
     ...state,
     sendMap: sendMap.addAll(state.sendMap, payload.sends),
     sendList: sendList.addAll(state.sendList, payload.sends),
+    sendSummary: sendSummary.addAll(state.sendSummary, payload.sends, payload.user),
     selectedSectors: [],
   }),
 
@@ -51,6 +53,7 @@ const reducers = {
     ...state,
     sendMap: sendMap.remove(state.sendMap, payload.send.color, payload.send.sectorId),
     sendList: sendList.remove(state.sendList, payload.send),
+    sendSummary: sendSummary.remove(state.sendSummary, payload.send),
   }),
 
   [actions.SYNC_SEND_MAP]: (state, { payload }) => ({
@@ -62,6 +65,11 @@ const reducers = {
   [actions.SYNC_SEND_LIST]: (state, { payload }) => ({
     ...state,
     sendList: payload.sendList,
+  }),
+
+  [actions.SYNC_SEND_SUMMARY]: (state, { payload }) => ({
+    ...state,
+    sendSummary: payload.sendSummary,
   }),
 
   [actions.ROLLBACK]: (state, { payload }) => ({
@@ -117,11 +125,12 @@ const defaultState = {
   sendMap: sendMap.empty,
   sendList: sendList.empty,
   sendListPage: 1,
+  sendSummary: sendSummary.empty,
   error: null,
   isErrorHidden: null,
   errorIgnoreList: [],
   errorIgnoreId: null,
-  isLoading: false,
+  loadingProcessIds: [],
 };
 
 export default function uiReducer(state = defaultState, action) {

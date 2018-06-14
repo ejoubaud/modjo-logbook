@@ -7,6 +7,8 @@ import { firestore as db, docRef } from '../firebase';
 import { createSends } from '../send';
 import * as sendMapUtils from '../sendMap';
 import * as sendListUtils from '../sendList';
+import * as sendSummaryUtils from '../sendSummary';
+import mockUser from '../mockUser';
 
 function* submitSends({ payload: { type } }) {
   const { color, sectorIds, sendMap, sendList, signedInUser } = yield select(getSendSubmitStates);
@@ -14,7 +16,9 @@ function* submitSends({ payload: { type } }) {
   if (signedInUser) {
     const loadingId = generateLoadingId('submitSends');
     const sends = createSends({ color, type, sectorIds, userId: signedInUser.uid });
-    yield put(sendBoulders(sends));
+
+    yield put(sendBoulders(sends, signedInUser));
+
     try {
       yield put(toggleLoading(true, loadingId));
 
@@ -22,15 +26,22 @@ function* submitSends({ payload: { type } }) {
 
       const { uid } = signedInUser;
       try {
-        // Firestore has no cross-doc trx ; call sendList trx before as it can fail
-        yield call([db, 'runTransaction'], transaction => (
-          transaction.get(docRef('sendLists', uid)).then((sendListDoc) => {
-            const latestSendList = sendListDoc.data() || sendListUtils.empty;
-            const sendListDiff = sendListUtils.addAllDiff(latestSendList, sends);
-            return transaction.set(sendListDoc.ref, sendListDiff, { merge: true });
-          })
-        ));
+        // === Firestore has no cross-doc trx, so independent trxs for list/summary
         yield all([
+          call([db, 'runTransaction'], transaction => (
+            transaction.get(docRef('sendLists', uid)).then((sendListDoc) => {
+              const latestSendList = sendListDoc.data() || sendListUtils.empty;
+              const sendListDiff = sendListUtils.addAllDiff(latestSendList, sends);
+              return transaction.set(sendListDoc.ref, sendListDiff, { merge: true });
+            })
+          )),
+          call([db, 'runTransaction'], transaction => (
+            transaction.get(docRef('sendSummary', 'current')).then((summaryDoc) => {
+              const latestSummary = summaryDoc.data() || sendSummaryUtils.empty;
+              const summaryDiff = sendSummaryUtils.addAllDiff(latestSummary, sends, signedInUser);
+              return transaction.set(summaryDoc.ref, summaryDiff, { merge: true });
+            })
+          )),
           ...sends.map(send => call([docRef('sends', send.id), 'set'], send)),
           call([docRef('sendMaps', uid), 'set'], sendMapDiff, { merge: true }),
         ]);
@@ -43,7 +54,7 @@ function* submitSends({ payload: { type } }) {
     }
   } else {
     const sends = createSends({ color, type, sectorIds });
-    yield put(sendBoulders(sends));
+    yield put(sendBoulders(sends, mockUser));
     yield put(showError("Vous n'êtes pas connecté, les changements ne seront pas sauvegardés.", { ignoreId: 'loggedOutChanges' }));
   }
 }
