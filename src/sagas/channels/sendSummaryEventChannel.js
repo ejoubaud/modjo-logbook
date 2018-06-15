@@ -12,7 +12,7 @@ export function* sendSummaryFirstLoad() {
   const oldDoc = yield select(getSendSummary);
   if (!isEmpty(oldDoc)) return;
   const newDoc = yield call([docRef, 'get']);
-  yield put(syncSendSummary(newDoc));
+  yield put(syncSendSummary(newDoc.data()));
 }
 
 function* handleEvent({ doc }) {
