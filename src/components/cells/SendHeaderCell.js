@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
+import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import FilterListIcon from '@material-ui/icons/FilterList';
@@ -14,7 +15,9 @@ const SendHeaderCell = ({ isSyncOn, palette, classes, toggleTableFilterSync }) =
   const tip = isSyncOn ? 'Désactiver le filtrage par couleur/type sélectionnés' : 'Filtrer par couleur/type sélectionnés';
   return (
     <Fragment>
-      Blocs encha&icirc;n&eacute;s
+      <Hidden xsDown>
+        Blocs encha&icirc;n&eacute;s
+      </Hidden>
       <Tooltip title={tip}>
         <IconButton
           className={classes.filterButton}
