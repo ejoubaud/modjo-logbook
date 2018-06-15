@@ -27,7 +27,7 @@ const SendCell = ({ send, selectedColor, selectedSectors, classes, toggleColor, 
       ) }
 
       { (type === 'clear') && (
-        <Tooltip title="Secteur d&eacute;mont&eacute;">
+        <Tooltip title="Secteur d&eacute;mont&eacute; / r&eacute;ouvert">
           <RefreshIcon className={classes.clearIcon} />
         </Tooltip>
       ) }
