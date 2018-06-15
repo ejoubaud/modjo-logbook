@@ -130,7 +130,7 @@ export const removeDiff = (summary, send, deletionMarker) => {
   const { userId } = send;
   const sendListDiff = sendListUtils.removeDiff(sendList, send, deletionMarker);
   const shortId = getShortId(summary, userId);
-  const shouldRemoveUser = sendListUtils.hasSeveralByUserId(sendList, shortId);
+  const shouldRemoveUser = !sendListUtils.hasSeveralByUserId(sendList, shortId);
   const baseDiff = { sendList: sendListDiff };
   if (!shouldRemoveUser) return baseDiff;
   return {
