@@ -25,6 +25,7 @@ const SendTables = ({ selectedTab, signedInUser, classes, toggleTab }) => {
         <Tabs
           value={selectedTab}
           onChange={(e, v) => toggleTab(v)}
+          centered
         >
           <Tab label="Actus">
             <SendSummaryTable />
@@ -49,8 +50,7 @@ const mapStateToProps = state => ({
 
 const styles = {
   container: {
-    marginTop: '15px',
-    marginBottom: '15px',
+    marginTop: '12px',
   },
 };
 
