@@ -5,6 +5,7 @@ import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { reactReduxFirebase, firebaseReducer } from 'react-redux-firebase';
 import createSagaMiddleware from 'redux-saga';
+import WebFont from 'webfontloader';
 
 import { showError } from './actions';
 import firebase, { auth } from './firebase';
@@ -13,6 +14,9 @@ import uiReducer from './uiReducer';
 import rootSaga from './sagas';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
+
+// Load font
+WebFont.load({ google: { families: ['Open Sans'] } });
 
 // Setup redux store with firebase, redux-saga (and logger in dev)
 const rootReducer = combineReducers({
