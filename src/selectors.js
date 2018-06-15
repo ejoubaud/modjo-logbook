@@ -6,7 +6,9 @@ import { getPage, size } from './sendList';
 // Firebase state getters
 
 export const getSignedInUser = ({ firebase: { auth } }) => !auth.isEmpty && auth;
-export const getIsAuthLoading = ({ firebase: { auth } }) => !auth.isLoaded;
+export const getIsAuthLoading = ({ firebase: { auth, profile } }) => (
+  !auth.isLoaded || !profile.isLoaded
+);
 
 // UI state getters
 
