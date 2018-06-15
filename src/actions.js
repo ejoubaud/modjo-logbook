@@ -1,6 +1,7 @@
 export const TOGGLE_COLOR = 'TOGGLE_COLOR';
 export const TOGGLE_SECTOR = 'TOGGLE_SECTOR';
 export const TOGGLE_ALL_SECTORS = 'TOGGLE_ALL_SECTORS';
+export const TOGGLE_TAB = 'TOGGLE_TAB';
 export const SEND_BOULDERS = 'SEND_BOULDERS';
 export const CLEAR_BOULDERS = 'CLEAR_BOULDERS'; // not used anymore
 export const CLEAR_SECTORS = 'CLEAR_SECTORS';
@@ -10,6 +11,7 @@ export const SYNC_SEND_LIST = 'SYNC_SEND_LIST';
 export const SYNC_SEND_SUMMARY = 'SYNC_SEND_SUMMARY';
 export const ROLLBACK = 'ROLLBACK';
 export const CHANGE_SEND_LIST_PAGE = 'CHANGE_SEND_LIST_PAGE';
+export const CHANGE_SEND_SUMMARY_PAGE = 'CHANGE_SEND_SUMMARY_PAGE';
 export const SHOW_ERROR = 'SHOW_ERROR';
 export const HIDE_ERROR = 'HIDE_ERROR';
 export const TOGGLE_LOADING = 'TOGGLE_LOADING';
@@ -31,6 +33,11 @@ export const toggleSector = sectorId => ({
 
 export const toggleAllSectors = () => ({
   type: TOGGLE_ALL_SECTORS,
+});
+
+export const toggleTab = tabId => ({
+  type: TOGGLE_TAB,
+  payload: { tabId },
 });
 
 export const sendBoulders = (sends, user) => ({
@@ -79,6 +86,11 @@ export const rollback = ({ sendMap, sendList, error }) => ({
 
 export const changeSendListPage = page => ({
   type: CHANGE_SEND_LIST_PAGE,
+  payload: { page },
+});
+
+export const changeSendSummaryPage = page => ({
+  type: CHANGE_SEND_SUMMARY_PAGE,
   payload: { page },
 });
 

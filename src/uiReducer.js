@@ -27,6 +27,11 @@ const reducers = {
     selectedSectors: (state.selectedSectors.length > 0 ? [] : allSectorIds),
   }),
 
+  [actions.TOGGLE_TAB]: (state, { payload }) => ({
+    ...state,
+    selectedTab: payload.tabId,
+  }),
+
   [actions.SEND_BOULDERS]: (state, { payload }) => ({
     ...state,
     sendMap: sendMap.addAll(state.sendMap, payload.sends),
@@ -89,6 +94,14 @@ const reducers = {
     };
   },
 
+  [actions.CHANGE_SEND_SUMMARY_PAGE]: (state, { payload }) => {
+    const page = payload.page || 1;
+    return {
+      ...state,
+      sendSummaryPage: (page >= 1 ? page : 1),
+    };
+  },
+
   [actions.SHOW_ERROR]: (state, { payload }) => {
     if (state.errorIgnoreList.indexOf(payload.ignoreId) >= 0) return state;
     return {
@@ -122,10 +135,12 @@ const reducers = {
 const defaultState = {
   selectedColor: null,
   selectedSectors: [],
+  selectedTab: 0,
   sendMap: sendMap.empty,
   sendList: sendList.empty,
   sendListPage: 1,
   sendSummary: sendSummary.empty,
+  sendSummaryPage: 1,
   error: null,
   isErrorHidden: null,
   errorIgnoreList: [],

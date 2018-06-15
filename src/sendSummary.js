@@ -140,6 +140,8 @@ export const removeDiff = (summary, send, deletionMarker) => {
   };
 };
 
+export const size = ({ sendList }) => sendListUtils.size(sendList);
+
 const getUser = (summary, send) => uncompressUser(summary.users[send.userId]);
 const addUserToSend = summary => send => ({ ...send, user: getUser(summary, send) });
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import withState from 'recompose/withState';
-import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -10,68 +9,14 @@ import TableFooter from '@material-ui/core/TableFooter';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
-import FlashIcon from '@material-ui/icons/FlashOn';
 import DeleteIcon from '@material-ui/icons/Delete';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import formatDistance from 'date-fns/distance_in_words';
-import differenceInDays from 'date-fns/difference_in_days';
-import format from 'date-fns/format';
-import fr from 'date-fns/locale/fr';
-import isEmpty from 'lodash/fp/isEmpty';
 
-import { getPaginatedSendList, getSelectedColor, getSelectedSectors } from '../selectors';
-import { changeSendListPage, toggleColor, toggleSector, submitSendDeletion } from '../actions';
-import colors from '../colors';
-import ColorButton from './ColorButton';
+import SendCell from './cells/SendCell';
+import DateCell from './cells/DateCell';
 import ConfirmDialog from './ConfirmDialog';
-
-const formatColor = (colorKey, { selectedColor, toggleColor }) => {
-  if (!colorKey) return null;
-  return (
-    <ColorButton
-      variant={selectedColor ? 'raised' : 'flat'}
-      size="small"
-      color={colorKey}
-      onClick={() => toggleColor(colorKey)}
-    >
-      {colors[colorKey].label}
-    </ColorButton>
-  );
-};
-
-const formatSector = (sectorId, { selectedSectors, classes, toggleSector }) => (
-  <IconButton
-    onClick={() => toggleSector(sectorId)}
-    className={`${classes.sectorButton} ${!isEmpty(selectedSectors) && classes.sectorButtonSelected}`}
-  >
-    {sectorId}
-  </IconButton>
-);
-
-const formatDate = (date) => {
-  const now = new Date();
-  const formatted = format(date, 'ddd DD/MM HH:mm', { locale: fr });
-  if (differenceInDays(date, now) > 2) return <span>formatted</span>;
-  return (
-    <Tooltip title={formatted}>
-      <span>{formatDistance(date, now, { locale: fr })}</span>
-    </Tooltip>
-  );
-};
-
-const formatType = (type, { classes }) => (
-  (type === 'flash') && <Tooltip title="Flash&eacute;"><FlashIcon className={classes.typeIcon} /></Tooltip>
-);
-
-const formatClear = (type, { classes }) => (
-  (type === 'clear') && (
-    <Tooltip title="Secteur d&eacute;mont&eacute;">
-      <RefreshIcon className={classes.clearIcon} />
-    </Tooltip>
-  )
-);
+import { getPaginatedSendList } from '../selectors';
+import { changeSendListPage, submitSendDeletion } from '../actions';
 
 const SendListTable = (props) => {
   const {
@@ -80,14 +25,13 @@ const SendListTable = (props) => {
     pageSize,
     totalSize,
     changeSendListPage,
-    classes,
     deletionConfirmTarget,
     toggleDeletionConfirmWithTarget,
     submitSendDeletion,
   } = props;
 
   return (
-    <Paper className={classes.container}>
+    <Paper>
       <Table>
         <TableHead>
           <TableRow>
@@ -101,12 +45,11 @@ const SendListTable = (props) => {
           { sends.map(send => (
             <TableRow key={send.id}>
               <TableCell padding="dense">
-                {formatColor(send.color, props)}
-                {formatClear(send.type, props)}
-                {formatSector(send.sectorId, props)}
-                {formatType(send.type, props)}
+                <SendCell send={send} />
               </TableCell>
-              <TableCell padding="dense">{formatDate(send.createdAt)}</TableCell>
+              <TableCell padding="dense">
+                <DateCell date={send.createdAt} />
+              </TableCell>
               <TableCell numeric padding="dense">
                 { send.type !== 'clear' && (
                   <IconButton onClick={() => toggleDeletionConfirmWithTarget(send)}>
@@ -150,44 +93,9 @@ const SendListTable = (props) => {
   );
 };
 
-const styles = {
-  container: {
-    marginTop: '15px',
-    marginBottom: '15px',
-  },
-
-  sectorButton: {
-    height: '28px',
-    width: '28px',
-    fontSize: '18px',
-  },
-
-  sectorButtonSelected: {
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
-  },
-
-  typeIcon: {
-    verticalAlign: 'middle',
-    marginLeft: '7px',
-  },
-
-  clearIcon: {
-    verticalAlign: 'middle',
-    // to align with the color buttons
-    width: '64px',
-    marginRight: '4px',
-  },
-};
-
-const StyledSendListTable = withStyles(styles)(SendListTable);
-
 const mapStateToProps = (state) => {
   const { sends, page, pageSize, totalSize } = getPaginatedSendList(state);
-  const selectedColor = getSelectedColor(state);
-  const selectedSectors = getSelectedSectors(state);
   return {
-    selectedColor,
-    selectedSectors,
     sends,
     page,
     pageSize,
@@ -195,8 +103,8 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = { changeSendListPage, toggleColor, toggleSector, submitSendDeletion };
+const mapDispatchToProps = { changeSendListPage, submitSendDeletion };
 
-const ConnectedSendListTable = connect(mapStateToProps, mapDispatchToProps)(StyledSendListTable);
+const ConnectedSendListTable = connect(mapStateToProps, mapDispatchToProps)(SendListTable);
 
 export default withState('deletionConfirmTarget', 'toggleDeletionConfirmWithTarget', false)(ConnectedSendListTable);

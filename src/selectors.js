@@ -1,7 +1,8 @@
 // Represents the highest sent boulder color for each sector
 import { createSelector } from 'reselect';
 import colorMap from './colorMap';
-import { getPage, size } from './sendList';
+import { getPage as paginateSendList, size as sendListSize } from './sendList';
+import { getPage as paginateSendSummary, size as sendSummarySize } from './sendSummary';
 
 // Firebase state getters
 
@@ -16,12 +17,15 @@ const uiStateGetter = propName => state => state.ui[propName];
 
 export const getSelectedColor = uiStateGetter('selectedColor');
 export const getSelectedSectors = uiStateGetter('selectedSectors');
+export const getSelectedTab = uiStateGetter('selectedTab');
 export const getSendMap = uiStateGetter('sendMap');
 export const getSendList = uiStateGetter('sendList');
 export const getSendSummary = uiStateGetter('sendSummary');
 export const getSendListPage = uiStateGetter('sendListPage');
+export const getSendSummaryPage = uiStateGetter('sendSummaryPage');
 
-export const getSendListSize = state => size(getSendList(state));
+export const getSendListSize = state => sendListSize(getSendList(state));
+export const getSendSummarySize = state => sendSummarySize(getSendSummary(state));
 export const getIsLoading = ({ ui: { loadingProcessIds } }) => loadingProcessIds.length > 0;
 
 export const getSelection = state => ({
@@ -59,5 +63,17 @@ export const getPaginatedSendList = createSelector(
   getSelectedColor,
   getSelectedSectors,
   getSendListPage,
-  (sendList, color, sectorIds, page) => getPage(sendList, { colors: color, sectorIds, page }),
+  (sendList, color, sectorIds, page) => (
+    paginateSendList(sendList, { colors: color, sectorIds, page })
+  ),
+);
+
+export const getPaginatedSendSummary = createSelector(
+  getSendSummary,
+  getSelectedColor,
+  getSelectedSectors,
+  getSendSummaryPage,
+  (summary, color, sectorIds, page) => (
+    paginateSendSummary(summary, { colors: color, sectorIds, page })
+  ),
 );
