@@ -57,7 +57,7 @@ const SignInButton = (props) => {
           : (signedInUser
             ? (
               <Fragment>
-                <img alt="avatar" src={signedInUser.photoURL} className={classes.avatar} />
+                <img alt="" src={signedInUser.photoURL} className={classes.avatar} />
                 <Hidden xsDown>
                   <span className={classes.name}>{signedInUser.displayName}</span>
                 </Hidden>
