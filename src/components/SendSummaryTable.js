@@ -9,6 +9,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
+import SendHeaderCell from './cells/SendHeaderCell';
 import SendCell from './cells/SendCell';
 import DateCell from './cells/DateCell';
 import { getPaginatedSendSummary } from '../selectors';
@@ -29,7 +30,7 @@ const SendSummaryTable = (props) => {
         <TableHead>
           <TableRow>
             <TableCell padding="dense">Grimpeur</TableCell>
-            <TableCell padding="dense">Blocs encha&icirc;n&eacute;s</TableCell>
+            <TableCell padding="dense"><SendHeaderCell /></TableCell>
             <TableCell padding="dense">Date</TableCell>
           </TableRow>
         </TableHead>

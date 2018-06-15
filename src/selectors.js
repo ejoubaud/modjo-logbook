@@ -23,6 +23,7 @@ export const getSendList = uiStateGetter('sendList');
 export const getSendSummary = uiStateGetter('sendSummary');
 export const getSendListPage = uiStateGetter('sendListPage');
 export const getSendSummaryPage = uiStateGetter('sendSummaryPage');
+export const getIsTableFilterSynced = uiStateGetter('isTableFilterSynced');
 
 export const getSendListSize = state => sendListSize(getSendList(state));
 export const getSendSummarySize = state => sendSummarySize(getSendSummary(state));
@@ -58,22 +59,26 @@ export const getColorMap = createSelector(
   (isColorMapMode, sendMap) => (isColorMapMode ? colorMap(sendMap) : null),
 );
 
+const getTableFilters = (state) => {
+  const { color, sectorIds } = getSelection(state);
+  const useFilters = getIsTableFilterSynced(state);
+  return useFilters ? { colors: color, sectorIds } : {};
+};
+
 export const getPaginatedSendList = createSelector(
   getSendList,
-  getSelectedColor,
-  getSelectedSectors,
   getSendListPage,
-  (sendList, color, sectorIds, page) => (
-    paginateSendList(sendList, { colors: color, sectorIds, page })
+  getTableFilters,
+  (sendList, page, filters) => (
+    paginateSendList(sendList, { ...filters, page })
   ),
 );
 
 export const getPaginatedSendSummary = createSelector(
   getSendSummary,
-  getSelectedColor,
-  getSelectedSectors,
   getSendSummaryPage,
-  (summary, color, sectorIds, page) => (
-    paginateSendSummary(summary, { colors: color, sectorIds, page })
+  getTableFilters,
+  (summary, page, filters) => (
+    paginateSendSummary(summary, { ...filters, page })
   ),
 );

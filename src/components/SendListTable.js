@@ -12,6 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 
+import SendHeaderCell from './cells/SendHeaderCell';
 import SendCell from './cells/SendCell';
 import DateCell from './cells/DateCell';
 import ConfirmDialog from './ConfirmDialog';
@@ -35,7 +36,9 @@ const SendListTable = (props) => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell padding="dense">Blocs encha&icirc;n&eacute;s</TableCell>
+            <TableCell padding="dense">
+              <SendHeaderCell />
+            </TableCell>
             <TableCell padding="dense">Date</TableCell>
             <TableCell numeric padding="dense">Supprimer</TableCell>
           </TableRow>

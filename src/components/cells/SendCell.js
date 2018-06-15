@@ -5,7 +5,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import IconButton from '@material-ui/core/IconButton';
 import FlashIcon from '@material-ui/icons/FlashOn';
-import isEmpty from 'lodash/fp/isEmpty';
 
 import colors from '../../colors';
 import ColorButton from '../ColorButton';
@@ -18,7 +17,7 @@ const SendCell = ({ send, selectedColor, selectedSectors, classes, toggleColor, 
     <Fragment>
       { color && (
         <ColorButton
-          variant={selectedColor ? 'raised' : 'flat'}
+          variant={(selectedColor === color) ? 'raised' : 'flat'}
           size="small"
           color={color}
           onClick={() => toggleColor(color)}
@@ -35,7 +34,7 @@ const SendCell = ({ send, selectedColor, selectedSectors, classes, toggleColor, 
 
       <IconButton
         onClick={() => toggleSector(sectorId)}
-        className={`${classes.sectorButton} ${!isEmpty(selectedSectors) && classes.sectorButtonSelected}`}
+        className={`${classes.sectorButton} ${selectedSectors.indexOf(sectorId) >= 0 && classes.sectorButtonSelected}`}
       >
         {sectorId}
       </IconButton>

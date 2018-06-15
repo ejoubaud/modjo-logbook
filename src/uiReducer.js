@@ -102,6 +102,13 @@ const reducers = {
     };
   },
 
+  [actions.TOGGLE_TABLE_FILTER_SYNC]: (state, { payload }) => ({
+    ...state,
+    isTableFilterSynced: payload.on,
+    sendListPage: 1,
+    sendSummaryPage: 1,
+  }),
+
   [actions.SHOW_ERROR]: (state, { payload }) => {
     if (state.errorIgnoreList.indexOf(payload.ignoreId) >= 0) return state;
     return {
@@ -141,6 +148,7 @@ const defaultState = {
   sendListPage: 1,
   sendSummary: sendSummary.empty,
   sendSummaryPage: 1,
+  isTableFilterSynced: false,
   error: null,
   isErrorHidden: null,
   errorIgnoreList: [],

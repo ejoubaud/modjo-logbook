@@ -12,6 +12,7 @@ export const SYNC_SEND_SUMMARY = 'SYNC_SEND_SUMMARY';
 export const ROLLBACK = 'ROLLBACK';
 export const CHANGE_SEND_LIST_PAGE = 'CHANGE_SEND_LIST_PAGE';
 export const CHANGE_SEND_SUMMARY_PAGE = 'CHANGE_SEND_SUMMARY_PAGE';
+export const TOGGLE_TABLE_FILTER_SYNC = 'TOGGLE_TABLE_FILTER_SYNC';
 export const SHOW_ERROR = 'SHOW_ERROR';
 export const HIDE_ERROR = 'HIDE_ERROR';
 export const TOGGLE_LOADING = 'TOGGLE_LOADING';
@@ -92,6 +93,11 @@ export const changeSendListPage = page => ({
 export const changeSendSummaryPage = page => ({
   type: CHANGE_SEND_SUMMARY_PAGE,
   payload: { page },
+});
+
+export const toggleTableFilterSync = on => ({
+  type: TOGGLE_TABLE_FILTER_SYNC,
+  payload: { on },
 });
 
 // ignoreId is optional
