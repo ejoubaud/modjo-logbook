@@ -95,8 +95,6 @@ const BoulderForm = (props) => {
   );
 };
 
-BoulderForm.defaultProps = { date: new Date().toISOString().substr(0, 10) };
-
 const mapStateToProps = (state) => {
   const { color, sectorIds } = getSelection(state);
   return {
