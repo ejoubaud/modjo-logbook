@@ -36,10 +36,12 @@ const Sector = ({
   </a>
 );
 
-const getHighlightFill = ({ isSelected, isSent, anySectorSelected, color }) => {
+const getHighlightFill = ({ isSelected, isSent, anySectorSelected, isColorMapMode, color }) => {
   const { main, light, dark } = getPalette(color);
+  const defaultPalette = getPalette(null);
   return {
     atRest: (() => {
+      if (isColorMapMode && isSelected) return defaultPalette.dark;
       if (isSelected) return dark;
       if (isSent) {
         if (anySectorSelected) return light;
@@ -48,11 +50,15 @@ const getHighlightFill = ({ isSelected, isSent, anySectorSelected, color }) => {
       return 'transparent';
     })(),
     onHover: (() => {
+      if (isColorMapMode) return defaultPalette.light;
       if (isSelected) return dark;
       if (anySectorSelected) return main;
       return light;
     })(),
-    onActive: main,
+    onActive: (() => {
+      if (isColorMapMode) return defaultPalette.main;
+      return main;
+    })(),
   };
 };
 
@@ -98,7 +104,9 @@ const mapStateToProps = (state, props) => {
     : isSectorSent(sendMap, selectedColor, props.id);
   const isSelected = selectedSectorIds.indexOf(props.id) >= 0;
   const anySectorSelected = selectedSectorIds.length > 0;
-  const highlightFill = getHighlightFill({ isSelected, isSent, anySectorSelected, color });
+  const highlightFill = getHighlightFill(
+    { isSelected, isSent, anySectorSelected, isColorMapMode, color }
+  );
   return {
     color,
     isSent,
