@@ -67,15 +67,12 @@ const addUser = (summary, user) => {
   };
 };
 
-const setUserId = (send, shortId) => ({ ...send, userId: shortId });
-// finds the user's short ID in summary and assigns it to send (assumes user added to summary)
-const addShortUserIdToSend = (summary, user) => send => (
-  setUserId(send, getShortId(summary, user.uid))
-);
+const setSendShortId = shortId => send => ({ ...send, userId: shortId });
 
 // adds a send assuming the user was added to users and has a short ID in shortIdsByUid
 const addSend = (summary, send, user) => {
-  const sendWithShortUserId = addShortUserIdToSend(summary, user)(send);
+  const shortId = getShortId(summary, user.uid);
+  const sendWithShortUserId = setSendShortId(shortId)(send);
   return {
     ...summary,
     sendList: sendListUtils.add(summary.sendList, sendWithShortUserId),
@@ -95,7 +92,8 @@ export const addAll = (summary, sends, user) => {
 // returns an object to add just the relevant to Firestore doc, with deep merge
 export const addAllDiff = (summary, sends, user) => {
   const userDiff = addUserDiff(summary, user);
-  const sendsWithShortUserId = sends.map(addShortUserIdToSend(summary, user));
+  const shortId = getShortId(summary, user.uid) || getShortId(userDiff, user.uid);
+  const sendsWithShortUserId = sends.map(setSendShortId(shortId));
   const sendListDiff = sendListUtils.addAllDiff(summary.sendList, sendsWithShortUserId);
   return {
     ...userDiff,
