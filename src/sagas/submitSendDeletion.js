@@ -6,6 +6,7 @@ import { firestore as db, docRef, deletionMarker } from '../firebase';
 import * as sendListUtils from '../sendList';
 import * as sendSummaryUtils from '../sendSummary';
 import { getSignedInUser, getSendList } from '../selectors';
+import { isClear } from '../send';
 
 function* submitSendDeletion({ payload: { send } }) {
   const signedInUser = yield select(getSignedInUser);
@@ -13,6 +14,9 @@ function* submitSendDeletion({ payload: { send } }) {
 
   if (signedInUser) {
     const loadingId = generateLoadingId('submitSendDeletion');
+    const table = isClear(send) ? 'clears' : 'sends';
+    console.log('table', table, send);
+
     yield put(removeSend(send));
     try {
       yield put(toggleLoading(true, loadingId));
@@ -35,7 +39,7 @@ function* submitSendDeletion({ payload: { send } }) {
               return transaction.set(summaryDoc.ref, summaryDiff, { merge: true });
             })
           )),
-          call([docRef('sends', send.id), 'delete']),
+          call([docRef(table, send.id), 'delete']),
         ]);
       } catch (error) {
         console.log('submitSendDeletion error', error);

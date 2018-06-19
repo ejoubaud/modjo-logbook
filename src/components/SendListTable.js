@@ -9,12 +9,11 @@ import TableFooter from '@material-ui/core/TableFooter';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
 
 import SendHeaderCell from './cells/SendHeaderCell';
 import SendCell from './cells/SendCell';
 import DateCell from './cells/DateCell';
+import DeleteSendCell from './cells/DeleteSendCell';
 import ConfirmDialog from './ConfirmDialog';
 import { getPaginatedSendList } from '../selectors';
 import { changeSendListPage, submitSendDeletion } from '../actions';
@@ -54,11 +53,10 @@ const SendListTable = (props) => {
                 <DateCell date={send.createdAt} />
               </TableCell>
               <TableCell numeric padding="dense">
-                { send.type !== 'clear' && (
-                  <IconButton onClick={() => toggleDeletionConfirmWithTarget(send)}>
-                    <DeleteIcon />
-                  </IconButton>
-                ) }
+                <DeleteSendCell
+                  send={send}
+                  toggleDeletionConfirmWithTarget={toggleDeletionConfirmWithTarget}
+                />
               </TableCell>
             </TableRow>
           )) }

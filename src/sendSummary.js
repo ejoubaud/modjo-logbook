@@ -116,7 +116,7 @@ const removeUser = (summary, uid) => {
 export const remove = (summary, send) => {
   const newSendList = sendListUtils.remove(summary.sendList, send);
   const shortId = getShortId(summary, send.userId);
-  const shouldRemoveUser = !!sendListUtils.firstByUserId(newSendList, shortId);
+  const shouldRemoveUser = !!sendListUtils.hasOneByUserId(newSendList, shortId);
   const baseSummary = shouldRemoveUser ? removeUser(summary) : summary;
   return {
     ...baseSummary,

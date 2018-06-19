@@ -111,14 +111,54 @@ const selectFirst = (sendList, filterCb) => (
   select(sendList, filterCb, { until: res => res.length > 0 })[0]
 );
 
-export const firstByUserId = (sendList, userId) => selectFirst(sendList, ({ u }) => u === userId);
+const clearAbbrev = compressType('clear');
+
+// assumes send is somewhere in sendList
+export const wasSectorClearedSince = (sendList, send) => {
+  const [lastClearOrThisSend] = selectFirst(sendList, (s, id) => (
+    s.s === send.sectorId && (s.t === clearAbbrev || id === send.id)
+  ));
+  return lastClearOrThisSend.t === clearAbbrev;
+};
+
+// not used anymore
+// assumes send is somewhere in sendList
+export const wasSectorSentSince = (sendList, send) => {
+  const [lastSendOrThisClear] = selectFirst(sendList, (s, id) => (
+    s.s === send.sectorId && (s.t !== clearAbbrev || id === send.id)
+  ));
+  return lastSendOrThisClear.t !== clearAbbrev;
+};
+
+export const hasOneByUserId = (sendList, userId) => (
+  !!selectFirst(sendList, ({ u }) => u === userId)
+);
 export const hasSeveralByUserId = (sendList, userId) => (
   select(
     sendList,
     ({ u }) => u === userId,
-    res => res.length >= 2,
+    { until: res => res.length >= 2 },
   ).length >= 2
 );
+
+export const lastByColorForSector = (sendList, sectorId, colorKeys) => {
+  let colorKeysLeft = toSet(colorKeys);
+  let lastSendsByColor = {};
+  select(
+    sendList,
+    (send, id) => {
+      const { s, c, t } = send;
+      if (s === sectorId && (t === 'clear' || colorKeysLeft[c])) {
+        colorKeysLeft = unset(c, colorKeysLeft);
+        lastSendsByColor = { ...lastSendsByColor, [c]: uncompressSend(send, id) };
+        return true;
+      }
+      return false;
+    },
+    { until: res => res.length >= colorKeys.length },
+  );
+  return lastSendsByColor;
+};
 
 export const add = (sendList, send) => {
   const id = send.id || generateSendId();

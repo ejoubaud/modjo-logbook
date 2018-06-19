@@ -20,23 +20,19 @@ function* submitClears() {
       yield put(toggleLoading(true, loadingId));
 
       const { uid } = signedInUser;
-      // these go into the clear collection, while clearSends go into the sendList doc
-      const clears = sectorIds.map(sectorId => (
-        { userId: uid, sectorId, createdAt: new Date() }
-      ));
 
       try {
         // Firestore has no cross-doc trx ; call sendList trx before as it can fail
-        yield call([db, 'runTransaction'], transaction => (
-          transaction.get(docRef('sendLists', uid)).then((sendListDoc) => {
-            const latestSendList = sendListDoc.data() || sendListUtils.empty;
-            const sendListDiff = sendListUtils.addAllDiff(latestSendList, clearSends);
-            return transaction.set(sendListDoc.ref, sendListDiff, { merge: true });
-          })
-        ));
-        yield all(
-          clears.map(clear => call([db.collection('clears'), 'add'], clear)),
-        );
+        yield all([
+          call([db, 'runTransaction'], transaction => (
+            transaction.get(docRef('sendLists', uid)).then((sendListDoc) => {
+              const latestSendList = sendListDoc.data() || sendListUtils.empty;
+              const sendListDiff = sendListUtils.addAllDiff(latestSendList, clearSends);
+              return transaction.set(sendListDoc.ref, sendListDiff, { merge: true });
+            })
+          )),
+          ...clearSends.map(send => call([docRef('clears', send.id), 'set'], send)),
+        ]);
       } catch (error) {
         console.log('submitClears error', error);
         yield put(rollback({ sendList, error }));

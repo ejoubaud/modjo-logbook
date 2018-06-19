@@ -9,12 +9,14 @@ export const generateSendId = () => nanoid(10);
 export const createSend = ({ color, sectorId, type, createdAt, userId, id }) => ({
   id: id || generateSendId(),
   userId,
-  color,
   sectorId,
   type,
   createdAt: createdAt || new Date(),
+  ...(color ? { color } : {}),
 });
 
 export const createSends = ({ color, sectorIds, type, userId }) => (
   map(sectorId => createSend({ color, sectorId, type, userId }), sectorIds)
 );
+
+export const isClear = send => send.type === 'clear';
