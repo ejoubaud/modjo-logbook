@@ -33,7 +33,7 @@ import reduce from 'lodash/fp/reduce';
 import unset from 'lodash/fp/unset';
 import _isEmpty from 'lodash/fp/isEmpty';
 
-import colors from './colors';
+import colors, { colorKeys as allColorKeys } from './colors';
 import sendTypes from './send-types';
 import { generateSendId } from './send';
 
@@ -90,7 +90,8 @@ export const empty = { '#': 0, l: {}, h: null, $: null };
 export const isEmpty = ({ l }) => !l || _isEmpty(l);
 
 // low-level iterator on the chained list, returns an array of sends
-const select = (sendList, filterCb, { until = () => false }) => {
+const select = (sendList, filterCb, opts = {}) => {
+  const { until = () => false } = opts;
   if (!sendList) return [];
   const { l, h } = sendList;
   if (!(l || h)) return [];
@@ -268,6 +269,23 @@ const combinePageFilters = (definitions) => {
 };
 
 export const size = sendList => sendList['#'];
+
+export const toSendMap = (sendList) => {
+  const results = {};
+  select(
+    sendList,
+    (send, id) => {
+      const sectorId = send.s;
+      const colorKeys = send.c ? [send.c] : allColorKeys; // all color if no color/is clear
+      const sectorContent = results[sectorId] || {};
+      colorKeys.forEach((c) => {
+        if (!sectorContent[c]) sectorContent[c] = uncompressSend(send, id);
+      });
+      results[sectorId] = sectorContent;
+    },
+  );
+  return results;
+};
 
 export const getPage = (sendList, { page = 1, pageSize = 10, colors = null, sectorIds = null }) => {
   const matchesFilters = combinePageFilters([

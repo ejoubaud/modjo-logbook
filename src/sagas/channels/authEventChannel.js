@@ -1,7 +1,6 @@
 import { eventChannel } from 'redux-saga';
 import { takeEvery, put, take, call, apply, fork, all } from 'redux-saga/effects';
 
-import createSendMapChannel from './sendMapEventChannel';
 import createSendListChannel from './sendListEventChannel';
 import createSendSummaryChannel, { sendSummaryFirstLoad } from './sendSummaryEventChannel';
 import { generateLoadingId } from '../utils';
@@ -49,9 +48,7 @@ function* startWatching(channels) {
 
 function* createOrReplaceSubChannels(user, subChannels) {
   if (subChannels.length > 0) yield call(stopAll, subChannels);
-  return [createSendMapChannel, createSendListChannel]
-    .map(createChannel => createChannel(user))
-    .concat(createSendSummaryChannel()); // summary doesn't need the user
+  return [createSendListChannel(user), createSendSummaryChannel()];
 }
 
 export default function* handleAuthEventChannel() {

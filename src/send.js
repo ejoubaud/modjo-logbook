@@ -1,5 +1,6 @@
 // Represents a send, i.e. a user sending a specific boulder
 // (color/sector pair) with a certain type (flash/redpoint)
+// or a clear (clearing a sector that's been reopened/unmounted)
 import map from 'lodash/fp/map';
 import nanoid from 'nanoid';
 

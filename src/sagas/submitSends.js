@@ -5,13 +5,12 @@ import { sendBoulders, toggleLoading, showError, rollback } from '../actions';
 import { getSendSubmitStates } from '../selectors';
 import { firestore as db, docRef } from '../firebase';
 import { createSends } from '../send';
-import * as sendMapUtils from '../sendMap';
 import * as sendListUtils from '../sendList';
 import * as sendSummaryUtils from '../sendSummary';
 import mockUser from '../mockUser';
 
 function* submitSends({ payload: { type } }) {
-  const { color, sectorIds, sendMap, sendList, signedInUser } = yield select(getSendSubmitStates);
+  const { color, sectorIds, sendList, signedInUser } = yield select(getSendSubmitStates);
 
   if (signedInUser) {
     const loadingId = generateLoadingId('submitSends');
@@ -21,8 +20,6 @@ function* submitSends({ payload: { type } }) {
 
     try {
       yield put(toggleLoading(true, loadingId));
-
-      const sendMapDiff = sendMapUtils.addAll(sendMapUtils.empty, sends);
 
       const { uid } = signedInUser;
       try {
@@ -43,11 +40,10 @@ function* submitSends({ payload: { type } }) {
             })
           )),
           ...sends.map(send => call([docRef('sends', send.id), 'set'], send)),
-          call([docRef('sendMaps', uid), 'set'], sendMapDiff, { merge: true }),
         ]);
       } catch (error) {
         console.log('submitSends error', error);
-        yield put(rollback({ sendMap, sendList, error }));
+        yield put(rollback({ sendList, error }));
       }
     } finally {
       yield put(toggleLoading(false, loadingId));

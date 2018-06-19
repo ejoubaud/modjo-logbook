@@ -6,7 +6,6 @@ export const SEND_BOULDERS = 'SEND_BOULDERS';
 export const CLEAR_BOULDERS = 'CLEAR_BOULDERS'; // not used anymore
 export const CLEAR_SECTORS = 'CLEAR_SECTORS';
 export const REMOVE_SEND = 'REMOVE_SEND';
-export const SYNC_SEND_MAP = 'SYNC_SEND_MAP';
 export const SYNC_SEND_LIST = 'SYNC_SEND_LIST';
 export const SYNC_SEND_SUMMARY = 'SYNC_SEND_SUMMARY';
 export const ROLLBACK = 'ROLLBACK';
@@ -65,11 +64,6 @@ export const removeSend = send => ({
   payload: { send },
 });
 
-export const syncSendMap = sendMap => ({
-  type: SYNC_SEND_MAP,
-  payload: { sendMap },
-});
-
 export const syncSendList = sendList => ({
   type: SYNC_SEND_LIST,
   payload: { sendList },
@@ -80,9 +74,9 @@ export const syncSendSummary = sendSummary => ({
   payload: { sendSummary },
 });
 
-export const rollback = ({ sendMap, sendList, error }) => ({
+export const rollback = ({ sendList, error }) => ({
   type: ROLLBACK,
-  payload: { previousSendMap: sendMap, previousSendList: sendList, error },
+  payload: { previousSendList: sendList, error },
 });
 
 export const changeSendListPage = page => ({

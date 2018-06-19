@@ -53,9 +53,10 @@ export const removeSectors = (sendMap, sectorIds) => (
   )
 );
 
-export const isSent = curry((sendMap, color, sectorId) => (
-  !!get([color, sectorId], sendMap)
-));
+export const isSent = curry((sendMap, color, sectorId) => {
+  const send = get([color, sectorId], sendMap);
+  return send && send.type !== 'clear';
+});
 
 export const isEquivalent = (map1, map2) => {
   const colors = union(keys(map1), keys(map2));

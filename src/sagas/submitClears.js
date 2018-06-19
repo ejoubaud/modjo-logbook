@@ -3,14 +3,12 @@ import { all, call, put, select } from 'redux-saga/effects';
 import { generateLoadingId } from './utils';
 import { clearSectors, toggleLoading, showError, rollback } from '../actions';
 import { getSendSubmitStates } from '../selectors';
-import { firestore as db, docRef, deletionMarker } from '../firebase';
-import * as sendMapUtils from '../sendMap';
+import { firestore as db, docRef } from '../firebase';
 import * as sendListUtils from '../sendList';
-import { colorKeys as allColors } from '../colors';
 import { createSends } from '../send';
 
 function* submitClears() {
-  const { sectorIds, sendMap, sendList, signedInUser } = yield select(getSendSubmitStates);
+  const { sectorIds, sendList, signedInUser } = yield select(getSendSubmitStates);
   // for sendList
 
   if (signedInUser) {
@@ -22,9 +20,6 @@ function* submitClears() {
       yield put(toggleLoading(true, loadingId));
 
       const { uid } = signedInUser;
-      const sendMapDiff = sendMapUtils.populateWith(
-        sendMapUtils.empty, allColors, sectorIds, deletionMarker,
-      );
       // these go into the clear collection, while clearSends go into the sendList doc
       const clears = sectorIds.map(sectorId => (
         { userId: uid, sectorId, createdAt: new Date() }
@@ -39,13 +34,12 @@ function* submitClears() {
             return transaction.set(sendListDoc.ref, sendListDiff, { merge: true });
           })
         ));
-        yield all([
-          ...clears.map(clear => call([db.collection('clears'), 'add'], clear)),
-          call([docRef('sendMaps', uid), 'set'], sendMapDiff, { merge: true }),
-        ]);
+        yield all(
+          clears.map(clear => call([db.collection('clears'), 'add'], clear)),
+        );
       } catch (error) {
         console.log('submitClears error', error);
-        yield put(rollback({ sendMap, sendList, error }));
+        yield put(rollback({ sendList, error }));
       }
     } finally {
       yield put(toggleLoading(false, loadingId));

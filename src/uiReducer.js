@@ -3,7 +3,6 @@ import union from 'lodash/fp/union';
 import without from 'lodash/fp/without';
 
 import * as actions from './actions';
-import * as sendMap from './sendMap';
 import * as sendList from './sendList';
 import * as sendSummary from './sendSummary';
 import { allIds as allSectorIds } from './sectors';
@@ -34,7 +33,6 @@ const reducers = {
 
   [actions.SEND_BOULDERS]: (state, { payload }) => ({
     ...state,
-    sendMap: sendMap.addAll(state.sendMap, payload.sends),
     sendList: sendList.addAll(state.sendList, payload.sends),
     sendSummary: sendSummary.addAll(state.sendSummary, payload.sends, payload.user),
     selectedSectors: [],
@@ -43,28 +41,19 @@ const reducers = {
   // not used anymore (we clear sectors now, not just boulders)
   [actions.CLEAR_BOULDERS]: (state, { payload }) => ({
     ...state,
-    sendMap: sendMap.removeSectorsInColor(state.sendMap, payload.color, payload.sectors),
     selectedSectors: [],
   }),
 
   [actions.CLEAR_SECTORS]: (state, { payload }) => ({
     ...state,
-    sendMap: sendMap.removeSectors(state.sendMap, payload.clearSends.map(s => s.sectorId)),
     sendList: sendList.addAll(state.sendList, payload.clearSends),
     selectedSectors: [],
   }),
 
   [actions.REMOVE_SEND]: (state, { payload }) => ({
     ...state,
-    sendMap: sendMap.remove(state.sendMap, payload.send.color, payload.send.sectorId),
     sendList: sendList.remove(state.sendList, payload.send),
     sendSummary: sendSummary.remove(state.sendSummary, payload.send),
-  }),
-
-  [actions.SYNC_SEND_MAP]: (state, { payload }) => ({
-    ...state,
-    sendMap: payload.sendMap,
-    selectedSectors: [],
   }),
 
   [actions.SYNC_SEND_LIST]: (state, { payload }) => ({
@@ -79,7 +68,6 @@ const reducers = {
 
   [actions.ROLLBACK]: (state, { payload }) => ({
     ...state,
-    sendMap: payload.previousSendMap,
     sendList: payload.previousSendList || state.previousSendList,
     error: payload.error,
     isErrorHidden: false,
@@ -143,7 +131,6 @@ const defaultState = {
   selectedColor: null,
   selectedSectors: [],
   selectedTab: 0,
-  sendMap: sendMap.empty,
   sendList: sendList.empty,
   sendListPage: 1,
   sendSummary: sendSummary.empty,

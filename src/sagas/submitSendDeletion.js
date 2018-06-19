@@ -3,28 +3,19 @@ import { all, call, put, select } from 'redux-saga/effects';
 import { generateLoadingId } from './utils';
 import { removeSend, toggleLoading, showError, rollback } from '../actions';
 import { firestore as db, docRef, deletionMarker } from '../firebase';
-import * as sendMapUtils from '../sendMap';
 import * as sendListUtils from '../sendList';
 import * as sendSummaryUtils from '../sendSummary';
-import { getSignedInUser, getSendSummaries } from '../selectors';
+import { getSignedInUser, getSendList } from '../selectors';
 
 function* submitSendDeletion({ payload: { send } }) {
   const signedInUser = yield select(getSignedInUser);
-  const { sendList, sendMap } = yield select(getSendSummaries);
-  const { color, sectorId } = send;
+  const sendList = yield select(getSendList);
 
   if (signedInUser) {
     const loadingId = generateLoadingId('submitSendDeletion');
     yield put(removeSend(send));
     try {
       yield put(toggleLoading(true, loadingId));
-
-      const sendMapDiff = sendMapUtils.populateWith(
-        sendMapUtils.empty,
-        [color],
-        [sectorId],
-        deletionMarker,
-      );
 
       const { uid } = signedInUser;
       try {
@@ -45,11 +36,10 @@ function* submitSendDeletion({ payload: { send } }) {
             })
           )),
           call([docRef('sends', send.id), 'delete']),
-          call([docRef('sendMaps', uid), 'set'], sendMapDiff, { merge: true }),
         ]);
       } catch (error) {
         console.log('submitSendDeletion error', error);
-        yield put(rollback({ sendMap, sendList, error }));
+        yield put(rollback({ sendList, error }));
       }
     } finally {
       yield put(toggleLoading(false, loadingId));
