@@ -29,6 +29,8 @@ const reducers = {
   [actions.TOGGLE_TAB]: (state, { payload }) => ({
     ...state,
     selectedTab: payload.tabId,
+    sendListPage: 1,
+    sendSummaryPage: 1,
   }),
 
   [actions.SEND_BOULDERS]: (state, { payload }) => ({
