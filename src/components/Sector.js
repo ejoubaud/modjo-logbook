@@ -37,12 +37,14 @@ const Sector = ({
 );
 
 const getHighlightFill = ({ isSelected, isSent, anySectorSelected, isColorMapMode, color }) => {
-  const { main, light, dark } = getPalette(color);
+  const { main, light } = getPalette(color);
   const defaultPalette = getPalette(null);
   return {
     atRest: (() => {
-      if (isColorMapMode && isSelected) return defaultPalette.dark;
-      if (isSelected) return dark;
+      if (isSelected) {
+        if (isSent) return defaultPalette.dark;
+        return defaultPalette.main;
+      }
       if (isSent) {
         if (anySectorSelected) return light;
         return main;
@@ -50,14 +52,16 @@ const getHighlightFill = ({ isSelected, isSent, anySectorSelected, isColorMapMod
       return 'transparent';
     })(),
     onHover: (() => {
-      if (isColorMapMode) return defaultPalette.light;
-      if (isSelected) return dark;
-      if (anySectorSelected) return main;
-      return light;
+      if (isSelected) {
+        if (isSent) return defaultPalette.main;
+        return defaultPalette.light;
+      }
+      if (isSent) return defaultPalette.main;
+      return defaultPalette.light;
     })(),
     onActive: (() => {
-      if (isColorMapMode) return defaultPalette.main;
-      return main;
+      if (isSent) return defaultPalette.light;
+      return defaultPalette.main;
     })(),
   };
 };
@@ -83,9 +87,9 @@ const styles = {
   },
 
   highlight: ({ highlightFill: { atRest } }) => ({
+    transition: 'fill .2s',
     fill: atRest,
     fillOpacity: '.6',
-    transition: 'fill .2s',
   }),
 };
 
