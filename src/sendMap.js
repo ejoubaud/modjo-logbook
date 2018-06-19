@@ -3,6 +3,6 @@ import get from 'lodash/fp/get';
 import curry from 'lodash/fp/curry';
 
 export const isSent = curry((sendMap, color, sectorId) => {
-  const send = get([color, sectorId], sendMap);
+  const send = get([sectorId, color], sendMap);
   return send && send.type !== 'clear';
 });

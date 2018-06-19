@@ -276,7 +276,8 @@ export const toSendMap = (sendList) => {
     sendList,
     (send, id) => {
       const sectorId = send.s;
-      const colorKeys = send.c ? [send.c] : allColorKeys; // all color if no color/is clear
+      // all color if no color/is clear
+      const colorKeys = send.c ? [uncompressColor(send.c)] : allColorKeys;
       const sectorContent = results[sectorId] || {};
       colorKeys.forEach((c) => {
         if (!sectorContent[c]) sectorContent[c] = uncompressSend(send, id);
