@@ -3,16 +3,18 @@ import { put, call, select } from 'redux-saga/effects';
 
 import { firestore } from '../../firebase';
 import { getSendSummary } from '../../selectors';
-import { syncSendSummary } from '../../actions';
-import { isEmpty, isEquivalent } from '../../sendSummary';
+import { syncSendSummary, toggleTab } from '../../actions';
+import { empty, isEmpty, isEquivalent } from '../../sendSummary';
 
 const docRef = firestore.collection('sendSummary').doc('current');
 
 export function* sendSummaryFirstLoad() {
-  const oldDoc = yield select(getSendSummary);
-  if (!isEmpty(oldDoc)) return;
+  const oldSummary = yield select(getSendSummary);
+  if (!isEmpty(oldSummary)) return;
   const newDoc = yield call([docRef, 'get']);
-  yield put(syncSendSummary(newDoc.data()));
+  const newSummary = newDoc.data() || empty;
+  yield put(toggleTab(0));
+  yield put(syncSendSummary(newSummary));
 }
 
 function* handleEvent({ doc }) {
