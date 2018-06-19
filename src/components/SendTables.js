@@ -7,11 +7,12 @@ import Paper from '@material-ui/core/Paper';
 
 import SendSummaryTable from './SendSummaryTable';
 import SendListTable from './SendListTable';
-import { getSelectedTab, getSignedInUser } from '../selectors';
+import { getSelectedTab, getSendList } from '../selectors';
 import { toggleTab } from '../actions';
+import { isEmpty } from '../sendList';
 
-const SendTables = ({ selectedTab, signedInUser, classes, toggleTab }) => {
-  if (!signedInUser) {
+const SendTables = ({ selectedTab, hasSendList, classes, toggleTab }) => {
+  if (!hasSendList) {
     return (
       <div className={classes.container}>
         <SendSummaryTable />
@@ -30,11 +31,9 @@ const SendTables = ({ selectedTab, signedInUser, classes, toggleTab }) => {
           <Tab label="Actus">
             <SendSummaryTable />
           </Tab>
-          { signedInUser && (
-            <Tab label="Mon historique">
-              <SendListTable />
-            </Tab>
-          ) }
+          <Tab label="Mon historique">
+            <SendListTable />
+          </Tab>
         </Tabs>
       </Paper>
       { selectedTab === 0 && <SendSummaryTable /> }
@@ -45,7 +44,7 @@ const SendTables = ({ selectedTab, signedInUser, classes, toggleTab }) => {
 
 const mapStateToProps = state => ({
   selectedTab: getSelectedTab(state),
-  signedInUser: getSignedInUser(state),
+  hasSendList: !isEmpty(getSendList(state)),
 });
 
 const styles = {
