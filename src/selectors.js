@@ -6,7 +6,8 @@ import { getPage as paginateSendSummary, size as sendSummarySize } from './sendS
 
 // Firebase state getters
 
-export const getSignedInUser = ({ firebase: { auth } }) => !auth.isEmpty && auth;
+export const getSignedInUserId = ({ firebase: { auth } }) => !auth.isEmpty && auth.uid;
+export const getSignedInUser = ({ firebase: { profile, auth } }) => !profile.isEmpty && !auth.isEmpty && { ...profile, uid: auth.uid };
 export const getIsAuthLoading = ({ firebase: { auth, profile } }) => (
   !auth.isLoaded || !profile.isLoaded
 );

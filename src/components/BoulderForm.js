@@ -14,7 +14,7 @@ import SubmitButton from './SubmitButton';
 import ConfirmDialog from './ConfirmDialog';
 import ToggleAllSectors from './ToggleAllSectors';
 import { submitSends, submitClears } from '../actions';
-import { getColorMap, getSignedInUser, getSelection, getSendMap, getSendList } from '../selectors';
+import { getColorMap, getSelection, getSendMap, getSendList } from '../selectors';
 import * as sendMapUtils from '../sendMap';
 
 promiseFinally.shim();
@@ -121,7 +121,6 @@ const mapStateToProps = (state) => {
     sendList: getSendList(state),
     isColorMapMode: !color,
     colorMap: getColorMap(state),
-    signedInUser: getSignedInUser(state),
   };
 };
 

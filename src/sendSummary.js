@@ -36,7 +36,7 @@ const generateShortUserId = ({ users }) => {
 
 const compressUser = ({ displayName, photoURL }) => ({
   n: displayName,
-  a: photoURL,
+  ...(photoURL ? { a: photoURL } : {}),
 });
 
 const uncompressUser = ({ n, a }) => ({
@@ -46,7 +46,7 @@ const uncompressUser = ({ n, a }) => ({
 
 const getShortId = ({ shortIdsByUid }, uid) => shortIdsByUid[uid];
 
-const addUserDiff = (summary, user) => {
+export const addUserDiff = (summary, user) => {
   const existingShortId = getShortId(summary, user.uid);
   const compressedUser = compressUser(user);
   if (existingShortId) return { users: { [existingShortId]: compressedUser } };
@@ -142,8 +142,22 @@ export const removeDiff = (summary, send, deletionMarker) => {
 
 export const size = ({ sendList }) => sendListUtils.size(sendList);
 
-const getUser = (summary, send) => uncompressUser(summary.users[send.userId]);
-const addUserToSend = summary => send => ({ ...send, user: getUser(summary, send) });
+const getUserByShortId = (summary, shortUserId) => uncompressUser(summary.users[shortUserId]);
+const addUserToSend = summary => send => ({
+  ...send,
+  user: getUserByShortId(summary, send.userId),
+});
+const getUserByUid = (summary, uid) => (
+  getUserByShortId(summary, getShortId(summary, uid))
+);
+
+export const hasUser = (summary, uid) => !!getUserByUid(summary, uid);
+
+export const hasSameDisplayName = (summary1, summary2, uid) => {
+  const user1 = getUserByUid(summary1, uid);
+  const user2 = getUserByUid(summary2, uid);
+  return user1 && user2 && user1.displayName === user2.displayName;
+};
 
 export const getPage = (summary, options = {}) => {
   const { sendList } = summary;

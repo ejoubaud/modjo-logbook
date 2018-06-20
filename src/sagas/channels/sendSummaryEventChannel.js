@@ -2,9 +2,9 @@ import { eventChannel } from 'redux-saga';
 import { put, call, select } from 'redux-saga/effects';
 
 import { firestore } from '../../firebase';
-import { getSendSummary } from '../../selectors';
+import { getSendSummary, getSignedInUserId } from '../../selectors';
 import { syncSendSummary, toggleTab } from '../../actions';
-import { empty, isEmpty, isEquivalent } from '../../sendSummary';
+import { empty, isEmpty, isEquivalent, hasSameDisplayName } from '../../sendSummary';
 
 const docRef = firestore.collection('sendSummary').doc('current');
 
@@ -17,11 +17,17 @@ export function* sendSummaryFirstLoad() {
   yield put(syncSendSummary(newSummary));
 }
 
+const hasChangedUserName = (newDoc, oldDoc, uid) => {
+  if (!uid || isEmpty(newDoc) || isEmpty(oldDoc)) return false;
+  return !hasSameDisplayName(newDoc, oldDoc, uid);
+};
+
 function* handleEvent({ doc }) {
   const newDoc = doc.data();
   if (doc.exists) {
     const oldDoc = yield select(getSendSummary);
-    if (!isEquivalent(newDoc, oldDoc)) {
+    const uid = yield select(getSignedInUserId);
+    if (!isEquivalent(newDoc, oldDoc) || hasChangedUserName(newDoc, oldDoc, uid)) {
       console.log('sendSummary discrepancy', oldDoc, newDoc);
       yield put(syncSendSummary(newDoc));
     }

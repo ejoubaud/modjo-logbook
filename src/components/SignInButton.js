@@ -6,6 +6,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import TextField from '@material-ui/core/TextField';
 import Snackbar from '@material-ui/core/Snackbar';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
@@ -18,6 +19,7 @@ import { compose } from 'redux';
 import withStateHandlers from 'recompose/withStateHandlers';
 
 import { getSignedInUser, getIsAuthLoading } from '../selectors';
+import { submitDisplayNameUpdate } from '../actions';
 import googleLogo from '../images/google.svg';
 
 const signIn = (login, toggleDrawer, showError) => () => {
@@ -38,11 +40,15 @@ const SignInButton = (props) => {
     signedInUser,
     isLoading,
     isOpenDrawer,
+    displayName,
+    displayNameError,
     errorMsg,
     firebase,
     classes,
     toggleDrawer,
     showError,
+    updateDisplayName,
+    submitDisplayNameUpdate,
   } = props;
   return (
     <Fragment>
@@ -75,6 +81,23 @@ const SignInButton = (props) => {
               subheader={<ListSubheader>{signedInUser.displayName}</ListSubheader>}
               className={classes.list}
             >
+              <ListItem>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (displayNameError) return;
+                    submitDisplayNameUpdate(displayName);
+                    toggleDrawer();
+                  }}
+                >
+                  <TextField
+                    error={!!displayNameError}
+                    label={displayNameError || 'Changer pseudo'}
+                    value={typeof displayName === 'string' ? displayName : signedInUser.displayName}
+                    onChange={updateDisplayName}
+                  />
+                </form>
+              </ListItem>
               <ListItem button onClick={signOut(firebase.logout, toggleDrawer, showError)}>
                 <ListItemText primary="D&eacute;connexion" />
               </ListItem>
@@ -139,19 +162,47 @@ const styles = {
 
 const StyledSignInButton = withStyles(styles)(SignInButton);
 
-const StatefulSignInButton = withStateHandlers({ isOpenDrawer: false }, {
-  toggleDrawer: ({ isOpenDrawer }) => () => ({ isOpenDrawer: !isOpenDrawer }),
-  showError: () => msg => ({ errorMsg: msg }),
-})(StyledSignInButton);
+const validateDisplayName = (name) => {
+  if (name.match(/[^a-zA-Z0-9\-' ]/)) return 'Pas de carac spéciaux';
+  if (name.length < 3) return 'Trop court (4 min)';
+  if (name.length > 20) return 'Trop long (20 max)';
+  if (name.match(/^ /)) return 'Espace en début';
+  if (name.match(/ $/)) return 'Espace en fin';
+  if (name.match(/ {2}/)) return 'Double espace';
+  return null;
+};
+
+const StatefulSignInButton = withStateHandlers(
+  ({ signedInUser }) => ({
+    isOpenDrawer: false,
+    displayName: signedInUser && signedInUser.displayName,
+    displayNameError: null,
+  }),
+  {
+    toggleDrawer: ({ isOpenDrawer, displayName, displayNameError }) => () => ({
+      isOpenDrawer: !isOpenDrawer,
+      // reset field on drawer close
+      displayName: isOpenDrawer ? displayName : null,
+      displayNameError: isOpenDrawer ? displayNameError : null,
+    }),
+    showError: () => msg => ({ errorMsg: msg }),
+    updateDisplayName: () => (e) => {
+      const displayName = e.target.value;
+      return { displayName, displayNameError: validateDisplayName(displayName) };
+    },
+  },
+)(StyledSignInButton);
 
 const mapStateToProps = state => ({
   signedInUser: getSignedInUser(state),
   isLoading: getIsAuthLoading(state),
 });
 
+const mapDispatchToProps = { submitDisplayNameUpdate };
+
 const ConnectedSignInButton = compose(
   firebaseConnect(),
-  connect(mapStateToProps),
+  connect(mapStateToProps, mapDispatchToProps),
 )(StatefulSignInButton);
 
 export default ConnectedSignInButton;

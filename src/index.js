@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-import { reactReduxFirebase, firebaseReducer } from 'react-redux-firebase';
+import { reactReduxFirebase, firebaseReducer, getFirebase } from 'react-redux-firebase';
 import createSagaMiddleware from 'redux-saga';
 import WebFont from 'webfontloader';
 
@@ -41,7 +41,7 @@ const store = createStoreWithFirebase(
   applyMiddleware(...middlewares),
 );
 
-sagaMiddleware.run(rootSaga);
+sagaMiddleware.run(rootSaga, getFirebase);
 
 // Setup global error listeners
 auth.getRedirectResult().catch(e => store.dispatch(showError(e)));

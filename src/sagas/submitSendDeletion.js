@@ -5,28 +5,26 @@ import { removeSend, toggleLoading, showError, rollback } from '../actions';
 import { firestore as db, docRef, deletionMarker } from '../firebase';
 import * as sendListUtils from '../sendList';
 import * as sendSummaryUtils from '../sendSummary';
-import { getSignedInUser, getSendList } from '../selectors';
+import { getSignedInUserId, getSendList } from '../selectors';
 import { isClear } from '../send';
 
 function* submitSendDeletion({ payload: { send } }) {
-  const signedInUser = yield select(getSignedInUser);
+  const signedInUserId = yield select(getSignedInUserId);
   const sendList = yield select(getSendList);
 
-  if (signedInUser) {
+  if (signedInUserId) {
     const loadingId = generateLoadingId('submitSendDeletion');
     const table = isClear(send) ? 'clears' : 'sends';
-    console.log('table', table, send);
 
     yield put(removeSend(send));
     try {
       yield put(toggleLoading(true, loadingId));
 
-      const { uid } = signedInUser;
       try {
         // Firestore has no cross-doc trx ; call sendList trx before as it can fail
         yield all([
           call([db, 'runTransaction'], transaction => (
-            transaction.get(docRef('sendLists', uid)).then((sendListDoc) => {
+            transaction.get(docRef('sendLists', signedInUserId)).then((sendListDoc) => {
               const latestSendList = sendListDoc.data() || sendListUtils.empty;
               const sendListDiff = sendListUtils.removeDiff(latestSendList, send, deletionMarker);
               return transaction.set(sendListDoc.ref, sendListDiff, { merge: true });

@@ -20,6 +20,7 @@ export const TOGGLE_LOADING = 'TOGGLE_LOADING';
 export const SUBMIT_SENDS = 'SUBMIT_SENDS';
 export const SUBMIT_SEND_DELETION = 'SUBMIT_SEND_DELETION';
 export const SUBMIT_CLEARS = 'SUBMIT_CLEARS';
+export const SUBMIT_DISPLAY_NAME_UPDATE = 'SUBMIT_DISPLAY_NAME_UPDATE';
 
 export const toggleColor = color => ({
   type: TOGGLE_COLOR,
@@ -132,3 +133,9 @@ export const submitSendDeletion = send => ({
   type: SUBMIT_SEND_DELETION,
   payload: { send },
 });
+
+export const submitDisplayNameUpdate = displayName => ({
+  type: SUBMIT_DISPLAY_NAME_UPDATE,
+  payload: { displayName },
+});
+
