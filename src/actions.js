@@ -21,6 +21,10 @@ export const SUBMIT_SENDS = 'SUBMIT_SENDS';
 export const SUBMIT_SEND_DELETION = 'SUBMIT_SEND_DELETION';
 export const SUBMIT_CLEARS = 'SUBMIT_CLEARS';
 export const SUBMIT_DISPLAY_NAME_UPDATE = 'SUBMIT_DISPLAY_NAME_UPDATE';
+export const START_SEND_LIST_SYNC = 'START_SEND_LIST_SYNC';
+export const STOP_SEND_LIST_SYNC = 'STOP_SEND_LIST_SYNC';
+export const START_SEND_SUMMARY_SYNC = 'START_SEND_SUMMARY_SYNC';
+export const STOP_SEND_SUMMARY_SYNC = 'STOP_SEND_SUMMARY_SYNC';
 
 export const toggleColor = color => ({
   type: TOGGLE_COLOR,
@@ -139,3 +143,19 @@ export const submitDisplayNameUpdate = displayName => ({
   payload: { displayName },
 });
 
+export const startSendListSync = userId => ({
+  type: START_SEND_LIST_SYNC,
+  payload: { userId },
+});
+
+export const stopSendListSync = () => ({
+  type: STOP_SEND_LIST_SYNC,
+});
+
+export const startSendSummarySync = () => ({
+  type: START_SEND_SUMMARY_SYNC,
+});
+
+export const stopSendSummarySync = () => ({
+  type: STOP_SEND_SUMMARY_SYNC,
+});
