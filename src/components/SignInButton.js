@@ -18,6 +18,7 @@ import { firebaseConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 import withStateHandlers from 'recompose/withStateHandlers';
 
+import Avatar from './Avatar';
 import { getSignedInUser, getIsAuthLoading } from '../selectors';
 import { submitDisplayNameUpdate } from '../actions';
 import googleLogo from '../images/google.svg';
@@ -57,15 +58,17 @@ const SignInButton = (props) => {
           ? (
             <Fragment>
               <CircularProgress className={classes.avatar} size={15} />
-              <span className={classes.name}>Chargement...</span>
+              <Hidden xsDown>
+                <span>Chargement...</span>
+              </Hidden>
             </Fragment>
           )
           : (signedInUser
             ? (
               <Fragment>
-                <img alt="" src={signedInUser.photoURL} className={classes.avatar} />
+                <Avatar user={signedInUser} />
                 <Hidden xsDown>
-                  <span className={classes.name}>{signedInUser.displayName}</span>
+                  <span>{signedInUser.displayName}</span>
                 </Hidden>
               </Fragment>
             )
@@ -154,9 +157,9 @@ const styles = {
   },
   avatar: {
     width: '20px',
-  },
-  name: {
-    marginLeft: '10px',
+    '&+span': {
+      marginLeft: '10px',
+    },
   },
 };
 

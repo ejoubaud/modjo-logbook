@@ -1,7 +1,6 @@
 import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withStyles } from '@material-ui/core/styles';
 import withState from 'recompose/withState';
 import withStateHandlers from 'recompose/withStateHandlers';
 import DoneIcon from '@material-ui/icons/Done';
@@ -55,7 +54,6 @@ const BoulderForm = (props) => {
     color,
     isColorMapMode,
     isConfirmOpen,
-    classes,
     toggleConfirm,
     submitSends,
     submitClears,
@@ -65,7 +63,7 @@ const BoulderForm = (props) => {
   const noClearReason = validations.clearButton(props);
 
   return (
-    <form className={classes.container}>
+    <form>
       <SubmitButton
         label="Encha&icirc;n&eacute;"
         Icon={DoneIcon}
@@ -104,14 +102,6 @@ const BoulderForm = (props) => {
   );
 };
 
-const styles = {
-  container: {
-    marginTop: '10px',
-  }
-};
-
-const StyledBoulderForm = withStyles(styles)(BoulderForm);
-
 const mapStateToProps = (state) => {
   const { color, sectorIds } = getSelection(state);
   return {
@@ -136,4 +126,4 @@ export default compose(
       { [e.target.name]: e.target.value }
     ),
   }),
-)(StyledBoulderForm);
+)(BoulderForm);

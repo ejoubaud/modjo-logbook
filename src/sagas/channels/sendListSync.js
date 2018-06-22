@@ -6,7 +6,6 @@ import { getSendList } from '../../selectors';
 import { STOP_SEND_LIST_SYNC, syncSendList, showError } from '../../actions';
 import { isEmpty, isEquivalent } from '../../sendList';
 
-
 function* handleEvent({ doc }) {
   const newDoc = doc.data();
   if (doc.exists) {

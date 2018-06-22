@@ -6,7 +6,7 @@ import { toggleLoading } from '../../actions';
 
 export const generateLoadingId = sagaName => `${sagaName}${nanoid()}`;
 
-function* closeChannelOnEvent(channel, stopEvent) {
+export function* closeChannelOnEvent(channel, stopEvent) {
   yield take(stopEvent);
   channel.close();
 }

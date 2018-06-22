@@ -77,7 +77,7 @@ const SendListTable = (props) => {
       </Table>
 
       <ConfirmDialog
-        title="Suppression définitive de l'historique"
+        title="Suppression définitive du logbook"
         isOpen={!!deletionConfirmTarget}
         toggleConfirm={() => toggleDeletionConfirmWithTarget(null)}
         onConfirm={() => submitSendDeletion(deletionConfirmTarget)}

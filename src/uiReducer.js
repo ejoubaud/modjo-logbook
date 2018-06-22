@@ -68,6 +68,21 @@ const reducers = {
     sendSummary: payload.sendSummary,
   }),
 
+  [actions.INIT_SPY_MODE]: (state, { payload }) => ({
+    ...state,
+    spyModeTarget: payload.user,
+    sendList: sendList.empty,
+    ownSendList: state.sendList,
+  }),
+
+  [actions.EXIT_SPY_MODE]: state => ({
+    ...state,
+    spyModeTarget: null,
+    sendList: state.ownSendList,
+    selectedTab: 0,
+    ownSendList: null,
+  }),
+
   [actions.ROLLBACK]: (state, { payload }) => ({
     ...state,
     sendList: payload.previousSendList || state.previousSendList,
@@ -143,6 +158,8 @@ const defaultState = {
   errorIgnoreList: [],
   errorIgnoreId: null,
   loadingProcessIds: [],
+  spyModeTarget: null,
+  ownSendList: null,
 };
 
 export default function uiReducer(state = defaultState, action) {

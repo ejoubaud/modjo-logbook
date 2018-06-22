@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
@@ -7,11 +7,26 @@ import Paper from '@material-ui/core/Paper';
 
 import SendSummaryTable from './SendSummaryTable';
 import SendListTable from './SendListTable';
-import { getSelectedTab, getSendList } from '../selectors';
+import Avatar from './Avatar';
+import { getSelectedTab, getSendList, getSpyModeTarget } from '../selectors';
 import { toggleTab } from '../actions';
 import { isEmpty } from '../sendList';
 
-const SendTables = ({ selectedTab, hasSendList, classes, toggleTab }) => {
+const SendListLabel = ({ spyModeTarget, classes }) => (
+  spyModeTarget
+    ? (
+      <Fragment>
+        <span className={classes.tab}>
+          <Avatar user={spyModeTarget} />
+          <span>Son logbook</span>
+        </span>
+      </Fragment>
+    ) : (
+      <span>Mon logbook</span>
+    )
+);
+
+const SendTables = ({ selectedTab, hasSendList, spyModeTarget, classes, toggleTab }) => {
   if (!hasSendList) {
     return (
       <div className={classes.container}>
@@ -31,7 +46,9 @@ const SendTables = ({ selectedTab, hasSendList, classes, toggleTab }) => {
           <Tab label="Actus">
             <SendSummaryTable />
           </Tab>
-          <Tab label="Mon historique">
+          <Tab
+            label={<SendListLabel spyModeTarget={spyModeTarget} classes={classes} />}
+          >
             <SendListTable />
           </Tab>
         </Tabs>
@@ -45,11 +62,18 @@ const SendTables = ({ selectedTab, hasSendList, classes, toggleTab }) => {
 const mapStateToProps = state => ({
   selectedTab: getSelectedTab(state),
   hasSendList: !isEmpty(getSendList(state)),
+  spyModeTarget: getSpyModeTarget(state),
 });
 
 const styles = {
   container: {
     marginTop: '12px',
+  },
+  tab: {
+    display: 'flex',
+    '& img': {
+      marginTop: '-3px',
+    },
   },
 };
 

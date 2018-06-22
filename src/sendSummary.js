@@ -4,6 +4,7 @@
 // with a short ID to save some bytes on the long default UUID of Firestore auth
 import reduce from 'lodash/fp/reduce';
 import unset from 'lodash/fp/unset';
+import findKey from 'lodash/fp/findKey';
 import _isEmpty from 'lodash/fp/isEmpty';
 import nanoid from 'nanoid';
 
@@ -39,12 +40,14 @@ const compressUser = ({ displayName, photoURL }) => ({
   ...(photoURL ? { a: photoURL } : {}),
 });
 
-const uncompressUser = ({ n, a }) => ({
+const uncompressUser = ({ n, a }, shortId) => ({
   displayName: n,
   photoURL: a,
+  shortId,
 });
 
 const getShortId = ({ shortIdsByUid }, uid) => shortIdsByUid[uid];
+export const getUid = ({ shortIdsByUid }, shortId) => findKey(v => v === shortId, shortIdsByUid);
 
 export const addUserDiff = (summary, user) => {
   const existingShortId = getShortId(summary, user.uid);
@@ -142,7 +145,9 @@ export const removeDiff = (summary, send, deletionMarker) => {
 
 export const size = ({ sendList }) => sendListUtils.size(sendList);
 
-const getUserByShortId = (summary, shortUserId) => uncompressUser(summary.users[shortUserId]);
+const getUserByShortId = (summary, shortUserId) => (
+  uncompressUser(summary.users[shortUserId], shortUserId)
+);
 const addUserToSend = summary => send => ({
   ...send,
   user: getUserByShortId(summary, send.userId),

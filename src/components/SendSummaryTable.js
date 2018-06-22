@@ -10,6 +10,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
 import SendHeaderCell from './cells/SendHeaderCell';
+import UserCell from './cells/UserCell';
 import SendCell from './cells/SendCell';
 import DateCell from './cells/DateCell';
 import { getPaginatedSendSummary } from '../selectors';
@@ -39,7 +40,7 @@ const SendSummaryTable = (props) => {
           { sends.map(send => (
             <TableRow key={send.id}>
               <TableCell padding="dense">
-                {send.user.displayName}
+                <UserCell user={send.user} />
               </TableCell>
               <TableCell padding="dense">
                 <SendCell send={send} />

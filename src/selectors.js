@@ -7,7 +7,9 @@ import { getPage as paginateSendSummary, size as sendSummarySize } from './sendS
 // Firebase state getters
 
 export const getSignedInUserId = ({ firebase: { auth } }) => !auth.isEmpty && auth.uid;
-export const getSignedInUser = ({ firebase: { profile, auth } }) => !profile.isEmpty && !auth.isEmpty && { ...profile, uid: auth.uid };
+export const getSignedInUser = ({ firebase: { profile, auth } }) => (
+  !profile.isEmpty && !auth.isEmpty && { ...profile, uid: auth.uid }
+);
 export const getIsAuthLoading = ({ firebase: { auth, profile } }) => (
   !auth.isLoaded || !profile.isLoaded
 );
@@ -24,6 +26,7 @@ export const getSendSummary = uiStateGetter('sendSummary');
 export const getSendListPage = uiStateGetter('sendListPage');
 export const getSendSummaryPage = uiStateGetter('sendSummaryPage');
 export const getIsTableFilterSynced = uiStateGetter('isTableFilterSynced');
+export const getSpyModeTarget = uiStateGetter('spyModeTarget');
 
 export const getSendListSize = state => sendListSize(getSendList(state));
 export const getSendSummarySize = state => sendSummarySize(getSendSummary(state));
@@ -44,6 +47,8 @@ export const getSendSubmitStates = state => ({
   signedInUser: getSignedInUser(state),
   sendList: getSendList(state),
 });
+
+export const getIsSpyModeOn = state => !!getSpyModeTarget(state);
 
 // UI Memoized selectors (and their helpers)
 

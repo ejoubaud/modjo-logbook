@@ -1,6 +1,6 @@
-import { takeEvery, all, call } from 'redux-saga/effects';
+import { takeEvery, takeLatest, all, call } from 'redux-saga/effects';
 
-import { SUBMIT_SENDS, SUBMIT_CLEARS, SUBMIT_SEND_DELETION, SUBMIT_DISPLAY_NAME_UPDATE, START_SEND_LIST_SYNC, START_SEND_SUMMARY_SYNC } from '../actions';
+import { SUBMIT_SENDS, SUBMIT_CLEARS, SUBMIT_SEND_DELETION, SUBMIT_DISPLAY_NAME_UPDATE, START_SEND_LIST_SYNC, START_SEND_SUMMARY_SYNC, START_SPY_MODE } from '../actions';
 import submitSends from './submitSends';
 import submitClears from './submitClears';
 import submitSendDeletion from './submitSendDeletion';
@@ -8,6 +8,7 @@ import submitDisplayNameUpdate from './submitDisplayNameUpdate';
 import startListeningToAuthEvents from './channels/authEvents';
 import startSendListSync from './channels/sendListSync';
 import startSendSummarySync from './channels/sendSummarySync';
+import startSpyMode from './spyMode';
 
 function* rootSaga(getFirebase) {
   yield all([
@@ -17,6 +18,7 @@ function* rootSaga(getFirebase) {
     takeEvery(SUBMIT_DISPLAY_NAME_UPDATE, submitDisplayNameUpdate, getFirebase),
     takeEvery(START_SEND_LIST_SYNC, startSendListSync),
     takeEvery(START_SEND_SUMMARY_SYNC, startSendSummarySync),
+    takeLatest(START_SPY_MODE, startSpyMode),
     call(startListeningToAuthEvents),
   ]);
 }

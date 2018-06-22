@@ -2,9 +2,9 @@ import { eventChannel } from 'redux-saga';
 import { takeEvery, put, call, all, select } from 'redux-saga/effects';
 
 import { generateLoadingId } from '../utils';
-import { startSendListSync, stopSendListSync, startSendSummarySync, stopSendSummarySync, syncSendList, syncSendSummary, toggleTab, toggleLoading } from '../../actions';
+import { startSendListSync, stopSendListSync, startSendSummarySync, stopSendSummarySync, syncSendList, syncSendSummary, exitSpyMode, toggleTab, toggleLoading } from '../../actions';
 import { auth, firestore } from '../../firebase';
-import { getSendSummary } from '../../selectors';
+import { getSendSummary, getIsSpyModeOn } from '../../selectors';
 import { empty as emptySendList } from '../../sendList';
 import { empty as emptySummary, isEmpty } from '../../sendSummary';
 
@@ -25,6 +25,11 @@ function* resetSendStatesForSignedOutUser() {
   }
 }
 
+function* exitIfSpyMode() {
+  const isSpying = yield select(getIsSpyModeOn);
+  if (isSpying) yield put(exitSpyMode);
+}
+
 function* handleEvent(user) {
   if (user) {
     yield all([
@@ -36,6 +41,7 @@ function* handleEvent(user) {
       put(stopSendListSync()),
       put(stopSendSummarySync()),
     ]);
+    yield call(exitIfSpyMode);
     yield call(resetSendStatesForSignedOutUser);
   }
 }

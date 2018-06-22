@@ -8,6 +8,8 @@ export const CLEAR_SECTORS = 'CLEAR_SECTORS';
 export const REMOVE_SEND = 'REMOVE_SEND';
 export const SYNC_SEND_LIST = 'SYNC_SEND_LIST';
 export const SYNC_SEND_SUMMARY = 'SYNC_SEND_SUMMARY';
+export const INIT_SPY_MODE = 'INIT_SPY_MODE';
+export const EXIT_SPY_MODE = 'EXIT_SPY_MODE';
 export const ROLLBACK = 'ROLLBACK';
 export const CHANGE_SEND_LIST_PAGE = 'CHANGE_SEND_LIST_PAGE';
 export const CHANGE_SEND_SUMMARY_PAGE = 'CHANGE_SEND_SUMMARY_PAGE';
@@ -25,6 +27,8 @@ export const START_SEND_LIST_SYNC = 'START_SEND_LIST_SYNC';
 export const STOP_SEND_LIST_SYNC = 'STOP_SEND_LIST_SYNC';
 export const START_SEND_SUMMARY_SYNC = 'START_SEND_SUMMARY_SYNC';
 export const STOP_SEND_SUMMARY_SYNC = 'STOP_SEND_SUMMARY_SYNC';
+export const START_SPY_MODE = 'START_SPY_MODE';
+export const STOP_SPY_MODE = 'STOP_SPY_MODE';
 
 export const toggleColor = color => ({
   type: TOGGLE_COLOR,
@@ -77,6 +81,15 @@ export const syncSendList = sendList => ({
 export const syncSendSummary = sendSummary => ({
   type: SYNC_SEND_SUMMARY,
   payload: { sendSummary },
+});
+
+export const initSpyMode = user => ({
+  type: INIT_SPY_MODE,
+  payload: { user },
+});
+
+export const exitSpyMode = () => ({
+  type: EXIT_SPY_MODE,
 });
 
 export const rollback = ({ sendList, error }) => ({
@@ -158,4 +171,13 @@ export const startSendSummarySync = () => ({
 
 export const stopSendSummarySync = () => ({
   type: STOP_SEND_SUMMARY_SYNC,
+});
+
+export const startSpyMode = user => ({
+  type: START_SPY_MODE,
+  payload: { user },
+});
+
+export const stopSpyMode = () => ({
+  type: STOP_SPY_MODE,
 });

@@ -3,7 +3,7 @@ import React from 'react';
 import SignInButton from './SignInButton';
 import ColorSelector from './ColorSelector';
 import Plan from './Plan';
-import BoulderForm from './BoulderForm';
+import Controls from './Controls';
 import SendTables from './SendTables';
 import ErrorFeedback from './ErrorFeedback';
 import LoadingFeedback from './LoadingFeedback';
@@ -24,7 +24,7 @@ const App = () => (
         ))}
       </div>
       <Plan />
-      <BoulderForm />
+      <Controls />
       <SendTables />
     </div>
     <ErrorFeedback />
