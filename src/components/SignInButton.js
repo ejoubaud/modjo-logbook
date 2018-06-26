@@ -6,7 +6,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListSubheader from '@material-ui/core/ListSubheader';
-import TextField from '@material-ui/core/TextField';
 import Snackbar from '@material-ui/core/Snackbar';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
@@ -19,8 +18,8 @@ import { compose } from 'redux';
 import withStateHandlers from 'recompose/withStateHandlers';
 
 import Avatar from './Avatar';
+import UserMenu from './UserMenu';
 import { getSignedInUser, getIsAuthLoading } from '../selectors';
-import { submitDisplayNameUpdate } from '../actions';
 import googleLogo from '../images/google.svg';
 
 const signIn = (login, toggleDrawer, showError) => () => {
@@ -28,13 +27,6 @@ const signIn = (login, toggleDrawer, showError) => () => {
     .then(toggleDrawer)
     .catch(err => showError(`Error ${err.code}: ${err.message}`));
 };
-
-const signOut = (logout, toggleDrawer, showError) => () => {
-  logout()
-    .then(toggleDrawer)
-    .catch(err => showError(`Error ${err.code}: ${err.message}`));
-};
-
 
 const SignInButton = (props) => {
   const {
@@ -49,8 +41,8 @@ const SignInButton = (props) => {
     toggleDrawer,
     showError,
     updateDisplayName,
-    submitDisplayNameUpdate,
   } = props;
+
   return (
     <Fragment>
       <Button className={classes.signIn} variant="outlined" onClick={toggleDrawer}>
@@ -80,31 +72,9 @@ const SignInButton = (props) => {
       <Drawer anchor="right" open={isOpenDrawer} onClose={toggleDrawer}>
         { signedInUser
           ? (
-            <List
-              subheader={<ListSubheader>{signedInUser.displayName}</ListSubheader>}
-              className={classes.list}
-            >
-              <ListItem>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    if (displayNameError) return;
-                    submitDisplayNameUpdate(displayName);
-                    toggleDrawer();
-                  }}
-                >
-                  <TextField
-                    error={!!displayNameError}
-                    label={displayNameError || 'Changer pseudo'}
-                    value={typeof displayName === 'string' ? displayName : signedInUser.displayName}
-                    onChange={updateDisplayName}
-                  />
-                </form>
-              </ListItem>
-              <ListItem button onClick={signOut(firebase.logout, toggleDrawer, showError)}>
-                <ListItemText primary="D&eacute;connexion" />
-              </ListItem>
-            </List>
+            <UserMenu
+              {...{ classes, displayName, displayNameError, updateDisplayName, toggleDrawer }}
+            />
           ) : (
             <List
               subheader={<ListSubheader>Se connecter avec</ListSubheader>}
@@ -201,11 +171,9 @@ const mapStateToProps = state => ({
   isLoading: getIsAuthLoading(state),
 });
 
-const mapDispatchToProps = { submitDisplayNameUpdate };
-
 const ConnectedSignInButton = compose(
   firebaseConnect(),
-  connect(mapStateToProps, mapDispatchToProps),
+  connect(mapStateToProps),
 )(StatefulSignInButton);
 
 export default ConnectedSignInButton;
