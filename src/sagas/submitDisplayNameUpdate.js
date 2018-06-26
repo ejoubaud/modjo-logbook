@@ -1,4 +1,4 @@
-import { call, put, select } from 'redux-saga/effects';
+import { all, call, put, select } from 'redux-saga/effects';
 
 import { generateLoadingId } from './utils';
 import { getSignedInUserId } from '../selectors';
@@ -13,6 +13,7 @@ function* submitDisplayNameUpdate(getFirebase, { payload: { displayName } }) {
     const firebase = yield getFirebase();
     const userCollection = db.collection('users');
     const res = yield call([userCollection.where('displayName', '==', displayName), 'get']);
+
     if (res.size > 0) {
       yield put(showError('Nom déjà pris'));
     } else {
@@ -20,18 +21,20 @@ function* submitDisplayNameUpdate(getFirebase, { payload: { displayName } }) {
       try {
         yield put(toggleLoading(true, loadingId));
         const summaryRef = docRef('sendSummary', 'current');
-        yield call([firebase, 'updateProfile'], { displayName });
-        // Update name in send summary
-        yield call([db, 'runTransaction'], transaction => (
-          transaction.get(summaryRef).then((summaryDoc) => {
-            const summary = summaryDoc.data() || emptySendSummary;
-            if (hasUser(summary, uid)) {
-              const summaryDiff = addUserDiff(summary, { uid, displayName });
-              return transaction.set(summaryRef, summaryDiff, { merge: true });
-            }
-            return true;
-          })
-        ));
+        yield all([
+          call([firebase, 'updateProfile'], { displayName }),
+          // Update name in send summary
+          call([db, 'runTransaction'], transaction => (
+            transaction.get(summaryRef).then((summaryDoc) => {
+              const summary = summaryDoc.data() || emptySendSummary;
+              if (hasUser(summary, uid)) {
+                const summaryDiff = addUserDiff(summary, { uid, displayName });
+                return transaction.set(summaryRef, summaryDiff, { merge: true });
+              }
+              return true;
+            })
+          )),
+        ]);
       } finally {
         yield put(toggleLoading(false, loadingId));
       }
