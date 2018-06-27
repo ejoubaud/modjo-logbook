@@ -20,19 +20,25 @@ const canDelete = (send, sendMap, sendList) => {
   return !wasSectorClearedSince(sendList, send);
 };
 
-const cantDeleteSend = 'Impossible de supprimer cet enchaînement, le secteur a été marqué comme démonté depuis.';
-const cantDeleteClear = 'Impossible de supprimer cette réouverture, un bloc a été enchaîné sur le secteur depuis.';
+const CantDeleteReason = ({ send }) => (
+  <div style={{ textAlign: 'center' }}>
+    Suppression impossible <br />
+    { isClear(send)
+        ? `un bloc a été enchaîné sur le secteur ${send.sectorId} depuis`
+        : `le secteur ${send.sectorId} a été démonté depuis`
+    }
+  </div>
+);
 
 const DeleteSendCell = ({ send, sendList, sendMap, toggleDeletionConfirmWithTarget }) => {
   if (!canDelete(send, sendMap, sendList)) {
-    const cantDeleteReason = (isClear(send) ? cantDeleteClear : cantDeleteSend);
     return (
-      <Tooltip title={cantDeleteReason}>
-        <div>
+      <Tooltip title={<CantDeleteReason send={send} />} placement="left">
+        <span>
           <IconButton onClick={() => toggleDeletionConfirmWithTarget(send)} disabled>
             <DeleteIcon />
           </IconButton>
-        </div>
+        </span>
       </Tooltip>
     );
   }
