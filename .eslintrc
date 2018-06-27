@@ -1,5 +1,6 @@
 {
   "extends": "airbnb",
+  "plugins": ["jest"],
   "rules": {
     "react/jsx-filename-extension": "off",
     "react/prop-types": "off",
@@ -8,5 +9,8 @@
     "no-console": "off",
     "object-curly-newline": [ "error", { "ObjectExpression": { "consistent": true }, "ObjectPattern": { "multiline": true } } ],
     "function-paren-newline": [ "error", "consistent" ]
+  },
+  "env": {
+    "jest/globals": true
   }
 }
