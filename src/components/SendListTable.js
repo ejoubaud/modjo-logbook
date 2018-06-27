@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import withState from 'recompose/withState';
+import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -24,6 +25,7 @@ const SendListTable = (props) => {
     page,
     pageSize,
     totalSize,
+    classes,
     changeSendListPage,
     deletionConfirmTarget,
     toggleDeletionConfirmWithTarget,
@@ -35,7 +37,7 @@ const SendListTable = (props) => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell padding="dense">
+            <TableCell padding="dense" className={classes.centerOnSmall}>
               <SendHeaderCell />
             </TableCell>
             <TableCell padding="dense">Date</TableCell>
@@ -46,7 +48,7 @@ const SendListTable = (props) => {
         <TableBody>
           { sends.map(send => (
             <TableRow key={send.id}>
-              <TableCell padding="dense">
+              <TableCell padding="dense" className={classes.centerOnSmall}>
                 <SendCell send={send} />
               </TableCell>
               <TableCell padding="dense">
@@ -94,6 +96,16 @@ const SendListTable = (props) => {
   );
 };
 
+const styles = {
+  '@media (max-width: 600px)': {
+    centerOnSmall: {
+      'textAlign': 'center',
+    },
+  },
+};
+
+const StyledSendListTable = withStyles(styles)(SendListTable);
+
 const mapStateToProps = (state) => {
   const { sends, page, pageSize, totalSize } = getPaginatedSendList(state);
   return {
@@ -106,6 +118,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = { changeSendListPage, submitSendDeletion };
 
-const ConnectedSendListTable = connect(mapStateToProps, mapDispatchToProps)(SendListTable);
+const ConnectedSendListTable = connect(mapStateToProps, mapDispatchToProps)(StyledSendListTable);
 
 export default withState('deletionConfirmTarget', 'toggleDeletionConfirmWithTarget', false)(ConnectedSendListTable);

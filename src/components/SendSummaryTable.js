@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -22,6 +23,7 @@ const SendSummaryTable = (props) => {
     page,
     pageSize,
     totalSize,
+    classes,
     changeSendSummaryPage,
   } = props;
 
@@ -31,7 +33,9 @@ const SendSummaryTable = (props) => {
         <TableHead>
           <TableRow>
             <TableCell padding="dense">Grimpeur</TableCell>
-            <TableCell padding="dense"><SendHeaderCell /></TableCell>
+            <TableCell padding="dense" className={classes.centerOnSmall}>
+              <SendHeaderCell />
+            </TableCell>
             <TableCell padding="dense">Date</TableCell>
           </TableRow>
         </TableHead>
@@ -42,7 +46,7 @@ const SendSummaryTable = (props) => {
               <TableCell padding="dense">
                 <UserCell user={send.user} />
               </TableCell>
-              <TableCell padding="dense">
+              <TableCell padding="dense" className={classes.centerOnSmall}>
                 <SendCell send={send} />
               </TableCell>
               <TableCell padding="dense">
@@ -69,6 +73,16 @@ const SendSummaryTable = (props) => {
   );
 };
 
+const styles = {
+  '@media (max-width: 600px)': {
+    centerOnSmall: {
+      'textAlign': 'center',
+    },
+  },
+};
+
+const StyledSendSummaryTable = withStyles(styles)(SendSummaryTable);
+
 const mapStateToProps = (state) => {
   const { sends, page, pageSize, totalSize } = getPaginatedSendSummary(state);
   return {
@@ -84,6 +98,6 @@ const mapDispatchToProps = { changeSendSummaryPage };
 const ConnectedSendSummaryTable = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(SendSummaryTable);
+)(StyledSendSummaryTable);
 
 export default ConnectedSendSummaryTable;
