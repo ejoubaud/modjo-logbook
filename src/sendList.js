@@ -89,6 +89,8 @@ export const empty = { '#': 0, l: {}, h: null, $: null };
 
 export const isEmpty = ({ l }) => !l || _isEmpty(l);
 
+export const size = sendList => sendList['#'];
+
 // low-level iterator on the chained list, returns an array of sends
 const select = (sendList, filterCb, opts = {}) => {
   const { until = () => false } = opts;
@@ -163,7 +165,7 @@ export const lastByColorForSector = (sendList, sectorId, colorKeys) => {
 export const add = (sendList, send) => {
   const id = send.id || generateSendId();
   const { h, l, $ } = sendList;
-  const count = sendList['#'] || 0;
+  const count = size(sendList) || 0;
   return {
     '#': count + 1,
     h: id,      // head/first
@@ -185,7 +187,7 @@ export const removeDiff = (sendList, send, deletionMarker) => {
   const { l, h, $ } = sendList;
   const currentNode = l[id];
   if (!currentNode) return {};
-  const count = sendList['#'];
+  const count = size(sendList);
   const deleteEntry = { [id]: deletionMarker };
   if (count === 1) return { ...empty, l: deleteEntry };
   if (h === id) {
@@ -220,7 +222,7 @@ export const remove = (sendList, send) => {
   const { l, h, $ } = sendList;
   const currentNode = l[id];
   if (!currentNode) return {};
-  const count = sendList['#'];
+  const count = size(sendList);
   const removedL = unset(id, l);
   if (count === 1) return { ...empty, l: removedL };
   if (h === id) {
@@ -273,7 +275,7 @@ export const addAllDiff = (sendList, sends) => {
   return {
     ...diffBase,
     $: sendList.$ || diffBase.$,
-    '#': (sendList['#'] || 0) + diffBase['#'] - readditions,
+    '#': (size(sendList) || 0) + size(diffBase) - readditions,
     l: {
       ...diffBase.l,
       // link diffBase's last elem's next to the first elem of sendList
@@ -291,6 +293,17 @@ export const applyAddDiff = (source, diff) => ({
   l: { ...source.l, ...diff.l },
 });
 
+export const toList = sendList => (
+  select(sendList, () => true).map(([send, id]) => uncompressSend(send, id))
+);
+
+export const split = (sendList, targetLength) => {
+  const list = toList(sendList);
+  const list1 = addAll(empty, list.slice(0, targetLength).reverse());
+  const list2 = addAll(empty, list.slice(targetLength).reverse());
+  return [list1, list2];
+};
+
 const makePageFilter = ({ abbrev, value, compressValue = id }) => {
   if (_isEmpty(value)) return null;
   const compressedValuesArray = map(compressValue, [].concat(value));
@@ -307,8 +320,6 @@ const combinePageFilters = (definitions) => {
   )(definitions);
   return elem => every(filter => filter(elem), filters);
 };
-
-export const size = sendList => sendList['#'];
 
 export const toSendMap = (sendList) => {
   const results = {};
@@ -347,7 +358,7 @@ export const getPage = (sendList, { page = 1, pageSize = 10, colors = null, sect
     sends,
     page,
     pageSize,
-    totalSize: keepCounting ? matches.length : sendList['#'],
+    totalSize: keepCounting ? matches.length : size(sendList),
   };
 };
 

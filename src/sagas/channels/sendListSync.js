@@ -1,10 +1,11 @@
 import { put, select, call } from 'redux-saga/effects';
 
 import { initChannelWithFirstLoad } from '../utils';
+import { threshold as trimThreshold } from '../submitSendListTrim';
 import { firestore } from '../../firebase';
-import { getSendList } from '../../selectors';
-import { STOP_SEND_LIST_SYNC, syncSendList, showError } from '../../actions';
-import { isEmpty, isEquivalent } from '../../sendList';
+import { getSendList, getSignedInUserId } from '../../selectors';
+import { STOP_SEND_LIST_SYNC, syncSendList, showError, submitSendListTrim } from '../../actions';
+import { isEmpty, isEquivalent, size } from '../../sendList';
 
 function* handleEvent({ doc }) {
   const newDoc = doc.data();
@@ -15,6 +16,9 @@ function* handleEvent({ doc }) {
       yield put(syncSendList(newDoc));
       if (!isEmpty(oldDoc)) yield put(showError('Historique de vos blocs synchronisé depuis le serveur'));
     }
+
+    const isSignedIn = yield select(getSignedInUserId);
+    if (isSignedIn && size(newDoc) >= trimThreshold) yield put(submitSendListTrim());
   }
 }
 
