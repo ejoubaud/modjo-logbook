@@ -9,11 +9,11 @@ import toPairs from 'lodash/fp/toPairs';
 import { hideError } from '../actions';
 import { getErrorStates } from '../selectors';
 
-const ErrorFeedback = ({ errorMsg, isHidden, hideError, ignoreId }) => (
+const ErrorFeedback = ({ errorMsg, isHidden, hideError, displayDuration, ignoreId }) => (
   <Snackbar
     anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
     open={!isHidden && !!errorMsg}
-    autoHideDuration={6000}
+    autoHideDuration={displayDuration}
     onClose={hideError}
     ContentProps={{ 'aria-describedby': 'message-id' }}
     message={<span id="message-id">{errorMsg}</span>}
@@ -51,11 +51,12 @@ const errorToMsg = (error) => {
 };
 
 const mapStateToProps = (state) => {
-  const { error, ignoreId, isHidden } = getErrorStates(state);
+  const { error, ignoreId, isHidden, displayDuration } = getErrorStates(state);
   return {
     errorMsg: errorToMsg(error),
     ignoreId,
     isHidden,
+    displayDuration,
   };
 };
 

@@ -121,6 +121,7 @@ const reducers = {
       error: payload.error,
       isErrorHidden: false,
       errorIgnoreId: payload.ignoreId,
+      errorDisplayDuration: payload.displayDuration,
     };
   },
 
@@ -129,6 +130,7 @@ const reducers = {
     isErrorHidden: true,
     errorIgnoreList: state.errorIgnoreList.concat(payload.ignoreId || []),
     errorIgnoreId: null,
+    errorDisplayDuration: 6000,
   }),
 
   [actions.TOGGLE_LOADING]: (state, { payload }) => {
@@ -157,6 +159,7 @@ const defaultState = {
   isErrorHidden: null,
   errorIgnoreList: [],
   errorIgnoreId: null,
+  errorDisplayDuration: 6000,
   loadingProcessIds: [],
   spyModeTarget: null,
   ownSendList: null,

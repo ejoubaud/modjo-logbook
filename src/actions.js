@@ -116,7 +116,7 @@ export const toggleTableFilterSync = on => ({
 // ignoreId is optional
 export const showError = (error, options) => ({
   type: SHOW_ERROR,
-  payload: { error, ignoreId: options && options.ignoreId },
+  payload: { error, ...options },
 });
 
 // ignoreId is optional, if passed this error won't be shown again
