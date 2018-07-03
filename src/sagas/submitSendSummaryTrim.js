@@ -4,8 +4,8 @@ import { firestore as db, docRef } from '../firebase';
 import { showError, syncSendSummary } from '../actions';
 import * as summaryUtils from '../sendSummary';
 
-export const threshold = 10;
-const targetLength = 5;
+export const threshold = 1000;
+const targetLength = 500;
 
 const trimNotice = `
 Les actus ont atteint la longueur maximale de ${threshold} lignes,

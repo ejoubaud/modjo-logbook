@@ -5,8 +5,8 @@ import { getSignedInUserId } from '../selectors';
 import { showError, syncSendList } from '../actions';
 import * as sendListUtils from '../sendList';
 
-export const threshold = 10;
-const targetLength = 5;
+export const threshold = 2000;
+const targetLength = 1000;
 
 const trimNotice = `
 Votre logbook a atteint la longueur maximale de ${threshold} lignes,
