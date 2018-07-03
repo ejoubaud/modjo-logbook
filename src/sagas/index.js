@@ -1,11 +1,12 @@
 import { takeEvery, takeLatest, all, call } from 'redux-saga/effects';
 
-import { SUBMIT_SENDS, SUBMIT_CLEARS, SUBMIT_SEND_DELETION, SUBMIT_DISPLAY_NAME_UPDATE, SUBMIT_SEND_LIST_TRIM, START_SEND_LIST_SYNC, START_SEND_SUMMARY_SYNC, START_SPY_MODE } from '../actions';
+import { SUBMIT_SENDS, SUBMIT_CLEARS, SUBMIT_SEND_DELETION, SUBMIT_DISPLAY_NAME_UPDATE, SUBMIT_SEND_LIST_TRIM, SUBMIT_SEND_SUMMARY_TRIM, START_SEND_LIST_SYNC, START_SEND_SUMMARY_SYNC, START_SPY_MODE } from '../actions';
 import submitSends from './submitSends';
 import submitClears from './submitClears';
 import submitSendDeletion from './submitSendDeletion';
 import submitDisplayNameUpdate from './submitDisplayNameUpdate';
 import submitSendListTrim from './submitSendListTrim';
+import submitSendSummaryTrim from './submitSendSummaryTrim';
 import startListeningToAuthEvents from './channels/authEvents';
 import startSendListSync from './channels/sendListSync';
 import startSendSummarySync from './channels/sendSummarySync';
@@ -18,6 +19,7 @@ function* rootSaga(getFirebase) {
     takeEvery(SUBMIT_SEND_DELETION, submitSendDeletion),
     takeEvery(SUBMIT_DISPLAY_NAME_UPDATE, submitDisplayNameUpdate, getFirebase),
     takeEvery(SUBMIT_SEND_LIST_TRIM, submitSendListTrim),
+    takeEvery(SUBMIT_SEND_SUMMARY_TRIM, submitSendSummaryTrim),
     takeEvery(START_SEND_LIST_SYNC, startSendListSync),
     takeEvery(START_SEND_SUMMARY_SYNC, startSendSummarySync),
     takeLatest(START_SPY_MODE, startSpyMode),

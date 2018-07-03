@@ -8,7 +8,7 @@ const send3 = { id: 's3ndNumb3r3', color: 'green', sectorId: 2, type: 'flash', c
 const send4 = { id: 's3ndNumb3r4', color: 'green', sectorId: 3, type: 'redpoint', createdAt: baseDate };
 const sendList = sl.addAll(sl.empty, [send1, send2, send3, send4]);
 
-describe('.trim', () => {
+describe('.split', () => {
   describe('with a target length bigger or equal to list', () => {
     const targetLength = 4;
 

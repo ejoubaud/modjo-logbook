@@ -24,6 +24,7 @@ export const SUBMIT_SEND_DELETION = 'SUBMIT_SEND_DELETION';
 export const SUBMIT_CLEARS = 'SUBMIT_CLEARS';
 export const SUBMIT_DISPLAY_NAME_UPDATE = 'SUBMIT_DISPLAY_NAME_UPDATE';
 export const SUBMIT_SEND_LIST_TRIM = 'SUBMIT_SEND_LIST_TRIM';
+export const SUBMIT_SEND_SUMMARY_TRIM = 'SUBMIT_SEND_SUMMARY_TRIM';
 export const START_SEND_LIST_SYNC = 'START_SEND_LIST_SYNC';
 export const STOP_SEND_LIST_SYNC = 'STOP_SEND_LIST_SYNC';
 export const START_SEND_SUMMARY_SYNC = 'START_SEND_SUMMARY_SYNC';
@@ -159,6 +160,10 @@ export const submitDisplayNameUpdate = displayName => ({
 
 export const submitSendListTrim = () => ({
   type: SUBMIT_SEND_LIST_TRIM,
+});
+
+export const submitSendSummaryTrim = () => ({
+  type: SUBMIT_SEND_SUMMARY_TRIM,
 });
 
 export const startSendListSync = userId => ({

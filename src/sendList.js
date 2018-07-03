@@ -17,7 +17,7 @@
 // s: sectorId
 // t: type
 // d: date
-// u: userId
+// u: shortUserId (see sendSummary)
 // #: count
 //
 // Sends are ordered by last added first (fifo)
@@ -66,11 +66,11 @@ const typesByAbbrev = sortByAbbrev(sendTypes);
 const uncompressColor = abbrev => colorsByAbbrev[abbrev];
 const uncompressType = abbrev => typesByAbbrev[abbrev];
 
-const compressSend = ({ color, sectorId, type, userId, createdAt }) => (
+const compressSend = ({ color, sectorId, type, shortUserId, createdAt }) => (
   Object.assign(
     {},
     color && { c: compressColor(color) },
-    userId && { u: userId },
+    shortUserId && { u: shortUserId },
     { s: sectorId, t: compressType(type), d: createdAt },
   )
 );
@@ -78,7 +78,7 @@ const uncompressSend = ({ c, s, t, d, u }, id) => (
   Object.assign(
     {},
     c && { color: uncompressColor(c) },
-    u && { userId: u },
+    u && { shortUserId: u },
     { id, sectorId: s, type: uncompressType(t), createdAt: toDate(d) },
   )
 );
@@ -132,13 +132,13 @@ export const wasSectorSentSince = (sendList, send) => {
   return lastSendOrThisClear.t !== clearAbbrev;
 };
 
-export const hasOneByUserId = (sendList, userId) => (
-  !!selectFirst(sendList, ({ u }) => u === userId)
+export const hasOneByShortUserId = (sendList, shortUserId) => (
+  !!selectFirst(sendList, ({ u }) => u === shortUserId)
 );
-export const hasSeveralByUserId = (sendList, userId) => (
+export const hasSeveralByShortUserId = (sendList, shortUserId) => (
   select(
     sendList,
-    ({ u }) => u === userId,
+    ({ u }) => u === shortUserId,
     { until: res => res.length >= 2 },
   ).length >= 2
 );

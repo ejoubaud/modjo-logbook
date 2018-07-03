@@ -3,7 +3,7 @@ import { put, select, call } from 'redux-saga/effects';
 import { initChannelWithFirstLoad } from '../utils';
 import { threshold as trimThreshold } from '../submitSendListTrim';
 import { firestore } from '../../firebase';
-import { getSendList, getSignedInUserId } from '../../selectors';
+import { getSendList, getSignedInUserId, getIsSpyModeOn } from '../../selectors';
 import { STOP_SEND_LIST_SYNC, syncSendList, showError, submitSendListTrim } from '../../actions';
 import { isEmpty, isEquivalent, size } from '../../sendList';
 
@@ -18,7 +18,8 @@ function* handleEvent({ doc }) {
     }
 
     const isSignedIn = yield select(getSignedInUserId);
-    if (isSignedIn && size(newDoc) >= trimThreshold) yield put(submitSendListTrim());
+    const isSpyMode = yield select(getIsSpyModeOn);
+    if (isSignedIn && !isSpyMode && size(newDoc) >= trimThreshold) yield put(submitSendListTrim());
   }
 }
 

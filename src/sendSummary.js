@@ -5,6 +5,11 @@
 import reduce from 'lodash/fp/reduce';
 import unset from 'lodash/fp/unset';
 import findKey from 'lodash/fp/findKey';
+import compose from 'lodash/fp/compose';
+import map from 'lodash/fp/map';
+import reverse from 'lodash/fp/reverse';
+import fromPairs from 'lodash/fp/fromPairs';
+import toPairs from 'lodash/fp/toPairs';
 import _isEmpty from 'lodash/fp/isEmpty';
 import nanoid from 'nanoid';
 
@@ -49,37 +54,45 @@ const uncompressUser = ({ n, a }, shortId) => ({
 const getShortId = ({ shortIdsByUid }, uid) => shortIdsByUid[uid];
 export const getUid = ({ shortIdsByUid }, shortId) => findKey(v => v === shortId, shortIdsByUid);
 
-export const addUserDiff = (summary, user) => {
-  const existingShortId = getShortId(summary, user.uid);
-  const compressedUser = compressUser(user);
-  if (existingShortId) return { users: { [existingShortId]: compressedUser } };
-  const shortId = generateShortUserId(summary);
-  return {
-    users: { [shortId]: compressedUser },
-    shortIdsByUid: { [user.uid]: shortId },
-  };
-};
+// low-level user add/replace method, all the id generation must be done upstream
+const addCompressedUser = (summary, compressedUser, uid, shortId) => ({
+  ...summary,
+  users: {
+    ...summary.users,
+    [shortId]: compressedUser,
+  },
+  shortIdsByUid: {
+    ...summary.shortIdsByUid,
+    [uid]: shortId,
+  },
+});
 
-const addUser = (summary, user) => {
-  const { users, shortIdsByUid } = summary;
-  const diff = addUserDiff(summary, user);
-  return {
-    ...summary,
-    users: Object.assign({}, users, diff.users),
-    shortIdsByUid: Object.assign({}, shortIdsByUid, diff.shortIdsByUid),
-  };
-};
+const addUser = (sourceSummary, user, opts = { to: sourceSummary }) => (
+  addCompressedUser(
+    opts.to,
+    compressUser(user),
+    user.uid,
+    getShortId(sourceSummary, user.uid) || generateShortUserId(sourceSummary),
+  )
+);
 
-const setSendShortId = shortId => send => ({ ...send, userId: shortId });
+export const addUserDiff = (summary, user) => (
+  addUser(summary, user, { to: empty })
+);
+
+const setSendShortId = shortId => send => ({ ...send, shortUserId: shortId });
+
+// low-level add method, assumes correct shortUserId was set on send
+const addSendRaw = (summary, send) => ({
+  ...summary,
+  sendList: sendListUtils.add(summary.sendList, send),
+});
 
 // adds a send assuming the user was added to users and has a short ID in shortIdsByUid
 const addSend = (summary, send, user) => {
   const shortId = getShortId(summary, user.uid);
   const sendWithShortUserId = setSendShortId(shortId)(send);
-  return {
-    ...summary,
-    sendList: sendListUtils.add(summary.sendList, sendWithShortUserId),
-  };
+  return addSendRaw(summary, sendWithShortUserId);
 };
 
 export const add = (summary, send, user) => {
@@ -118,8 +131,8 @@ const removeUser = (summary, uid) => {
 
 export const remove = (summary, send) => {
   const newSendList = sendListUtils.remove(summary.sendList, send);
-  const shortId = getShortId(summary, send.userId);
-  const shouldRemoveUser = !!sendListUtils.hasOneByUserId(newSendList, shortId);
+  const shortId = getShortId(summary, send.shortUserId);
+  const shouldRemoveUser = !!sendListUtils.hasOneByShortUserId(newSendList, shortId);
   const baseSummary = shouldRemoveUser ? removeUser(summary) : summary;
   return {
     ...baseSummary,
@@ -133,7 +146,7 @@ export const removeDiff = (summary, send, deletionMarker) => {
   const { userId } = send;
   const sendListDiff = sendListUtils.removeDiff(sendList, send, deletionMarker);
   const shortId = getShortId(summary, userId);
-  const shouldRemoveUser = !sendListUtils.hasSeveralByUserId(sendList, shortId);
+  const shouldRemoveUser = !sendListUtils.hasSeveralByShortUserId(sendList, shortId);
   const baseDiff = { sendList: sendListDiff };
   if (!shouldRemoveUser) return baseDiff;
   return {
@@ -145,12 +158,16 @@ export const removeDiff = (summary, send, deletionMarker) => {
 
 export const size = ({ sendList }) => sendListUtils.size(sendList);
 
+const getUncompressedUserByShortId = (summary, shortUserId) => summary.users[shortUserId];
 const getUserByShortId = (summary, shortUserId) => (
-  uncompressUser(summary.users[shortUserId], shortUserId)
+  uncompressUser(
+    getUncompressedUserByShortId(summary, shortUserId),
+    shortUserId,
+  )
 );
 const addUserToSend = summary => send => ({
   ...send,
-  user: getUserByShortId(summary, send.userId),
+  user: getUserByShortId(summary, send.shortUserId),
 });
 const getUserByUid = (summary, uid) => (
   getUserByShortId(summary, getShortId(summary, uid))
@@ -174,3 +191,52 @@ export const getPage = (summary, options = {}) => {
     sends: sendsWithUser,
   };
 };
+
+const uidsByShortId = ({ shortIdsByUid }) => (
+  compose(
+    fromPairs,
+    map(([uid, shortId]) => [shortId, uid]),
+    toPairs,
+  )(shortIdsByUid)
+);
+
+const copySend = (destSummary, send) => (
+  addSendRaw(destSummary, send)
+);
+
+const copySendUser = (sourceSummary, uid, destSummary, send) => (
+  addCompressedUser(
+    destSummary,
+    getUncompressedUserByShortId(sourceSummary, send.shortUserId),
+    uid,
+    send.shortUserId,
+  )
+);
+
+const copySendWithUser = (sourceSummary, uidsByShortId) => (destSummary, send) => {
+  const summaryWithUser = copySendUser(
+    sourceSummary,
+    uidsByShortId[send.shortUserId],
+    destSummary,
+    send,
+  );
+  return copySend(summaryWithUser, send);
+};
+
+const extractSendsFromSummary = sourceSummary => (sendList) => {
+  const sourceUidsByShortId = uidsByShortId(sourceSummary);
+  const sends = compose(
+    reverse,
+    sendListUtils.toList,
+  )(sendList);
+  return reduce(
+    copySendWithUser(sourceSummary, sourceUidsByShortId),
+    empty,
+    sends,
+  );
+};
+
+export const split = (summary, targetLength) => (
+  sendListUtils.split(summary.sendList, targetLength)
+    .map(extractSendsFromSummary(summary))
+);

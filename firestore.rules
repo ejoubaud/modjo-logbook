@@ -29,5 +29,8 @@ service cloud.firestore {
       allow read;
       allow write: if request.auth.uid != null;
     }
+    match /archivedSendSummaries/{summary} {
+      allow read, write: if request.auth.uid != null;
+    }
   }
 }

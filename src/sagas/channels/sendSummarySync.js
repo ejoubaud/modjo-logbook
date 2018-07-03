@@ -1,10 +1,11 @@
 import { put, call, select } from 'redux-saga/effects';
 
 import { initChannelWithFirstLoad } from '../utils';
+import { threshold as trimThreshold } from '../submitSendSummaryTrim';
 import { firestore } from '../../firebase';
 import { getSendSummary, getSignedInUserId } from '../../selectors';
-import { STOP_SEND_SUMMARY_SYNC, syncSendSummary } from '../../actions';
-import { isEmpty, isEquivalent, hasSameDisplayName } from '../../sendSummary';
+import { STOP_SEND_SUMMARY_SYNC, syncSendSummary, submitSendSummaryTrim } from '../../actions';
+import { isEmpty, isEquivalent, hasSameDisplayName, size } from '../../sendSummary';
 
 const hasChangedUserName = (newDoc, oldDoc, uid) => {
   if (!uid || isEmpty(newDoc) || isEmpty(oldDoc)) return false;
@@ -21,6 +22,9 @@ function* handleEvent({ doc }) {
       yield put(syncSendSummary(newDoc));
     }
   }
+
+  const isSignedIn = yield select(getSignedInUserId);
+  if (isSignedIn && size(newDoc) >= trimThreshold) yield put(submitSendSummaryTrim());
 }
 
 export default function* start() {
