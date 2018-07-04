@@ -51,7 +51,7 @@ const uncompressUser = ({ n, a }, shortId) => ({
   shortId,
 });
 
-const getShortId = ({ shortIdsByUid }, uid) => shortIdsByUid[uid];
+export const getShortId = ({ shortIdsByUid }, uid) => shortIdsByUid[uid];
 export const getUid = ({ shortIdsByUid }, shortId) => findKey(v => v === shortId, shortIdsByUid);
 
 // low-level user add/replace method, all the id generation must be done upstream
