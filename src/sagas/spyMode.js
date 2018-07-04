@@ -20,5 +20,5 @@ export default function* start({ payload: { user } }) {
   yield put(exitSpyMode());
   yield put(stopSendListSync());
   const myUid = yield select(getSignedInUserId);
-  yield put(startSendListSync(myUid));
+  if (myUid) yield put(startSendListSync(myUid));
 }

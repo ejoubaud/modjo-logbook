@@ -27,7 +27,7 @@ function* resetSendStatesForSignedOutUser() {
 
 function* exitIfSpyMode() {
   const isSpying = yield select(getIsSpyModeOn);
-  if (isSpying) yield put(exitSpyMode);
+  if (isSpying) yield put(exitSpyMode());
 }
 
 function* handleEvent(user) {

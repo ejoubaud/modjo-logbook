@@ -72,7 +72,7 @@ const reducers = {
     ...state,
     spyModeTarget: payload.user,
     sendList: sendList.empty,
-    ownSendList: state.sendList,
+    ownSendList: state.ownSendList || state.sendList,
   }),
 
   [actions.EXIT_SPY_MODE]: state => ({
@@ -81,6 +81,7 @@ const reducers = {
     sendList: state.ownSendList,
     selectedTab: 0,
     ownSendList: null,
+    isTableFilterSynced: false,
   }),
 
   [actions.ROLLBACK]: (state, { payload }) => ({
