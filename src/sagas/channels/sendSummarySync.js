@@ -21,10 +21,10 @@ function* handleEvent({ doc }) {
       console.log('sendSummary discrepancy', oldDoc, newDoc);
       yield put(syncSendSummary(newDoc));
     }
-  }
 
-  const isSignedIn = yield select(getSignedInUserId);
-  if (isSignedIn && size(newDoc) >= trimThreshold) yield put(submitSendSummaryTrim());
+    const isSignedIn = yield select(getSignedInUserId);
+    if (isSignedIn && size(newDoc) >= trimThreshold) yield put(submitSendSummaryTrim());
+  }
 }
 
 export default function* start() {
