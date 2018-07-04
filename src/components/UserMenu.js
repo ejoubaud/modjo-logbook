@@ -9,7 +9,7 @@ import TextField from '@material-ui/core/TextField';
 import { firebaseConnect } from 'react-redux-firebase';
 
 import { getSignedInUser } from '../selectors';
-import { submitDisplayNameUpdate } from '../actions';
+import { submitDisplayNameUpdate, showError } from '../actions';
 
 const signOut = (logout, toggleDrawer, showError) => () => {
   logout()
@@ -63,7 +63,7 @@ const mapStateToProps = state => ({
   signedInUser: getSignedInUser(state),
 });
 
-const mapDispatchToProps = { submitDisplayNameUpdate };
+const mapDispatchToProps = { submitDisplayNameUpdate, showError };
 
 const ConnectedUserMenu = compose(
   firebaseConnect(),
