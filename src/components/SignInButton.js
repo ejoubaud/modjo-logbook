@@ -21,9 +21,10 @@ import Avatar from './Avatar';
 import UserMenu from './UserMenu';
 import { getSignedInUser, getIsAuthLoading } from '../selectors';
 import googleLogo from '../images/google.svg';
+import facebookLogo from '../images/facebook.svg';
 
-const signIn = (login, toggleDrawer, showError) => () => {
-  login({ provider: 'google' })
+const signIn = (login, provider, toggleDrawer, showError) => () => {
+  login({ provider })
     .then(toggleDrawer)
     .catch(err => showError(`Error ${err.code}: ${err.message}`));
 };
@@ -80,9 +81,13 @@ const SignInButton = (props) => {
               subheader={<ListSubheader>Se connecter avec</ListSubheader>}
               className={classes.list}
             >
-              <ListItem button onClick={signIn(firebase.login, toggleDrawer, showError)}>
+              <ListItem button onClick={signIn(firebase.login, 'google', toggleDrawer, showError)}>
                 <ListItemIcon><img src={googleLogo} alt="google logo" height="24" /></ListItemIcon>
                 <ListItemText primary="Google" />
+              </ListItem>
+              <ListItem button onClick={signIn(firebase.login, 'facebook', toggleDrawer, showError)}>
+                <ListItemIcon><img src={facebookLogo} alt="facebook logo" height="24" /></ListItemIcon>
+                <ListItemText primary="Facebook" />
               </ListItem>
             </List>
           )}

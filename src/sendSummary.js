@@ -169,9 +169,10 @@ const addUserToSend = summary => send => ({
   ...send,
   user: getUserByShortId(summary, send.shortUserId),
 });
-const getUserByUid = (summary, uid) => (
-  getUserByShortId(summary, getShortId(summary, uid))
-);
+const getUserByUid = (summary, uid) => {
+  const shortId = getShortId(summary, uid);
+  return shortId && getUserByShortId(summary, shortId);
+};
 
 export const hasUser = (summary, uid) => !!getUserByUid(summary, uid);
 
