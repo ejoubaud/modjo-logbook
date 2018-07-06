@@ -1,4 +1,6 @@
 /* global window */
+import capitalize from 'lodash/fp/capitalize';
+
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
@@ -23,6 +25,10 @@ if (process.env.NODE_ENV === 'development') window.firebase = firebase;
 export default firebase;
 export const firestore = firebase.firestore();
 export const auth = firebase.auth();
+
+export const getProviderForProviderId = id => (
+  firebase.auth[`${capitalize(id.replace(/\.[a-z]+$/, ''))}AuthProvider`]
+);
 
 export const deletionMarker = firebase.firestore.FieldValue.delete();
 export const docRef = (collection, docId) => firestore.collection(collection).doc(docId);

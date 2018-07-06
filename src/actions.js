@@ -17,6 +17,7 @@ export const TOGGLE_TABLE_FILTER_SYNC = 'TOGGLE_TABLE_FILTER_SYNC';
 export const SHOW_ERROR = 'SHOW_ERROR';
 export const HIDE_ERROR = 'HIDE_ERROR';
 export const TOGGLE_LOADING = 'TOGGLE_LOADING';
+export const TOGGLE_AUTH_PROVIDER_MERGE = 'TOGGLE_AUTH_PROVIDER_MERGE';
 
 // saga actions
 export const SUBMIT_SENDS = 'SUBMIT_SENDS';
@@ -135,6 +136,11 @@ export const toggleLoading = (on, processId) => ({
     on,
     processId,
   },
+});
+
+export const toggleAuthProviderMerge = providerIds => ({
+  type: TOGGLE_AUTH_PROVIDER_MERGE,
+  payload: providerIds,
 });
 
 // === SAGA ACTIONS ====

@@ -145,6 +145,11 @@ const reducers = {
       loadingProcessIds,
     };
   },
+
+  [actions.TOGGLE_AUTH_PROVIDER_MERGE]: (state, { payload }) => ({
+    ...state,
+    providersForMerge: payload,
+  }),
 };
 
 const defaultState = {
@@ -164,6 +169,7 @@ const defaultState = {
   loadingProcessIds: [],
   spyModeTarget: null,
   ownSendList: null,
+  providersForMerge: null,
 };
 
 export default function uiReducer(state = defaultState, action) {

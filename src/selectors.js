@@ -27,6 +27,7 @@ export const getSendListPage = uiStateGetter('sendListPage');
 export const getSendSummaryPage = uiStateGetter('sendSummaryPage');
 export const getIsTableFilterSynced = uiStateGetter('isTableFilterSynced');
 export const getSpyModeTarget = uiStateGetter('spyModeTarget');
+export const getProvidersForMerge = uiStateGetter('providersForMerge');
 
 export const getSendListSize = state => sendListSize(getSendList(state));
 export const getSendSummarySize = state => sendSummarySize(getSendSummary(state));

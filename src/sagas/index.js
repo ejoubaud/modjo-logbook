@@ -8,6 +8,7 @@ import submitDisplayNameUpdate from './submitDisplayNameUpdate';
 import submitSendListTrim from './submitSendListTrim';
 import submitSendSummaryTrim from './submitSendSummaryTrim';
 import startListeningToAuthEvents from './channels/authEvents';
+import startListeningToAuthRedirectEvents from './channels/authRedirectEvents';
 import startSendListSync from './channels/sendListSync';
 import startSendSummarySync from './channels/sendSummarySync';
 import startSpyMode from './spyMode';
@@ -24,6 +25,7 @@ function* rootSaga(getFirebase) {
     takeEvery(START_SEND_SUMMARY_SYNC, startSendSummarySync),
     takeLatest(START_SPY_MODE, startSpyMode),
     call(startListeningToAuthEvents),
+    call(startListeningToAuthRedirectEvents),
   ]);
 }
 

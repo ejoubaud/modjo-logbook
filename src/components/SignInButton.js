@@ -19,6 +19,7 @@ import withStateHandlers from 'recompose/withStateHandlers';
 
 import Avatar from './Avatar';
 import UserMenu from './UserMenu';
+import AuthProvidersMergeConfirm from './AuthProvidersMergeConfirm';
 import { getSignedInUser, getIsAuthLoading } from '../selectors';
 import googleLogo from '../images/google.svg';
 import facebookLogo from '../images/facebook.svg';
@@ -111,6 +112,8 @@ const SignInButton = (props) => {
           </IconButton>,
         ]}
       />
+
+      <AuthProvidersMergeConfirm />
     </Fragment>
   );
 };

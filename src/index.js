@@ -7,8 +7,7 @@ import { reactReduxFirebase, firebaseReducer, getFirebase } from 'react-redux-fi
 import createSagaMiddleware from 'redux-saga';
 import WebFont from 'webfontloader';
 
-import { showError } from './actions';
-import firebase, { auth } from './firebase';
+import firebase from './firebase';
 import App from './components/App';
 import uiReducer from './uiReducer';
 import rootSaga from './sagas';
@@ -42,9 +41,6 @@ const store = createStoreWithFirebase(
 );
 
 sagaMiddleware.run(rootSaga, getFirebase);
-
-// Setup global error listeners
-auth.getRedirectResult().catch(e => store.dispatch(showError(e)));
 
 ReactDOM.render(
   <Provider store={store}>
