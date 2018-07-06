@@ -37,7 +37,7 @@ describe('.addUserDiff', () => {
       const result = ss.addUserDiff(summary, user3);
       const shortId = ss.getShortId(result, user3.uid);
       expect(result).toEqual({
-        users: { [shortId]: { n: user3.displayName, a: user3.photoURL } },
+        users: { [shortId]: { i: user3.uid, n: user3.displayName, a: user3.photoURL } },
         shortIdsByUid: { [user3.uid]: shortId },
       });
     });
@@ -49,7 +49,7 @@ describe('.addUserDiff', () => {
       const newName = 'newName';
       const result = ss.addUserDiff(summary, { uid: user2.uid, displayName: newName });
       expect(result).toEqual({
-        users: { [shortId]: { n: newName } },
+        users: { [shortId]: { i: user2.uid, n: newName } },
         shortIdsByUid: { [user2.uid]: shortId },
       });
     });

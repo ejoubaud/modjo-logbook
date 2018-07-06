@@ -4,7 +4,6 @@
 // with a short ID to save some bytes on the long default UUID of Firestore auth
 import reduce from 'lodash/fp/reduce';
 import unset from 'lodash/fp/unset';
-import findKey from 'lodash/fp/findKey';
 import compose from 'lodash/fp/compose';
 import map from 'lodash/fp/map';
 import reverse from 'lodash/fp/reverse';
@@ -40,22 +39,22 @@ const generateShortUserId = ({ users }) => {
   return users[shortId] ? generateShortUserId({ users }) : shortId;
 };
 
-const compressUser = ({ displayName, photoURL }) => ({
+const compressUser = ({ uid, displayName, photoURL }) => ({
+  i: uid,
   n: displayName,
   ...(photoURL ? { a: photoURL } : {}),
 });
 
-const uncompressUser = ({ n, a }, shortId) => ({
+const uncompressUser = ({ n, a, i }) => ({
+  uid: i,
   displayName: n,
   photoURL: a,
-  shortId,
 });
 
 export const getShortId = ({ shortIdsByUid }, uid) => shortIdsByUid[uid];
-export const getUid = ({ shortIdsByUid }, shortId) => findKey(v => v === shortId, shortIdsByUid);
 
 // low-level user add/replace method, all the id generation must be done upstream
-const addCompressedUser = (summary, compressedUser, uid, shortId) => ({
+const addCompressedUser = (summary, compressedUser, shortId) => ({
   ...summary,
   users: {
     ...summary.users,
@@ -63,7 +62,7 @@ const addCompressedUser = (summary, compressedUser, uid, shortId) => ({
   },
   shortIdsByUid: {
     ...summary.shortIdsByUid,
-    [uid]: shortId,
+    [compressedUser.i]: shortId,
   },
 });
 
@@ -71,7 +70,6 @@ const addUser = (sourceSummary, user, opts = { to: sourceSummary }) => (
   addCompressedUser(
     opts.to,
     compressUser(user),
-    user.uid,
     getShortId(sourceSummary, user.uid) || generateShortUserId(sourceSummary),
   )
 );
@@ -162,7 +160,6 @@ const getUncompressedUserByShortId = (summary, shortUserId) => summary.users[sho
 const getUserByShortId = (summary, shortUserId) => (
   uncompressUser(
     getUncompressedUserByShortId(summary, shortUserId),
-    shortUserId,
   )
 );
 const addUserToSend = summary => send => ({
@@ -209,7 +206,6 @@ const copySendUser = (sourceSummary, uid, destSummary, send) => (
   addCompressedUser(
     destSummary,
     getUncompressedUserByShortId(sourceSummary, send.shortUserId),
-    uid,
     send.shortUserId,
   )
 );

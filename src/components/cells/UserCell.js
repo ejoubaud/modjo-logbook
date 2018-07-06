@@ -5,16 +5,15 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import Avatar from '../Avatar';
 import mockUser from '../../mockUser';
-import { getSpyModeTarget, getSignedInUser, getSendSummary } from '../../selectors';
+import { getSpyModeTarget, getSignedInUser } from '../../selectors';
 import { startSpyMode, stopSpyMode } from '../../actions';
-import { getShortId } from '../../sendSummary';
 
 const UserCell = (
-  { user, signedInUser, spyModeTarget, sendSummary, startSpyMode, stopSpyMode },
+  { user, signedInUser, spyModeTarget, startSpyMode, stopSpyMode },
 ) => {
-  const isSignedInUser = getShortId(sendSummary, signedInUser.uid) === user.shortId;
+  const isSignedInUser = signedInUser.uid === user.uid;
   const isSpyModeOn = !!spyModeTarget;
-  const isSpyModeTarget = isSpyModeOn && user.shortId === spyModeTarget.shortId;
+  const isSpyModeTarget = isSpyModeOn && user.uid === spyModeTarget.uid;
   const isDisabled = isSpyModeTarget || (!isSpyModeOn && isSignedInUser);
   const shouldTurnSpyModeOff = isSpyModeOn && isSignedInUser;
   const button = (
@@ -34,7 +33,6 @@ const UserCell = (
 const mapStateToProps = state => ({
   spyModeTarget: getSpyModeTarget(state),
   signedInUser: getSignedInUser(state) || mockUser,
-  sendSummary: getSendSummary(state),
 });
 
 const mapDispatchToProps = { startSpyMode, stopSpyMode };

@@ -1,13 +1,10 @@
 import { put, take, select } from 'redux-saga/effects';
 
-import { getUid } from '../sendSummary';
-import { getSignedInUserId, getSendSummary } from '../selectors';
+import { getSignedInUserId } from '../selectors';
 import { STOP_SPY_MODE, initSpyMode, exitSpyMode, startSendListSync, stopSendListSync, toggleTab, toggleTableFilterSync } from '../actions';
 
 export default function* start({ payload: { user } }) {
-  const { shortId } = user;
-  const sendSummary = yield select(getSendSummary);
-  const theirUid = getUid(sendSummary, shortId);
+  const theirUid = user.uid;
 
   yield put(stopSendListSync());
   yield put(initSpyMode(user));
