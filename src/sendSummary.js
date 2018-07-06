@@ -77,7 +77,7 @@ const addUser = (sourceSummary, user, opts = { to: sourceSummary }) => (
 );
 
 export const addUserDiff = (summary, user) => (
-  addUser(summary, user, { to: empty })
+  addUser(summary, user, { to: {} })
 );
 
 const setSendShortId = shortId => send => ({ ...send, shortUserId: shortId });

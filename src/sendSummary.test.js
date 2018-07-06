@@ -19,6 +19,8 @@ const summary = compose(
   s => ss.addAll(s, [send1, send2], user1),
 )(ss.empty);
 
+// compare everything but user user shortIds, which will
+// differ between independently created sendSummaries
 function assertSummaryEquivalence(received, expected) {
   expect(ss.isEquivalent(received, expected))
     .toBeTruthy;
@@ -27,6 +29,32 @@ function assertSummaryEquivalence(received, expected) {
   expect(Object.keys(received.users).length)
     .toEqual(Object.keys(expected.users).length);
 }
+
+describe('.addUserDiff', () => {
+  describe("when adding a user that doesn't exist", () => {
+    it('only returns the new user parts', () => {
+      const user3 = { uid: 'uZerNumb3r3', displayName: 'User Three', photoURL: 'https://photo.com/u3' };
+      const result = ss.addUserDiff(summary, user3);
+      const shortId = ss.getShortId(result, user3.uid);
+      expect(result).toEqual({
+        users: { [shortId]: { n: user3.displayName, a: user3.photoURL } },
+        shortIdsByUid: { [user3.uid]: shortId },
+      });
+    });
+  });
+
+  describe('when modifying a user that does exist', () => {
+    it('reuses the shortId and only returns modified parts', () => {
+      const shortId = ss.getShortId(summary, user2.uid);
+      const newName = 'newName';
+      const result = ss.addUserDiff(summary, { uid: user2.uid, displayName: newName });
+      expect(result).toEqual({
+        users: { [shortId]: { n: newName } },
+        shortIdsByUid: { [user2.uid]: shortId },
+      });
+    });
+  });
+});
 
 describe('.split', () => {
   describe('with a target length bigger or equal to list', () => {
