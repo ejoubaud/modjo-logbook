@@ -1,7 +1,7 @@
 import { all, call, put, select } from 'redux-saga/effects';
 
 import { generateLoadingId } from './utils';
-import { getSignedInUserId } from '../selectors';
+import { getSignedInUserId, getSendSummary } from '../selectors';
 import { showError, toggleLoading } from '../actions';
 import { addUserDiff, hasUser, empty as emptySendSummary } from '../sendSummary';
 
@@ -20,21 +20,28 @@ function* submitDisplayNameUpdate(getFirebase, { payload: { displayName } }) {
       const loadingId = generateLoadingId('submitDisplayNameUpdate');
       try {
         yield put(toggleLoading(true, loadingId));
+
         const summaryRef = docRef('sendSummary', 'current');
-        yield all([
-          call([firebase, 'updateProfile'], { displayName }),
-          // Update name in send summary
-          call([db, 'runTransaction'], transaction => (
-            transaction.get(summaryRef).then((summaryDoc) => {
-              const summary = summaryDoc.data() || emptySendSummary;
-              if (hasUser(summary, uid)) {
-                const summaryDiff = addUserDiff(summary, { uid, displayName });
-                return transaction.set(summaryRef, summaryDiff, { merge: true });
-              }
-              return true;
-            })
-          )),
-        ]);
+        const updateNameInProfile = call([firebase, 'updateProfile'], { displayName });
+        const updateNameInSendSummary = call([db, 'runTransaction'], transaction => (
+          transaction.get(summaryRef).then((summaryDoc) => {
+            const summary = summaryDoc.data() || emptySendSummary;
+            if (!hasUser(summary, uid)) return Promise.reject(new Error("L'application ne vous a pas trouvé dans les actus."));
+            const summaryDiff = addUserDiff(summary, { uid, displayName });
+            return transaction.set(summaryRef, summaryDiff, { merge: true });
+          })
+        ));
+        const summary = yield select(getSendSummary);
+
+        // The summary update transaction would trigger an error if no change/write happened
+        if (hasUser(summary, uid)) {
+          yield all([
+            updateNameInProfile,
+            updateNameInSendSummary,
+          ]);
+        } else {
+          yield updateNameInProfile;
+        }
       } finally {
         yield put(toggleLoading(false, loadingId));
       }
