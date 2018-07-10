@@ -48,9 +48,17 @@ const RankingTable = (props) => {
             <TableCell padding="dense">#</TableCell>
             <TableCell padding="dense">Grimpeur</TableCell>
             <TableCell padding="dense" numeric>
-              <Tooltip title={<RankingTip />}>
-                <span>Palmar&egrave;s</span>
-              </Tooltip>
+              Palmar&egrave;s [
+                <Tooltip title={<RankingTip />}>
+                  <a
+                    href=""
+                    onClick={(e) => { e.preventDefault(); }}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    ?
+                  </a>
+                </Tooltip>
+              ]
             </TableCell>
           </TableRow>
         </TableHead>
