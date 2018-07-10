@@ -38,9 +38,15 @@ const countSend = (userMap, send) => {
   };
 };
 
-export const createRanking = (summary) => {
+const threeMonthsAgo = () => {
+  const d = new Date();
+  return new Date(d.setMonth(d.getMonth() - 3));
+};
+
+export const createRanking = (summary, fromDate = threeMonthsAgo()) => {
   const actualSends = compose(
     filter(not(isClear)),
+    filter(s => (fromDate ? s.createdAt >= fromDate : true)),
     summaryToList,
   )(summary);
 

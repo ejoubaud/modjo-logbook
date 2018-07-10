@@ -14,18 +14,20 @@ import { allIds as sectorIds } from './sectors';
 const user1 = { uid: 'uZerNumb3r1', displayName: 'User One', photoURL: 'https://photo.com/u1' };
 const user2 = { uid: 'uZerNumb3r2', displayName: 'User Two', photoURL: 'https://photo.com/u2' };
 
+const now = new Date();
+
 const randomSendType = () => ['redpoint', 'flash'][random(0, 1)];
 
-const makeSend = (colorOrType, sectorId) => (
+const makeSend = (colorOrType, sectorId, createdAt = now) => (
   colorOrType === 'clear'
-    ? { id: uniqueId(), type: 'clear', sectorId }
-    : { id: uniqueId(), type: randomSendType(), color: colorOrType, sectorId }
+    ? { id: uniqueId(), type: 'clear', sectorId, createdAt }
+    : { id: uniqueId(), type: randomSendType(), color: colorOrType, sectorId, createdAt }
 );
 
 const makeSummary = sendDefinitions => (
   reduce(
-    (summary, [user, colorOrType, sectorId]) => (
-      ss.add(summary, makeSend(colorOrType, sectorId), user)
+    (summary, [user, colorOrType, sectorId, date]) => (
+      ss.add(summary, makeSend(colorOrType, sectorId, date), user)
     ),
     ss.empty,
     shuffle(sendDefinitions),
@@ -100,6 +102,20 @@ describe('.fromSendSummary', () => {
     });
     expect(result[1].scores).toEqual({
       green: 1,
+    });
+  });
+
+  it('filters out results older than 3 months by default', () => {
+    const fourMonthsAgo = new Date().setMonth(now.getMonth() - 4);
+    const summary = makeSummary([
+      [user1, 'red', 1],
+      [user1, 'red', 2, fourMonthsAgo],
+    ]);
+
+    const result = createRanking(summary);
+
+    expect(result[0].scores).toEqual({
+      red: 1,
     });
   });
 
