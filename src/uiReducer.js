@@ -79,9 +79,8 @@ const reducers = {
     ...state,
     spyModeTarget: null,
     sendList: state.ownSendList,
-    selectedTab: 0,
+    selectedTab: (state.selectedTab === 1 ? 0 : state.selectedTab),
     ownSendList: null,
-    isTableFilterSynced: false,
   }),
 
   [actions.ROLLBACK]: (state, { payload }) => ({
