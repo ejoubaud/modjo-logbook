@@ -179,6 +179,12 @@ export const hasSameDisplayName = (summary1, summary2, uid) => {
   return user1 && user2 && user1.displayName === user2.displayName;
 };
 
+export const toList = summary => (
+  sendListUtils
+    .toList(summary.sendList)
+    .map(addUserToSend(summary))
+);
+
 export const getPage = (summary, options = {}) => {
   const { sendList } = summary;
   const sendListPage = sendListUtils.getPage(sendList, options);

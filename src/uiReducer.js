@@ -108,6 +108,14 @@ const reducers = {
     };
   },
 
+  [actions.CHANGE_RANKING_PAGE]: (state, { payload }) => {
+    const page = payload.page || 1;
+    return {
+      ...state,
+      rankingPage: (page >= 1 ? page : 1),
+    };
+  },
+
   [actions.TOGGLE_TABLE_FILTER_SYNC]: (state, { payload }) => ({
     ...state,
     isTableFilterSynced: payload.on,
@@ -160,6 +168,7 @@ const defaultState = {
   sendListPage: 1,
   sendSummary: sendSummary.empty,
   sendSummaryPage: 1,
+  rankingPage: 1,
   isTableFilterSynced: false,
   error: null,
   isErrorHidden: null,

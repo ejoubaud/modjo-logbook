@@ -13,6 +13,7 @@ export const EXIT_SPY_MODE = 'EXIT_SPY_MODE';
 export const ROLLBACK = 'ROLLBACK';
 export const CHANGE_SEND_LIST_PAGE = 'CHANGE_SEND_LIST_PAGE';
 export const CHANGE_SEND_SUMMARY_PAGE = 'CHANGE_SEND_SUMMARY_PAGE';
+export const CHANGE_RANKING_PAGE = 'CHANGE_RANKING_PAGE';
 export const TOGGLE_TABLE_FILTER_SYNC = 'TOGGLE_TABLE_FILTER_SYNC';
 export const SHOW_ERROR = 'SHOW_ERROR';
 export const HIDE_ERROR = 'HIDE_ERROR';
@@ -107,6 +108,11 @@ export const changeSendListPage = page => ({
 
 export const changeSendSummaryPage = page => ({
   type: CHANGE_SEND_SUMMARY_PAGE,
+  payload: { page },
+});
+
+export const changeRankingPage = page => ({
+  type: CHANGE_RANKING_PAGE,
   payload: { page },
 });
 

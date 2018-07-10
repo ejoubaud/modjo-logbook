@@ -3,6 +3,7 @@ import { createSelector } from 'reselect';
 import colorMap from './colorMap';
 import { getPage as paginateSendList, size as sendListSize, toSendMap } from './sendList';
 import { getPage as paginateSendSummary, size as sendSummarySize } from './sendSummary';
+import { getPage as paginateRanking, createRanking } from './ranking';
 
 // Firebase state getters
 
@@ -25,6 +26,7 @@ export const getSendList = uiStateGetter('sendList');
 export const getSendSummary = uiStateGetter('sendSummary');
 export const getSendListPage = uiStateGetter('sendListPage');
 export const getSendSummaryPage = uiStateGetter('sendSummaryPage');
+export const getRankingPage = uiStateGetter('sendSummaryPage');
 export const getIsTableFilterSynced = uiStateGetter('isTableFilterSynced');
 export const getSpyModeTarget = uiStateGetter('spyModeTarget');
 export const getProvidersForMerge = uiStateGetter('providersForMerge');
@@ -90,4 +92,15 @@ export const getPaginatedSendSummary = createSelector(
   (summary, page, filters) => (
     paginateSendSummary(summary, { ...filters, page })
   ),
+);
+
+const getRanking = createSelector(
+  getSendSummary,
+  summary => createRanking(summary),
+);
+
+// UI getters from memoized selectors
+
+export const getPaginatedRanking = state => (
+  paginateRanking(getRanking(state), { page: getRankingPage(state) })
 );

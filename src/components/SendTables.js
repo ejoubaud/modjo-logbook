@@ -7,6 +7,7 @@ import Paper from '@material-ui/core/Paper';
 
 import SendSummaryTable from './SendSummaryTable';
 import SendListTable from './SendListTable';
+import RankingTable from './RankingTable';
 import Avatar from './Avatar';
 import { getSelectedTab, getSendList, getSpyModeTarget } from '../selectors';
 import { toggleTab } from '../actions';
@@ -43,18 +44,16 @@ const SendTables = ({ selectedTab, hasSendList, spyModeTarget, classes, toggleTa
           onChange={(e, v) => toggleTab(v)}
           centered
         >
-          <Tab label="Actus">
-            <SendSummaryTable />
-          </Tab>
+          <Tab label="Actus" />
           <Tab
             label={<SendListLabel spyModeTarget={spyModeTarget} classes={classes} />}
-          >
-            <SendListTable />
-          </Tab>
+          />
+          <Tab label="Classement" />
         </Tabs>
       </Paper>
       { selectedTab === 0 && <SendSummaryTable /> }
       { selectedTab === 1 && <SendListTable /> }
+      { selectedTab === 2 && <RankingTable /> }
     </div>
   );
 };

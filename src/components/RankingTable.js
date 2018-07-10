@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -10,20 +9,17 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
-import SendHeaderCell from './cells/SendHeaderCell';
 import UserCell from './cells/UserCell';
-import SendCell from './cells/SendCell';
-import DateCell from './cells/DateCell';
-import { getPaginatedSendSummary } from '../selectors';
-import { changeSendSummaryPage } from '../actions';
+import RankingCell from './cells/RankingCell';
+import { getPaginatedRanking } from '../selectors';
+import { changeRankingPage } from '../actions';
 
-const SendSummaryTable = (props) => {
+const RankingTable = (props) => {
   const {
-    sends,
+    users,
     page,
     pageSize,
     totalSize,
-    classes,
     changeSendSummaryPage,
   } = props;
 
@@ -32,25 +28,23 @@ const SendSummaryTable = (props) => {
       <Table>
         <TableHead>
           <TableRow>
+            <TableCell padding="dense">#</TableCell>
             <TableCell padding="dense">Grimpeur</TableCell>
-            <TableCell padding="dense" className={classes.centerOnSmall}>
-              <SendHeaderCell />
-            </TableCell>
-            <TableCell padding="dense">Date</TableCell>
+            <TableCell padding="dense" numeric>Palmar&egrave;s</TableCell>
           </TableRow>
         </TableHead>
 
         <TableBody>
-          { sends.map(send => (
-            <TableRow key={send.id}>
+          { users.map((userRankingEntry, idx) => (
+            <TableRow key={userRankingEntry.uid}>
               <TableCell padding="dense">
-                <UserCell user={send.user} />
-              </TableCell>
-              <TableCell padding="dense" className={classes.centerOnSmall}>
-                <SendCell send={send} />
+                {idx + 1 + ((page - 1) * pageSize)}
               </TableCell>
               <TableCell padding="dense">
-                <DateCell date={send.createdAt} />
+                <UserCell user={userRankingEntry} />
+              </TableCell>
+              <TableCell padding="dense">
+                <RankingCell entry={userRankingEntry} />
               </TableCell>
             </TableRow>
           )) }
@@ -73,31 +67,21 @@ const SendSummaryTable = (props) => {
   );
 };
 
-const styles = {
-  '@media (max-width: 600px)': {
-    centerOnSmall: {
-      textAlign: 'center',
-    },
-  },
-};
-
-const StyledSendSummaryTable = withStyles(styles)(SendSummaryTable);
-
 const mapStateToProps = (state) => {
-  const { sends, page, pageSize, totalSize } = getPaginatedSendSummary(state);
+  const { users, page, pageSize, totalSize } = getPaginatedRanking(state);
   return {
-    sends,
+    users,
     page,
     pageSize,
     totalSize,
   };
 };
 
-const mapDispatchToProps = { changeSendSummaryPage };
+const mapDispatchToProps = { changeRankingPage };
 
-const ConnectedSendSummaryTable = connect(
+const ConnectedRankingTable = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(StyledSendSummaryTable);
+)(RankingTable);
 
-export default ConnectedSendSummaryTable;
+export default ConnectedRankingTable;
