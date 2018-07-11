@@ -166,17 +166,18 @@ const addUserToSend = summary => send => ({
   ...send,
   user: getUserByShortId(summary, send.shortUserId),
 });
-const getUserByUid = (summary, uid) => {
+export const getUserByUid = (summary, uid) => {
   const shortId = getShortId(summary, uid);
   return shortId && getUserByShortId(summary, shortId);
 };
 
 export const hasUser = (summary, uid) => !!getUserByUid(summary, uid);
 
-export const hasSameDisplayName = (summary1, summary2, uid) => {
-  const user1 = getUserByUid(summary1, uid);
-  const user2 = getUserByUid(summary2, uid);
-  return user1 && user2 && user1.displayName === user2.displayName;
+export const hasChangedProfile = (summary, user) => {
+  const { uid, displayName, photoURL } = user;
+  const storedUser = getUserByUid(summary, uid);
+  if (!storedUser) return false;
+  return storedUser.displayName !== displayName || storedUser.photoURL !== photoURL;
 };
 
 export const toList = summary => (

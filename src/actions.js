@@ -25,6 +25,7 @@ export const SUBMIT_SENDS = 'SUBMIT_SENDS';
 export const SUBMIT_SEND_DELETION = 'SUBMIT_SEND_DELETION';
 export const SUBMIT_CLEARS = 'SUBMIT_CLEARS';
 export const SUBMIT_DISPLAY_NAME_UPDATE = 'SUBMIT_DISPLAY_NAME_UPDATE';
+export const SUBMIT_SEND_SUMMARY_USER_UPDATE = 'SUBMIT_SEND_SUMMARY_USER_UPDATE';
 export const SUBMIT_SEND_LIST_TRIM = 'SUBMIT_SEND_LIST_TRIM';
 export const SUBMIT_SEND_SUMMARY_TRIM = 'SUBMIT_SEND_SUMMARY_TRIM';
 export const START_SEND_LIST_SYNC = 'START_SEND_LIST_SYNC';
@@ -168,6 +169,10 @@ export const submitSendDeletion = send => ({
 export const submitDisplayNameUpdate = displayName => ({
   type: SUBMIT_DISPLAY_NAME_UPDATE,
   payload: { displayName },
+});
+
+export const submitSendSummaryUserUpdate = () => ({
+  type: SUBMIT_SEND_SUMMARY_USER_UPDATE,
 });
 
 export const submitSendListTrim = () => ({
