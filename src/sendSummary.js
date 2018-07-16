@@ -2,6 +2,14 @@
 // using as few bytes as possible in a single Firestore document
 // Uses a sendList to track the sends, and keeps a list of users,
 // with a short ID to save some bytes on the long default UUID of Firestore auth
+//
+// Small keys to keep Firestore storage limits at bay:
+//
+// User:
+// i: uid
+// n: displayName
+// a: avatar/photoURL
+
 import reduce from 'lodash/fp/reduce';
 import unset from 'lodash/fp/unset';
 import compose from 'lodash/fp/compose';

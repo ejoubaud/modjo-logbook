@@ -12,6 +12,7 @@ import some from 'lodash/fp/some';
 import SubmitButton from './SubmitButton';
 import ConfirmDialog from './ConfirmDialog';
 import ToggleAllSectors from './ToggleAllSectors';
+import RatingFields from './RatingFields';
 import { submitSends, submitClears } from '../actions';
 import { getColorMap, getSelection, getSendMap, getSendList } from '../selectors';
 import * as sendMapUtils from '../sendMap';
@@ -61,32 +62,38 @@ const BoulderForm = (props) => {
 
   const noSendReason = validations.sendButtons(props);
   const noClearReason = validations.clearButton(props);
+  const canSend = !noSendReason;
 
   return (
     <form>
-      <SubmitButton
-        label="Encha&icirc;n&eacute;"
-        Icon={DoneIcon}
-        color={color}
-        disabledReason={noSendReason}
-        doSubmit={() => submitSends('redpoint')}
-      />
-      <SubmitButton
-        label="Flash&eacute;"
-        Icon={FlashOnIcon}
-        color={color}
-        disabledReason={noSendReason}
-        doSubmit={() => submitSends('flash')}
-      />
-      <SubmitButton
-        label="D&eacute;mont&eacute;"
-        Icon={RefreshIcon}
-        color={color}
-        disabledReason={noClearReason}
-        doSubmit={() => (isColorMapMode ? submitClears() : toggleConfirm(true))}
-        defaultTip="Indiquer qu'un bloc a été démonté ou réouvert depuis la dernière fois où vous l'avez enchaîné. Vous pourrez ensuite noter un passage du nouveau bloc."
-      />
-      <ToggleAllSectors />
+      { canSend && <RatingFields /> }
+
+      <div>
+        <SubmitButton
+          label="Encha&icirc;n&eacute;"
+          Icon={DoneIcon}
+          color={color}
+          disabledReason={noSendReason}
+          doSubmit={() => submitSends('redpoint')}
+        />
+        <SubmitButton
+          label="Flash&eacute;"
+          Icon={FlashOnIcon}
+          color={color}
+          disabledReason={noSendReason}
+          doSubmit={() => submitSends('flash')}
+        />
+        <SubmitButton
+          label="D&eacute;mont&eacute;"
+          Icon={RefreshIcon}
+          color={color}
+          disabledReason={noClearReason}
+          doSubmit={() => (isColorMapMode ? submitClears() : toggleConfirm(true))}
+          defaultTip="Indiquer qu'un bloc a été démonté ou réouvert depuis la dernière fois où vous l'avez enchaîné. Vous pourrez ensuite noter un passage du nouveau bloc."
+        />
+
+        <ToggleAllSectors />
+      </div>
 
       <ConfirmDialog
         title="Toutes les couleurs seront démontées"

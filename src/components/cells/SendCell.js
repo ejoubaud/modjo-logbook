@@ -7,12 +7,26 @@ import IconButton from '@material-ui/core/IconButton';
 import FlashIcon from '@material-ui/icons/FlashOn';
 
 import colors from '../../colors';
+import { getByValue as getFunRatingByValue } from '../../funRatings';
+import { getByValue as getDifficultyRatingByValue } from '../../difficultyRatings';
 import ColorButton from '../ColorButton';
 import { toggleColor, toggleSector } from '../../actions';
 import { getSelection } from '../../selectors';
 
-const SendCell = ({ send, selectedColor, selectedSectors, classes, toggleColor, toggleSector }) => {
-  const { type, color, sectorId } = send;
+const SendCell = (props) => {
+  const {
+    send,
+    selectedColor,
+    selectedSectors,
+    classes,
+    toggleColor,
+    toggleSector,
+  } = props;
+  const { type, color, funRating, difficultyRating, sectorId } = send;
+  const fun = getFunRatingByValue(funRating);
+  console.log('fun', fun);
+  const difficulty = getDifficultyRatingByValue(difficultyRating);
+
   return (
     <Fragment>
       { color && (
@@ -32,19 +46,41 @@ const SendCell = ({ send, selectedColor, selectedSectors, classes, toggleColor, 
         </Tooltip>
       ) }
 
-      <IconButton
-        onClick={() => toggleSector(sectorId)}
-        className={`${classes.sectorButton} ${selectedSectors.indexOf(sectorId) >= 0 && classes.sectorButtonSelected}`}
-      >
-        {sectorId}
-      </IconButton>
+      <span className={classes.group}>
+        <IconButton
+          onClick={() => toggleSector(sectorId)}
+          className={`${classes.sectorButton} ${selectedSectors.indexOf(sectorId) >= 0 && classes.sectorButtonSelected}`}
+        >
+          {sectorId}
+        </IconButton>
 
-      { (type === 'flash') && (
-        <Tooltip title="Flash&eacute;"><FlashIcon className={classes.typeIcon} /></Tooltip>
-      ) }
+        { (type === 'flash') && (
+          <Tooltip title="Flash&eacute;"><FlashIcon className={classes.typeIcon} /></Tooltip>
+        ) }
+      </span>
+
+      <span className={classes.group}>
+        { fun && (
+          <Tooltip title={fun.description}>
+            <span className={classes.emojiLabel}>
+              { fun.emoji }
+            </span>
+          </Tooltip>
+        ) }
+
+        { difficulty && (
+          <Tooltip title={difficulty.description}>
+            <span className={classes.emojiLabel}>
+              { difficulty.emoji }
+            </span>
+          </Tooltip>
+        ) }
+      </span>
     </Fragment>
   );
 };
+
+const margin = '6px';
 
 const styles = {
   sectorButton: {
@@ -55,18 +91,36 @@ const styles = {
 
   sectorButtonSelected: {
     backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    margin,
   },
 
   typeIcon: {
     verticalAlign: 'middle',
-    marginLeft: '7px',
+    margin,
   },
 
   clearIcon: {
     verticalAlign: 'middle',
     // to align with the color buttons
-    width: '64px',
-    marginRight: '4px',
+    width: '68px',
+    marginTop: margin,
+    marginBottom: margin,
+  },
+
+  group: {
+    whiteSpace: 'nowrap',
+    '@media (max-width: 600px)': {
+      display: 'block',
+    },
+  },
+
+  emojiLabel: {
+    fontSize: '1.5rem',
+    display: 'inline-flex',
+    flex: '0 0 auto',
+    verticalAlign: 'middle',
+    cursor: 'default',
+    margin,
   },
 };
 

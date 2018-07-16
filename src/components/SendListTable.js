@@ -99,7 +99,7 @@ const SendListTable = (props) => {
 const styles = {
   '@media (max-width: 600px)': {
     centerOnSmall: {
-      'textAlign': 'center',
+      textAlign: 'center',
     },
   },
 };

@@ -10,11 +10,18 @@ import * as sendSummaryUtils from '../sendSummary';
 import mockUser from '../mockUser';
 
 function* submitSends({ payload: { type } }) {
-  const { color, sectorIds, sendList, signedInUser } = yield select(getSendSubmitStates);
+  const { color, sectorIds, funRating, difficultyRating, sendList, signedInUser } = yield select(getSendSubmitStates);
 
   if (signedInUser) {
     const loadingId = generateLoadingId('submitSends');
-    const sends = createSends({ color, type, sectorIds, userId: signedInUser.uid });
+    const sends = createSends({
+      color,
+      type,
+      sectorIds,
+      funRating,
+      difficultyRating,
+      userId: signedInUser.uid,
+    });
 
     yield put(sendBoulders(sends, signedInUser));
 

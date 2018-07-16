@@ -7,20 +7,28 @@
 // The list also keeps a count for integrity checks to spot and fix concurrency corruptions
 //
 // Small keys to keep Firestore storage limits at bay
+//
+// Send List:
 // h: head (first)
 // $: last
+// #: count
 // i: id
 // l: list
 // n: next
 // e: elem (send)
+//
+// Send:
+// i: id
 // c: color
 // s: sectorId
 // t: type
-// d: date
+// d: createdAt (date)
+// f: funRating
+// h: difficultyRating (hardness)
 // u: shortUserId (see sendSummary)
-// #: count
 //
 // Sends are ordered by last added first (fifo)
+
 import map from 'lodash/fp/map';
 import toPairs from 'lodash/fp/toPairs';
 import fromPairs from 'lodash/fp/fromPairs';
@@ -66,18 +74,30 @@ const typesByAbbrev = sortByAbbrev(sendTypes);
 const uncompressColor = abbrev => colorsByAbbrev[abbrev];
 const uncompressType = abbrev => typesByAbbrev[abbrev];
 
-const compressSend = ({ color, sectorId, type, shortUserId, createdAt }) => (
+const compressSend = ({
+  color,
+  sectorId,
+  type,
+  funRating,
+  difficultyRating,
+  shortUserId,
+  createdAt,
+}) => (
   Object.assign(
     {},
     color && { c: compressColor(color) },
+    funRating && { f: funRating },
+    difficultyRating && { h: difficultyRating },
     shortUserId && { u: shortUserId },
     { s: sectorId, t: compressType(type), d: createdAt },
   )
 );
-const uncompressSend = ({ c, s, t, d, u }, id) => (
+const uncompressSend = ({ c, s, t, f, h, d, u }, id) => (
   Object.assign(
     {},
     c && { color: uncompressColor(c) },
+    f && { funRating: f },
+    h && { difficultyRating: h },
     u && { shortUserId: u },
     { id, sectorId: s, type: uncompressType(t), createdAt: toDate(d) },
   )

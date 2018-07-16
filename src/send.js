@@ -6,17 +6,47 @@ import nanoid from 'nanoid';
 
 export const generateSendId = () => nanoid(10);
 
-export const createSend = ({ color, sectorId, type, createdAt, userId, id }) => ({
+export const createSend = ({
+  color,
+  sectorId,
+  type,
+  createdAt,
+  userId,
+  funRating,
+  difficultyRating,
+  id,
+}) => ({
   id: id || generateSendId(),
   userId,
   sectorId,
   type,
   createdAt: createdAt || new Date(),
   ...(color ? { color } : {}),
+  ...(funRating ? { funRating } : {}),
+  ...(difficultyRating ? { difficultyRating } : {}),
 });
 
-export const createSends = ({ color, sectorIds, type, userId }) => (
-  map(sectorId => createSend({ color, sectorId, type, userId }), sectorIds)
+export const createSends = ({
+  color,
+  sectorIds,
+  type,
+  funRating,
+  difficultyRating,
+  userId,
+}) => (
+  map(
+    sectorId => (
+      createSend({
+        color,
+        sectorId,
+        type,
+        funRating,
+        difficultyRating,
+        userId,
+      })
+    ),
+    sectorIds,
+  )
 );
 
 export const isClear = send => send.type === 'clear';

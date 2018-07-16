@@ -1,6 +1,8 @@
 export const TOGGLE_COLOR = 'TOGGLE_COLOR';
 export const TOGGLE_SECTOR = 'TOGGLE_SECTOR';
 export const TOGGLE_ALL_SECTORS = 'TOGGLE_ALL_SECTORS';
+export const TOGGLE_FUN_RATING = 'TOGGLE_FUN_RATING';
+export const TOGGLE_DIFFICULTY_RATING = 'TOGGLE_DIFFICULTY_RATING';
 export const TOGGLE_TAB = 'TOGGLE_TAB';
 export const SEND_BOULDERS = 'SEND_BOULDERS';
 export const CLEAR_BOULDERS = 'CLEAR_BOULDERS'; // not used anymore
@@ -47,6 +49,16 @@ export const toggleSector = sectorId => ({
 
 export const toggleAllSectors = () => ({
   type: TOGGLE_ALL_SECTORS,
+});
+
+export const toggleFunRating = value => ({
+  type: TOGGLE_FUN_RATING,
+  payload: { value },
+});
+
+export const toggleDifficultyRating = value => ({
+  type: TOGGLE_DIFFICULTY_RATING,
+  payload: { value },
 });
 
 export const toggleTab = tabId => ({

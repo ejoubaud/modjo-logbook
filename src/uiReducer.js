@@ -13,17 +13,33 @@ const reducers = {
     return {
       ...state,
       selectedColor: newColor,
+      funRating: null,
+      difficultyRating: null,
     };
   },
 
   [actions.TOGGLE_SECTOR]: (state, { payload }) => ({
     ...state,
     selectedSectors: xor(state.selectedSectors, [payload.sectorId]),
+    funRating: null,
+    difficultyRating: null,
   }),
 
   [actions.TOGGLE_ALL_SECTORS]: state => ({
     ...state,
     selectedSectors: (state.selectedSectors.length > 0 ? [] : allSectorIds),
+    funRating: null,
+    difficultyRating: null,
+  }),
+
+  [actions.TOGGLE_FUN_RATING]: (state, { payload }) => ({
+    ...state,
+    funRating: (state.funRating === payload.value ? null : payload.value),
+  }),
+
+  [actions.TOGGLE_DIFFICULTY_RATING]: (state, { payload }) => ({
+    ...state,
+    difficultyRating: (state.difficultyRating === payload.value ? null : payload.value),
   }),
 
   [actions.TOGGLE_TAB]: (state, { payload }) => ({
@@ -73,6 +89,8 @@ const reducers = {
     spyModeTarget: payload.user,
     sendList: sendList.empty,
     ownSendList: state.ownSendList || state.sendList,
+    funRating: null,
+    difficultyRating: null,
   }),
 
   [actions.EXIT_SPY_MODE]: state => ({
@@ -89,6 +107,8 @@ const reducers = {
     error: payload.error,
     isErrorHidden: false,
     selectedSectors: [],
+    funRating: null,
+    difficultyRating: null,
   }),
 
   [actions.CHANGE_SEND_LIST_PAGE]: (state, { payload }) => {
@@ -163,6 +183,8 @@ const defaultState = {
   selectedColor: null,
   selectedSectors: [],
   selectedTab: 0,
+  funRating: null,
+  difficultyRating: null,
   sendList: sendList.empty,
   sendListPage: 1,
   sendSummary: sendSummary.empty,
