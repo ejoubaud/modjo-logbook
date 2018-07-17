@@ -4,8 +4,8 @@ import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { getPalette } from '../colors';
 import { getSelection } from '../selectors';
+import { getPalette } from '../models/colors';
 
 const DisabledTip = () => (
   <Fragment>

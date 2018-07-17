@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import reverse from 'lodash/fp/reverse';
 
-import { getPalette, colorKeys } from '../../colors';
+import { getPalette, colorKeys } from '../../models/colors';
 
 const orderedColorKeys = reverse(colorKeys);
 

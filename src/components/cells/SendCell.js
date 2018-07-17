@@ -6,12 +6,12 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import IconButton from '@material-ui/core/IconButton';
 import FlashIcon from '@material-ui/icons/FlashOn';
 
-import colors from '../../colors';
-import { getByValue as getFunRatingByValue } from '../../funRatings';
-import { getByValue as getDifficultyRatingByValue } from '../../difficultyRatings';
 import ColorButton from '../ColorButton';
 import { toggleColor, toggleSector } from '../../actions';
 import { getSelection } from '../../selectors';
+import colors from '../../models/colors';
+import { getByValue as getFunRatingByValue } from '../../models/funRatings';
+import { getByValue as getDifficultyRatingByValue } from '../../models/difficultyRatings';
 
 const SendCell = (props) => {
   const {

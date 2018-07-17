@@ -8,7 +8,7 @@ import SendTables from './SendTables';
 import ErrorFeedback from './ErrorFeedback';
 import LoadingFeedback from './LoadingFeedback';
 import logo from '../images/logo.png';
-import colors from '../colors';
+import colors from '../models/colors';
 import './App.css';
 
 const App = () => (

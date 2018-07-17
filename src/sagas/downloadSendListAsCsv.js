@@ -9,10 +9,10 @@ import { getSignedInUserId, getSendList } from '../selectors';
 import { toggleLoading } from '../actions';
 import { docRef } from '../firebase';
 import { empty as emptySendList, toList } from '../collections/sendList';
-import { getLabel } from '../colors';
-import { getDescription as getFunDescription } from '../funRatings';
-import { getDescription as getDifficultyDescription } from '../difficultyRatings';
-import { getDescription as getSendTypeDescription } from '../sendTypes';
+import { getLabel } from '../models/colors';
+import { getDescription as getFunDescription } from '../models/funRatings';
+import { getDescription as getDifficultyDescription } from '../models/difficultyRatings';
+import { getDescription as getSendTypeDescription } from '../models/sendTypes';
 
 const addSends = (allSends, sendList) => allSends.concat(toList(sendList));
 

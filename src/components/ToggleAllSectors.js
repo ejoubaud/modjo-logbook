@@ -6,7 +6,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import { getSelectedSectors } from '../selectors';
 import { toggleAllSectors } from '../actions';
-import { getMuiTheme } from '../colors';
+import { getMuiTheme } from '../models/colors';
 
 const ToggleAll = ({ sectorIds, toggleAllSectors }) => (
   <MuiThemeProvider theme={getMuiTheme(null)}>

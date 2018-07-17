@@ -9,7 +9,7 @@ import FileDownloadIcon from '@material-ui/icons/FileDownload';
 
 import { getIsTableFilterSynced, getSelectedColor } from '../../selectors';
 import { toggleTableFilterSync, downloadSendListAsCsv } from '../../actions';
-import { getPalette } from '../../colors';
+import { getPalette } from '../../models/colors';
 
 const SendHeaderCell = (props) => {
   const {

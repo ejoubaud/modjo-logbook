@@ -7,7 +7,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { getSendList, getSendMap } from '../../selectors';
 import { wasSectorClearedSince } from '../../collections/sendList';
 import { lastSendForSector } from '../../collections/sendMap';
-import { isClear } from '../../send';
+import { isClear } from '../../models/send';
 
 const canDelete = (send, sendMap, sendList) => {
   const lastSectorSend = lastSendForSector(sendMap, send.sectorId);

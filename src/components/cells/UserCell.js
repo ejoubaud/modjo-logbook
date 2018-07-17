@@ -4,9 +4,9 @@ import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import Avatar from '../Avatar';
-import mockUser from '../../mockUser';
 import { getSpyModeTarget, getSignedInUser } from '../../selectors';
 import { startSpyMode, stopSpyMode } from '../../actions';
+import mockUser from '../../models/mockUser';
 
 const UserCell = (
   { user, signedInUser, spyModeTarget, startSpyMode, stopSpyMode },

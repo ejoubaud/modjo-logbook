@@ -5,7 +5,7 @@ import { clearSectors, toggleLoading, showError, rollback } from '../actions';
 import { getSendSubmitStates } from '../selectors';
 import { firestore as db, docRef } from '../firebase';
 import * as sendListUtils from '../collections/sendList';
-import { createSends } from '../send';
+import { createSends } from '../models/send';
 
 function* submitClears() {
   const { sectorIds, sendList, signedInUser } = yield select(getSendSubmitStates);

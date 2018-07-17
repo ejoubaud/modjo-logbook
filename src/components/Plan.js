@@ -8,7 +8,7 @@
 import React from 'react';
 
 import Sector from './Sector';
-import sectors from '../sectors';
+import sectors from '../models/sectors';
 
 const badges = [
   { id: 1, d: 'M361.844 22.625a7.879 7.879 0 0 1 7.875-7.875 7.88 7.88 0 0 1 7.875 7.875 7.88 7.88 0 0 1-7.875 7.875 7.879 7.879 0 0 1-7.875-7.875z', textTransform: 'translate(366.125 27.155)' },

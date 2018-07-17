@@ -6,8 +6,8 @@ import Paper from '@material-ui/core/Paper';
 import EmojiButton from './EmojiButton';
 import { getFunRating, getDifficultyRating } from '../selectors';
 import { toggleFunRating, toggleDifficultyRating } from '../actions';
-import funRatings from '../funRatings';
-import difficultyRatings from '../difficultyRatings';
+import funRatings from '../models/funRatings';
+import difficultyRatings from '../models/difficultyRatings';
 
 const RatingFields = ({ classes, toggleFunRating, toggleDifficultyRating }) => {
   const funConnect = { selector: getFunRating, dispatch: toggleFunRating };

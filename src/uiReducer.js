@@ -5,7 +5,7 @@ import without from 'lodash/fp/without';
 import * as actions from './actions';
 import * as sendList from './collections/sendList';
 import * as sendSummary from './collections/sendSummary';
-import { allIds as allSectorIds } from './sectors';
+import { allIds as allSectorIds } from './models/sectors';
 
 const reducers = {
   [actions.TOGGLE_COLOR]: (state, { payload }) => {

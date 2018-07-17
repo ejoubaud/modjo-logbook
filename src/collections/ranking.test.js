@@ -8,8 +8,8 @@ import map from 'lodash/fp/map';
 
 import { createRanking } from './ranking';
 import * as ss from './sendSummary';
-import { colorKeys } from '../colors';
-import { allIds as sectorIds } from '../sectors';
+import { colorKeys } from '../models/colors';
+import { allIds as sectorIds } from '../models/sectors';
 
 const user1 = { uid: 'uZerNumb3r1', displayName: 'User One', photoURL: 'https://photo.com/u1' };
 const user2 = { uid: 'uZerNumb3r2', displayName: 'User Two', photoURL: 'https://photo.com/u2' };

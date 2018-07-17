@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import ColorButton from './ColorButton';
 import { toggleColor } from '../actions';
 import { getSelectedColor } from '../selectors';
-import colors from '../colors';
+import colors from '../models/colors';
 
 const ColorSelector = ({ color, isSelected, toggleColor, ...otherProps }) => (
   <ColorButton color={color} variant={isSelected ? null : 'raised'} {...otherProps} onClick={() => toggleColor(color)}>

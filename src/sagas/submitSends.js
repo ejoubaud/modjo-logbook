@@ -4,13 +4,20 @@ import { generateLoadingId } from './utils';
 import { sendBoulders, toggleLoading, showError, rollback } from '../actions';
 import { getSendSubmitStates } from '../selectors';
 import { firestore as db, docRef } from '../firebase';
-import { createSends } from '../send';
 import * as sendListUtils from '../collections/sendList';
 import * as sendSummaryUtils from '../collections/sendSummary';
-import mockUser from '../mockUser';
+import { createSends } from '../models/send';
+import mockUser from '../models/mockUser';
 
 function* submitSends({ payload: { type } }) {
-  const { color, sectorIds, funRating, difficultyRating, sendList, signedInUser } = yield select(getSendSubmitStates);
+  const {
+    color,
+    sectorIds,
+    funRating,
+    difficultyRating,
+    sendList,
+    signedInUser,
+  } = yield select(getSendSubmitStates);
 
   if (signedInUser) {
     const loadingId = generateLoadingId('submitSends');
