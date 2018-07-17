@@ -24,7 +24,6 @@ const SendCell = (props) => {
   } = props;
   const { type, color, funRating, difficultyRating, sectorId } = send;
   const fun = getFunRatingByValue(funRating);
-  console.log('fun', fun);
   const difficulty = getDifficultyRatingByValue(difficultyRating);
 
   return (

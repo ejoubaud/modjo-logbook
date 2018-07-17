@@ -5,12 +5,22 @@ import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import FileDownloadIcon from '@material-ui/icons/FileDownload';
 
 import { getIsTableFilterSynced, getSelectedColor } from '../../selectors';
-import { toggleTableFilterSync } from '../../actions';
+import { toggleTableFilterSync, downloadSendListAsCsv } from '../../actions';
 import { getPalette } from '../../colors';
 
-const SendHeaderCell = ({ isSyncOn, palette, classes, toggleTableFilterSync }) => {
+const SendHeaderCell = (props) => {
+  const {
+    isSyncOn,
+    showDownloadButton,
+    palette,
+    classes,
+    toggleTableFilterSync,
+    downloadSendListAsCsv,
+  } = props;
+
   const styles = isSyncOn ? { backgroundColor: palette.main, color: palette.contrastText } : {};
   const tip = isSyncOn ? 'Désactiver le filtrage par couleur/type sélectionnés' : 'Filtrer par couleur/type sélectionnés';
   return (
@@ -20,19 +30,31 @@ const SendHeaderCell = ({ isSyncOn, palette, classes, toggleTableFilterSync }) =
       </Hidden>
       <Tooltip title={tip}>
         <IconButton
-          className={classes.filterButton}
+          className={classes.iconButton}
           style={styles}
           onClick={() => toggleTableFilterSync(!isSyncOn)}
         >
-          <FilterListIcon className={classes.filterIcon} />
+          <FilterListIcon className={classes.icon} />
         </IconButton>
       </Tooltip>
+
+      { showDownloadButton && (
+        <Tooltip title="Tout t&eacute;l&eacute;charger en CSV/Excel">
+          <IconButton
+            className={classes.iconButton}
+            style={styles}
+            onClick={() => downloadSendListAsCsv()}
+          >
+            <FileDownloadIcon className={classes.icon} />
+          </IconButton>
+        </Tooltip>
+      ) }
     </Fragment>
   );
 };
 
 const styles = {
-  filterButton: {
+  iconButton: {
     height: '28px',
     width: '28px',
     marginLeft: '5px',
@@ -40,7 +62,7 @@ const styles = {
     verticalAlign: 'middle',
   },
 
-  filterIcon: {
+  icon: {
     fontSize: '22px',
   },
 };
@@ -52,7 +74,7 @@ const mapStateToProps = state => ({
   isSyncOn: getIsTableFilterSynced(state),
 });
 
-const mapDispatchToProps = { toggleTableFilterSync };
+const mapDispatchToProps = { toggleTableFilterSync, downloadSendListAsCsv };
 
 const ConnectedSendHeaderCell = connect(
   mapStateToProps,

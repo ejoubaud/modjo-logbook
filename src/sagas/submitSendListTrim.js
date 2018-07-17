@@ -12,7 +12,8 @@ const trimNotice = `
 Votre logbook a atteint la longueur maximale de ${threshold} lignes,
 il a été tronqué pour ne conserver que les ${targetLength} derniers
 passages. Le reste a été archivé mais ne sera plus accessible depuis
-l'interface. Contacter un administrateur pour les récupérer.
+l'interface. Vous pourrez toujours accéder à ces données via l'export
+CSV ("Mon logbook" > icône "Tout télécharger en CSV")
 `;
 
 const splitListWithArchiveId = (sendList) => {

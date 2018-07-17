@@ -52,6 +52,7 @@ export const defaultColor = {
 };
 
 export const getPalette = color => (colors[color] || defaultColor).palette;
+export const getLabel = color => (colors[color] ? colors[color].label : '');
 
 const themeFromColor = ({ palette }) => createMuiTheme({ palette: { primary: palette } });
 

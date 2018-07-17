@@ -38,7 +38,7 @@ const SendListTable = (props) => {
         <TableHead>
           <TableRow>
             <TableCell padding="dense" className={classes.centerOnSmall}>
-              <SendHeaderCell />
+              <SendHeaderCell showDownloadButton />
             </TableCell>
             <TableCell padding="dense">Date</TableCell>
             <TableCell numeric padding="dense">Supprimer</TableCell>

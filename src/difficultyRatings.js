@@ -15,11 +15,16 @@ const byValue = {
 
 export default compose(
   sortBy(conf => parseInt(conf.value, 10)),
-  map(([value, { emoji, description }]) => (console.log('emd', value, emoji, description) || { value, emoji, description })),
+  map(([value, { emoji, description }]) => ({ value, emoji, description })),
   toPairs,
 )(byValue);
 
 export const getByValue = (value) => {
   const conf = byValue[value];
   return conf && { ...conf, value };
+};
+
+export const getDescription = (value) => {
+  const conf = getByValue(value);
+  return conf ? conf.description : '';
 };

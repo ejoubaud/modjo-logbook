@@ -36,6 +36,7 @@ export const START_SEND_SUMMARY_SYNC = 'START_SEND_SUMMARY_SYNC';
 export const STOP_SEND_SUMMARY_SYNC = 'STOP_SEND_SUMMARY_SYNC';
 export const START_SPY_MODE = 'START_SPY_MODE';
 export const STOP_SPY_MODE = 'STOP_SPY_MODE';
+export const DOWNLOAD_SEND_LIST_AS_CSV = 'DOWNLOAD_SEND_LIST_AS_CSV';
 
 export const toggleColor = color => ({
   type: TOGGLE_COLOR,
@@ -219,4 +220,8 @@ export const startSpyMode = user => ({
 
 export const stopSpyMode = () => ({
   type: STOP_SPY_MODE,
+});
+
+export const downloadSendListAsCsv = () => ({
+  type: DOWNLOAD_SEND_LIST_AS_CSV,
 });

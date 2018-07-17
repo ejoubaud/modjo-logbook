@@ -20,3 +20,8 @@ export const getByValue = (value) => {
   const conf = byValue[value];
   return conf && { ...conf, value };
 };
+
+export const getDescription = (value) => {
+  const conf = getByValue(value);
+  return conf ? conf.description : '';
+};
