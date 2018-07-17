@@ -41,9 +41,9 @@ import reduce from 'lodash/fp/reduce';
 import unset from 'lodash/fp/unset';
 import _isEmpty from 'lodash/fp/isEmpty';
 
-import colors, { colorKeys as allColorKeys } from './colors';
-import sendTypes from './sendTypes';
-import { generateSendId } from './send';
+import colors, { colorKeys as allColorKeys } from '../colors';
+import sendTypes from '../sendTypes';
+import { generateSendId } from '../send';
 
 // home-made obj-based Set with wide browser support
 const toSet = compose(

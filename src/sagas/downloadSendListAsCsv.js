@@ -8,7 +8,7 @@ import { generateLoadingId } from './utils';
 import { getSignedInUserId, getSendList } from '../selectors';
 import { toggleLoading } from '../actions';
 import { docRef } from '../firebase';
-import { empty as emptySendList, toList } from '../sendList';
+import { empty as emptySendList, toList } from '../collections/sendList';
 import { getLabel } from '../colors';
 import { getDescription as getFunDescription } from '../funRatings';
 import { getDescription as getDifficultyDescription } from '../difficultyRatings';

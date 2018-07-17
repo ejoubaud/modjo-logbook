@@ -3,9 +3,9 @@ import map from 'lodash/fp/map';
 import keys from 'lodash/fp/keys';
 import fromPairs from 'lodash/fp/fromPairs';
 
-import colors from './colors';
-import sectors from './sectors';
 import { isSent } from './sendMap';
+import colors from '../colors';
+import sectors from '../sectors';
 
 const defaultOrderedColors = keys(colors);
 const defaultSectorIds = map(s => s.id, sectors);

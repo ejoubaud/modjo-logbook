@@ -3,7 +3,7 @@ import { call, select, put } from 'redux-saga/effects';
 import { firestore as db, docRef } from '../firebase';
 import { getSignedInUserId } from '../selectors';
 import { showError, syncSendList } from '../actions';
-import * as sendListUtils from '../sendList';
+import * as sendListUtils from '../collections/sendList';
 
 export const threshold = 2000;
 const targetLength = 1000;

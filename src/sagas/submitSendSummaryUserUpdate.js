@@ -4,7 +4,7 @@ import { generateLoadingId } from './utils';
 import { getSignedInUserId, getSendSummary } from '../selectors';
 import { showError, toggleLoading } from '../actions';
 import { firestore as db, docRef } from '../firebase';
-import { addUserDiff, hasUser, empty as emptySendSummary } from '../sendSummary';
+import { addUserDiff, hasUser, empty as emptySendSummary } from '../collections/sendSummary';
 
 const baseErrorMsg = 'Impossible de mettre à jour vos actus avec le nouveau profil';
 const userNotFoundInDbErrorMsg = `${baseErrorMsg}: utilisateur introuvable dans la base de données.`;

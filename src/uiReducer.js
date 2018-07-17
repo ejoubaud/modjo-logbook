@@ -3,8 +3,8 @@ import union from 'lodash/fp/union';
 import without from 'lodash/fp/without';
 
 import * as actions from './actions';
-import * as sendList from './sendList';
-import * as sendSummary from './sendSummary';
+import * as sendList from './collections/sendList';
+import * as sendSummary from './collections/sendSummary';
 import { allIds as allSectorIds } from './sectors';
 
 const reducers = {

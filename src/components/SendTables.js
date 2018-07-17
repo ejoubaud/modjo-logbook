@@ -11,7 +11,7 @@ import RankingTable from './RankingTable';
 import Avatar from './Avatar';
 import { getSelectedTab, getSendList, getSpyModeTarget } from '../selectors';
 import { toggleTab } from '../actions';
-import { isEmpty } from '../sendList';
+import { isEmpty } from '../collections/sendList';
 
 const SendListLabel = ({ spyModeTarget, classes }) => (
   spyModeTarget

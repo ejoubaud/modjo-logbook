@@ -5,7 +5,7 @@ import { threshold as trimThreshold } from '../submitSendSummaryTrim';
 import { firestore } from '../../firebase';
 import { getSendSummary, getSignedInUser } from '../../selectors';
 import { STOP_SEND_SUMMARY_SYNC, syncSendSummary, submitSendSummaryTrim, submitSendSummaryUserUpdate } from '../../actions';
-import { isEmpty, isEquivalent, hasChangedProfile, size, getUserByUid } from '../../sendSummary';
+import { isEmpty, isEquivalent, hasChangedProfile, size, getUserByUid } from '../../collections/sendSummary';
 
 const wasProfileUpdated = (newDoc, oldDoc, uid) => {
   if (!uid || isEmpty(newDoc) || isEmpty(oldDoc)) return false;

@@ -5,8 +5,8 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import { getSendList, getSendMap } from '../../selectors';
-import { wasSectorClearedSince } from '../../sendList';
-import { lastSendForSector } from '../../sendMap';
+import { wasSectorClearedSince } from '../../collections/sendList';
+import { lastSendForSector } from '../../collections/sendMap';
 import { isClear } from '../../send';
 
 const canDelete = (send, sendMap, sendList) => {

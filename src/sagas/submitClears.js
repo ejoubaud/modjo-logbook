@@ -4,7 +4,7 @@ import { generateLoadingId } from './utils';
 import { clearSectors, toggleLoading, showError, rollback } from '../actions';
 import { getSendSubmitStates } from '../selectors';
 import { firestore as db, docRef } from '../firebase';
-import * as sendListUtils from '../sendList';
+import * as sendListUtils from '../collections/sendList';
 import { createSends } from '../send';
 
 function* submitClears() {

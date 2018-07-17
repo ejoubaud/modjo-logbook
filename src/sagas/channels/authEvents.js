@@ -5,8 +5,8 @@ import { generateLoadingId } from '../utils';
 import { startSendListSync, stopSendListSync, startSendSummarySync, stopSendSummarySync, syncSendList, syncSendSummary, exitSpyMode, toggleTab, toggleLoading } from '../../actions';
 import { auth, firestore } from '../../firebase';
 import { getSendSummary, getIsSpyModeOn } from '../../selectors';
-import { empty as emptySendList } from '../../sendList';
-import { empty as emptySummary, isEmpty } from '../../sendSummary';
+import { empty as emptySendList } from '../../collections/sendList';
+import { empty as emptySummary, isEmpty } from '../../collections/sendSummary';
 
 const summaryDocRef = firestore.collection('sendSummary').doc('current');
 

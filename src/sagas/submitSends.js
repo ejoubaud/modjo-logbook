@@ -5,8 +5,8 @@ import { sendBoulders, toggleLoading, showError, rollback } from '../actions';
 import { getSendSubmitStates } from '../selectors';
 import { firestore as db, docRef } from '../firebase';
 import { createSends } from '../send';
-import * as sendListUtils from '../sendList';
-import * as sendSummaryUtils from '../sendSummary';
+import * as sendListUtils from '../collections/sendList';
+import * as sendSummaryUtils from '../collections/sendSummary';
 import mockUser from '../mockUser';
 
 function* submitSends({ payload: { type } }) {

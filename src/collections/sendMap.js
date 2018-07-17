@@ -5,7 +5,7 @@ import maxBy from 'lodash/fp/maxBy';
 import values from 'lodash/fp/values';
 import compose from 'lodash/fp/compose';
 
-import { isClear } from './send';
+import { isClear } from '../send';
 
 export const isSent = curry((sendMap, color, sectorId) => {
   const send = get([sectorId, color], sendMap);

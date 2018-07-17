@@ -3,10 +3,10 @@ import { all, call, put, select } from 'redux-saga/effects';
 import { generateLoadingId } from './utils';
 import { removeSend, toggleLoading, showError, rollback } from '../actions';
 import { firestore as db, docRef, deletionMarker } from '../firebase';
-import * as sendListUtils from '../sendList';
-import * as sendSummaryUtils from '../sendSummary';
 import { getSignedInUserId, getSendList } from '../selectors';
 import { isClear } from '../send';
+import * as sendListUtils from '../collections/sendList';
+import * as sendSummaryUtils from '../collections/sendSummary';
 
 function* submitSendDeletion({ payload: { send } }) {
   const signedInUserId = yield select(getSignedInUserId);

@@ -5,7 +5,7 @@ import { threshold as trimThreshold } from '../submitSendListTrim';
 import { firestore } from '../../firebase';
 import { getSendList, getSignedInUserId, getIsSpyModeOn } from '../../selectors';
 import { STOP_SEND_LIST_SYNC, syncSendList, showError, submitSendListTrim } from '../../actions';
-import { isEmpty, isEquivalent, size } from '../../sendList';
+import { isEmpty, isEquivalent, size } from '../../collections/sendList';
 
 function* handleEvent({ doc }) {
   const newDoc = doc.data();

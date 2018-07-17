@@ -1,9 +1,9 @@
 // Represents the highest sent boulder color for each sector
 import { createSelector } from 'reselect';
-import colorMap from './colorMap';
-import { getPage as paginateSendList, size as sendListSize, toSendMap } from './sendList';
-import { getPage as paginateSendSummary, size as sendSummarySize } from './sendSummary';
-import { getPage as paginateRanking, createRanking } from './ranking';
+import colorMap from './collections/colorMap';
+import { getPage as paginateSendList, size as sendListSize, toSendMap } from './collections/sendList';
+import { getPage as paginateSendSummary, size as sendSummarySize } from './collections/sendSummary';
+import { getPage as paginateRanking, createRanking } from './collections/ranking';
 
 // Firebase state getters
 

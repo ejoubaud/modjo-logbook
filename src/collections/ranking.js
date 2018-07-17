@@ -7,9 +7,9 @@ import fromPairs from 'lodash/fp/fromPairs';
 import not from 'lodash/fp/negate';
 
 import { toList as summaryToList } from './sendSummary';
-import { isClear } from './send';
-import { colorKeys } from './colors';
-import { count as sectorsCount } from './sectors';
+import { isClear } from '../send';
+import { colorKeys } from '../colors';
+import { count as sectorsCount } from '../sectors';
 
 const scoreByColor = fromPairs(
   colorKeys.map((color, idx) => (

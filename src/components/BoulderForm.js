@@ -15,7 +15,7 @@ import ToggleAllSectors from './ToggleAllSectors';
 import RatingFields from './RatingFields';
 import { submitSends, submitClears } from '../actions';
 import { getColorMap, getSelection, getSendMap, getSendList } from '../selectors';
-import * as sendMapUtils from '../sendMap';
+import * as sendMapUtils from '../collections/sendMap';
 
 promiseFinally.shim();
 

@@ -2,7 +2,7 @@ import { call, put } from 'redux-saga/effects';
 
 import { firestore as db, docRef } from '../firebase';
 import { showError, syncSendSummary } from '../actions';
-import * as summaryUtils from '../sendSummary';
+import * as summaryUtils from '../collections/sendSummary';
 
 export const threshold = 1000;
 const targetLength = 500;
