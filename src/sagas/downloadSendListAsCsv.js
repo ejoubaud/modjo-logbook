@@ -12,7 +12,7 @@ import { empty as emptySendList, toList } from '../sendList';
 import { getLabel } from '../colors';
 import { getDescription as getFunDescription } from '../funRatings';
 import { getDescription as getDifficultyDescription } from '../difficultyRatings';
-import { getDescription as getSendTypeDescription } from '../send-types';
+import { getDescription as getSendTypeDescription } from '../sendTypes';
 
 const addSends = (allSends, sendList) => allSends.concat(toList(sendList));
 
