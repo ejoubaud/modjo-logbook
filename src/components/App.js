@@ -29,8 +29,8 @@ const App = ({ classes }) => (
     </div>
     <ErrorFeedback />
     <LoadingFeedback />
-      Modjo Logbook &ndash; Non-officiel
     <footer className={classes.appHeader}>
+      Modjo Logbook &ndash; Non-officiel &ndash; <a className={classes.footerLink} target="_blank" rel="noopener noreferrer" href="https://goo.gl/forms/bg950IMOJai8xiPu1">Info et feedback</a>
     </footer>
   </div>
 );
@@ -82,6 +82,13 @@ const styles = {
     flexWrap: 'wrap',
     justifyContent: 'center',
     alignText: 'center',
+  },
+
+  footerLink: {
+    color: '#ddd',
+    '&:visited': {
+      color: '#bbb',
+    },
   },
 };
 
