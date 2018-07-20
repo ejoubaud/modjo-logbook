@@ -98,4 +98,6 @@ The map is a SVG rendered dynamically with React and CSS. Here's how it was gene
 
 ## Copyright
 
-The Modjo logos and map are the property of the [Modjo Escalade](http://www.modjo-escalade.fr/) climbing gym. 
+- The Modjo logos and map are the property of the [Modjo Escalade](http://www.modjo-escalade.fr/) climbing gym, left here for example purposes with their permission. Please don't reuse them without their permission.
+- The Google and Facebook logos used for sign-in are the property of their respective owner
+- The rest of the code is free for you to use and modify under the terms of the MIT license
