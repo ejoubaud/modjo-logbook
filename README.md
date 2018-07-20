@@ -39,7 +39,10 @@ yarn test
 
 ### Deploy
 
+Make a production build and deploy your files to Firebase with:
+
 ```
+yarn build
 firebase -P $YOUR_PROD_FIREBASE_APP_NAME deploy
 ```
 
