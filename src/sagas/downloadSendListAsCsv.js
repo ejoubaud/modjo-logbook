@@ -20,9 +20,9 @@ const formatSend = ({ color, sectorId, type, createdAt, funRating, difficultyRat
   couleur: getLabel(color),
   secteur: sectorId,
   type: getSendTypeDescription(type),
-  fun: funRating,
+  intérêt: funRating,
   difficulté: difficultyRating,
-  'fun (description)': getFunDescription(funRating),
+  'intérêt (description)': getFunDescription(funRating),
   'difficulté (description)': getDifficultyDescription(difficultyRating),
   date: createdAt.toISOString(),
 });

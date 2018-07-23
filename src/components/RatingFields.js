@@ -16,7 +16,7 @@ const RatingFields = ({ classes, toggleFunRating, toggleDifficultyRating }) => {
   return (
     <div className={classes.container}>
       <Paper className={classes.group} elevation={1}>
-        <InputLabel className={classes.label}>Fun</InputLabel>
+        <InputLabel className={classes.label}>Int&eacute;r&ecirc;t</InputLabel>
         <div className={classes.buttons}>
           { funRatings.map(({ emoji, description, value }) => (
             <EmojiButton
