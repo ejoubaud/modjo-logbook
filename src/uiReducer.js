@@ -5,7 +5,6 @@ import without from 'lodash/fp/without';
 import * as actions from './actions';
 import * as sendList from './collections/sendList';
 import * as sendSummary from './collections/sendSummary';
-import { allIds as allSectorIds } from './models/sectors';
 
 const reducers = {
   [actions.TOGGLE_COLOR]: (state, { payload }) => {
@@ -33,13 +32,6 @@ const reducers = {
       difficultyRating: null,
     };
   },
-
-  [actions.TOGGLE_ALL_SECTORS]: state => ({
-    ...state,
-    selectedSectors: (state.selectedSectors.length > 0 ? [] : allSectorIds),
-    funRating: null,
-    difficultyRating: null,
-  }),
 
   [actions.TOGGLE_FUN_RATING]: (state, { payload }) => ({
     ...state,

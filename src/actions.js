@@ -1,6 +1,5 @@
 export const TOGGLE_COLOR = 'TOGGLE_COLOR';
 export const TOGGLE_SECTOR = 'TOGGLE_SECTOR';
-export const TOGGLE_ALL_SECTORS = 'TOGGLE_ALL_SECTORS';
 export const TOGGLE_FUN_RATING = 'TOGGLE_FUN_RATING';
 export const TOGGLE_DIFFICULTY_RATING = 'TOGGLE_DIFFICULTY_RATING';
 export const TOGGLE_TAB = 'TOGGLE_TAB';
@@ -47,10 +46,6 @@ export const toggleColor = color => ({
 export const toggleSector = sectorId => ({
   type: TOGGLE_SECTOR,
   payload: { sectorId },
-});
-
-export const toggleAllSectors = () => ({
-  type: TOGGLE_ALL_SECTORS,
 });
 
 export const toggleFunRating = value => ({
