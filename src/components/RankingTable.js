@@ -17,7 +17,7 @@ import { changeRankingPage } from '../actions';
 
 const RankingTip = () => (
   <Fragment>
-    Blocs encha&icirc;n&eacute;s sur les 3 derniers mois.<br />
+    Blocs valid&eacute;s sur les 3 derniers mois.<br />
     <br />
     D&eacute;monter un bloc ne modifie pas le palmar&egrave;s:<br />
     le passage pr&eacute;c&eacute;dent compte toujours s&apos;il reste<br />

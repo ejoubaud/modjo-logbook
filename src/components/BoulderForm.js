@@ -24,14 +24,14 @@ const validations = {
     if (!color) return "Sélectionner une couleur d'abord";
     if (sectors.length === 0) return "Sélectionner des secteurs d'abord";
     if (some(sendMapUtils.isSent(sendMap, color), sectors)) {
-      return "La sélection contient des blocs déjà enchaînés: Désélectionnez-les ou marquez-les comme démontés d'abord";
+      return "La sélection contient des blocs déjà validés: Désélectionnez-les ou marquez-les comme démontés d'abord";
     }
     return null;
   },
 
   clearButton({ color, sectors, sendMap, isColorMapMode, colorMap }) {
     if (sectors.length === 0) return "Sélectionner des secteurs d'abord";
-    const unsentMessage = "La sélection contient des blocs non-enchaînés, pas besoin de les démonter: Désélectionnez-les ou marquez-les comme enchaînés d'abord";
+    const unsentMessage = "La sélection contient des blocs non-validés, pas besoin de les démonter: Désélectionnez-les ou marquez-les comme validés d'abord";
     if (isColorMapMode) {
       const sentInColor = some(sectorId => !colorMap[sectorId], sectors);
       if (sentInColor) return unsentMessage;
@@ -70,7 +70,7 @@ const BoulderForm = (props) => {
 
       <div>
         <SubmitButton
-          label="Encha&icirc;n&eacute;"
+          label="Validé"
           Icon={DoneIcon}
           color={color}
           disabledReason={noSendReason}
@@ -89,7 +89,7 @@ const BoulderForm = (props) => {
           color={color}
           disabledReason={noClearReason}
           doSubmit={() => (isColorMapMode ? submitClears() : toggleConfirm(true))}
-          defaultTip="Indiquer qu'un bloc a été démonté ou réouvert depuis la dernière fois où vous l'avez enchaîné. Vous pourrez ensuite noter un passage du nouveau bloc."
+          defaultTip="Indiquer qu'un bloc a été démonté ou réouvert depuis la dernière fois où vous l'avez validé. Vous pourrez ensuite noter un passage du nouveau bloc."
         />
 
         <ToggleSectorMultiSelect />

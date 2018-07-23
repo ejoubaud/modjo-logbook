@@ -86,7 +86,7 @@ const SendListTable = (props) => {
       >
         La suppression du passage est d&eacute;finitive et le supprimera de l&apos;historique.
         Elle n&apos;est recommand&eacute;e qu&apos;en cas d&apos;erreur de saisie.<br />
-        Pour enregistrer l&apos;encha&icirc;nement d&apos;un nouveau bloc sur un secteur qui a
+        Pour enregistrer la validation d&apos;un nouveau bloc sur un secteur qui a
         &eacute;t&eacute; r&eacute;ouvert depuis le passage pr&eacute;c&eacute;dent
         tout en conservant celui-ci dans l&apos;historique,
         privil&eacute;gier le bouton <strong>D&eacute;mont&eacute;</strong>.<br />

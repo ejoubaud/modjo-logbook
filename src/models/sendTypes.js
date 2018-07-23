@@ -1,7 +1,7 @@
 const sendTypes = {
   redpoint: {
     abbrev: 'r',
-    description: 'Enchaîné',
+    description: 'Validé',
   },
   flash: {
     abbrev: 'f',

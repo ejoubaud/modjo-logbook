@@ -24,7 +24,7 @@ const CantDeleteReason = ({ send }) => (
   <div style={{ textAlign: 'center' }}>
     Suppression impossible <br />
     { isClear(send)
-        ? `un bloc a été enchaîné sur le secteur ${send.sectorId} depuis`
+        ? `un bloc a été validé sur le secteur ${send.sectorId} depuis`
         : `le secteur ${send.sectorId} a été démonté depuis`
     }
   </div>

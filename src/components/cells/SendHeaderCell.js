@@ -26,7 +26,7 @@ const SendHeaderCell = (props) => {
   return (
     <Fragment>
       <Hidden xsDown>
-        Blocs encha&icirc;n&eacute;s
+        Blocs valid&eacute;s
       </Hidden>
       <Tooltip title={tip}>
         <IconButton
