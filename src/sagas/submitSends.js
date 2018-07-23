@@ -63,7 +63,7 @@ function* submitSends({ payload: { type } }) {
       yield put(toggleLoading(false, loadingId));
     }
   } else {
-    const sends = createSends({ color, type, sectorIds });
+    const sends = createSends({ color, type, sectorIds, funRating, difficultyRating });
     yield put(sendBoulders(sends, mockUser));
     yield put(showError("Vous n'êtes pas connecté, les changements ne seront pas sauvegardés.", { ignoreId: 'loggedOutChanges' }));
   }
