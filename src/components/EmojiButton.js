@@ -36,6 +36,12 @@ const styles = {
   emojiButton: {
     color: 'black', // sets alpha to 1, from transucid on IconButton
     borderRadius: 0,
+    '&:disabled': {
+      // ios workaround: material-ui defaults to setting color with low alpha,
+      // which doesn't work on ios
+      opacity: '0.5',
+      color: 'black',
+    },
   },
 };
 
