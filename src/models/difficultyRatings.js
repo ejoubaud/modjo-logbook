@@ -9,7 +9,7 @@ const byValue = {
   '-2': add('👇', 'Surcoté'),
   '-1': add('😏', 'Facile pour sa couleur'),
   0: add('👌', 'Difficulté typique de sa couleur'),
-  1: add('🤔', 'Difficile pour sa couleur'),
+  1: add('😣', 'Difficile pour sa couleur'),
   2: add('☝️', 'Sous-coté'),
 };
 

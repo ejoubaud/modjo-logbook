@@ -6,8 +6,8 @@ const add = (emoji, description) => ({ emoji, description });
 
 const byValue = {
   0: add('😕', 'Bof'),
-  1: add('🙂', 'Cool'),
-  2: add('😃', 'Super'),
+  1: add('☺️', 'Cool'),
+  2: add('😆', 'Super'),
   3: add('😍', 'Génial'),
 };
 
