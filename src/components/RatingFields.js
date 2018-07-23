@@ -10,7 +10,7 @@ import { toggleFunRating, toggleDifficultyRating } from '../actions';
 import funRatings from '../models/funRatings';
 import difficultyRatings from '../models/difficultyRatings';
 
-const RatingFields = ({ classes, toggleFunRating, toggleDifficultyRating }) => {
+const RatingFields = ({ noSendReason, classes, toggleFunRating, toggleDifficultyRating }) => {
   const funConnect = { selector: getFunRating, dispatch: toggleFunRating };
   const difficultyConnect = { selector: getDifficultyRating, dispatch: toggleDifficultyRating };
   return (
@@ -24,6 +24,7 @@ const RatingFields = ({ classes, toggleFunRating, toggleDifficultyRating }) => {
               emoji={emoji}
               value={value}
               tip={description}
+              noSendReason={noSendReason}
               {...funConnect}
             />
           )) }
@@ -39,6 +40,7 @@ const RatingFields = ({ classes, toggleFunRating, toggleDifficultyRating }) => {
               emoji={emoji}
               value={value}
               tip={description}
+              noSendReason={noSendReason}
               {...difficultyConnect}
             />
           )) }

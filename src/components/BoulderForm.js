@@ -62,11 +62,10 @@ const BoulderForm = (props) => {
 
   const noSendReason = validations.sendButtons(props);
   const noClearReason = validations.clearButton(props);
-  const canSend = !noSendReason;
 
   return (
     <form>
-      { canSend && <RatingFields /> }
+      <RatingFields noSendReason={noSendReason} />
 
       <div>
         <SubmitButton
