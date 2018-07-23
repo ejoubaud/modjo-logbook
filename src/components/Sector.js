@@ -7,6 +7,8 @@ import { getColorMap, getSelectedColor, getSelectedSectors, getSendMap } from '.
 import { isSent as isSectorSent } from '../collections/sendMap';
 import { getPalette } from '../models/colors';
 
+const hasTouch = 'ontouchstart' in document.documentElement || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+
 // We want the whole sector area to trigger a hover/click, but we only want
 // the part on the wall to get highlighted, so we duplicate the path,
 // one for events/:hover, and a clipped one (with a mask) to actually get hightlighted
@@ -36,7 +38,7 @@ const Sector = ({
   </a>
 );
 
-const getHighlightFill = ({ isSelected, isSent, anySectorSelected, isColorMapMode, color }) => {
+const getHighlightFill = ({ isSelected, isSent, anySectorSelected, color }) => {
   const { main, light } = getPalette(color);
   const defaultPalette = getPalette(null);
   return {
@@ -71,18 +73,15 @@ const styles = {
     pointerEvents: 'all',
     cursor: 'pointer',
     stroke: 'inherit',
+    tapHighlightColor: 'rgba(0,0,0,0)',
     '&:focus, &:active': {
       outline: 'none',
     },
-    '&:hover:active': {
-      '& $highlight': {
-        fill: ({ highlightFill: { onActive } }) => onActive,
-      },
+    '&:hover:active $highlight': {
+      fill: ({ highlightFill: { onActive } }) => onActive,
     },
-    '&:hover': {
-      '& $highlight': {
-        fill: ({ highlightFill: { onHover } }) => onHover,
-      },
+    '&:hover $highlight': {
+      fill: ({ highlightFill: { atRest, onHover } }) => (hasTouch ? atRest : onHover),
     },
   },
 
@@ -109,7 +108,7 @@ const mapStateToProps = (state, props) => {
   const isSelected = selectedSectorIds.indexOf(props.id) >= 0;
   const anySectorSelected = selectedSectorIds.length > 0;
   const highlightFill = getHighlightFill(
-    { isSelected, isSent, anySectorSelected, isColorMapMode, color }
+    { isSelected, isSent, anySectorSelected, isColorMapMode, color },
   );
   return {
     color,
