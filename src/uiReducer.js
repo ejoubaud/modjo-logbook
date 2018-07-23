@@ -18,12 +18,21 @@ const reducers = {
     };
   },
 
-  [actions.TOGGLE_SECTOR]: (state, { payload }) => ({
-    ...state,
-    selectedSectors: xor(state.selectedSectors, [payload.sectorId]),
-    funRating: null,
-    difficultyRating: null,
-  }),
+  [actions.TOGGLE_SECTOR]: (state, { payload }) => {
+    const { sectorId } = payload;
+    const { selectedSectors, isSectorMultiSelectMode } = state;
+    const newSelectedSectors = (() => {
+      if (isSectorMultiSelectMode) return xor(selectedSectors, [sectorId]);
+      if (selectedSectors.length === 1 && selectedSectors[0] === sectorId) return [];
+      return [sectorId];
+    })();
+    return {
+      ...state,
+      selectedSectors: newSelectedSectors,
+      funRating: null,
+      difficultyRating: null,
+    };
+  },
 
   [actions.TOGGLE_ALL_SECTORS]: state => ({
     ...state,
@@ -49,6 +58,12 @@ const reducers = {
     sendSummaryPage: 1,
   }),
 
+  [actions.TOGGLE_SECTOR_MULTI_SELECT_MODE]: state => ({
+    ...state,
+    isSectorMultiSelectMode: !state.isSectorMultiSelectMode,
+    selectedSectors: (state.selectedSectors.length > 1 ? [] : state.selectedSectors),
+  }),
+
   [actions.SEND_BOULDERS]: (state, { payload }) => ({
     ...state,
     sendList: sendList.addAll(state.sendList, payload.sends),
@@ -57,7 +72,7 @@ const reducers = {
   }),
 
   // not used anymore (we clear sectors now, not just boulders)
-  [actions.CLEAR_BOULDERS]: (state, { payload }) => ({
+  [actions.CLEAR_BOULDERS]: state => ({
     ...state,
     selectedSectors: [],
   }),
@@ -185,6 +200,7 @@ const defaultState = {
   selectedTab: 0,
   funRating: null,
   difficultyRating: null,
+  isSectorMultiSelectMode: false,
   sendList: sendList.empty,
   sendListPage: 1,
   sendSummary: sendSummary.empty,

@@ -4,6 +4,7 @@ export const TOGGLE_ALL_SECTORS = 'TOGGLE_ALL_SECTORS';
 export const TOGGLE_FUN_RATING = 'TOGGLE_FUN_RATING';
 export const TOGGLE_DIFFICULTY_RATING = 'TOGGLE_DIFFICULTY_RATING';
 export const TOGGLE_TAB = 'TOGGLE_TAB';
+export const TOGGLE_SECTOR_MULTI_SELECT_MODE = 'TOGGLE_SECTOR_MULTI_SELECT_MODE';
 export const SEND_BOULDERS = 'SEND_BOULDERS';
 export const CLEAR_BOULDERS = 'CLEAR_BOULDERS'; // not used anymore
 export const CLEAR_SECTORS = 'CLEAR_SECTORS';
@@ -65,6 +66,10 @@ export const toggleDifficultyRating = value => ({
 export const toggleTab = tabId => ({
   type: TOGGLE_TAB,
   payload: { tabId },
+});
+
+export const toggleSectorMultiSelectMode = () => ({
+  type: TOGGLE_SECTOR_MULTI_SELECT_MODE,
 });
 
 export const sendBoulders = (sends, user) => ({

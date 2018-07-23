@@ -24,6 +24,7 @@ export const getSelectedSectors = uiStateGetter('selectedSectors');
 export const getSelectedTab = uiStateGetter('selectedTab');
 export const getFunRating = uiStateGetter('funRating');
 export const getDifficultyRating = uiStateGetter('difficultyRating');
+export const getIsSectorMultiSelectMode = uiStateGetter('isSectorMultiSelectMode');
 export const getSendList = uiStateGetter('sendList');
 export const getSendSummary = uiStateGetter('sendSummary');
 export const getSendListPage = uiStateGetter('sendListPage');
