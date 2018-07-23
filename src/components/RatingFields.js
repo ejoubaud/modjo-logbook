@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+import InputLabel from '@material-ui/core/InputLabel';
 
 import EmojiButton from './EmojiButton';
 import { getFunRating, getDifficultyRating } from '../selectors';
@@ -13,39 +14,76 @@ const RatingFields = ({ classes, toggleFunRating, toggleDifficultyRating }) => {
   const funConnect = { selector: getFunRating, dispatch: toggleFunRating };
   const difficultyConnect = { selector: getDifficultyRating, dispatch: toggleDifficultyRating };
   return (
-    <div>
-      <Paper className={classes.group}>
-        { funRatings.map(({ emoji, description, value }) => (
-          <EmojiButton
-            key={value}
-            emoji={emoji}
-            value={value}
-            tip={description}
-            {...funConnect}
-          />
-        )) }
+    <div className={classes.container}>
+      <Paper className={classes.group} elevation={1}>
+        <InputLabel className={classes.label}>Fun</InputLabel>
+        <div className={classes.buttons}>
+          { funRatings.map(({ emoji, description, value }) => (
+            <EmojiButton
+              key={value}
+              emoji={emoji}
+              value={value}
+              tip={description}
+              {...funConnect}
+            />
+          )) }
+        </div>
       </Paper>
 
-      <Paper className={classes.group}>
-        { difficultyRatings.map(({ emoji, description, value }) => (
-          <EmojiButton
-            key={value}
-            emoji={emoji}
-            value={value}
-            tip={description}
-            {...difficultyConnect}
-          />
-        )) }
+      <Paper className={classes.group} elevation={1}>
+        <InputLabel className={classes.label}>Difficult&eacute;</InputLabel>
+        <div className={classes.buttons}>
+          { difficultyRatings.map(({ emoji, description, value }) => (
+            <EmojiButton
+              key={value}
+              emoji={emoji}
+              value={value}
+              tip={description}
+              {...difficultyConnect}
+            />
+          )) }
+        </div>
       </Paper>
     </div>
   );
 };
 
+const smallScreenMediaQuery = '@media (max-width: 433px)';
+
 const styles = {
+  container: {
+    marginBottom: '8px',
+  },
+
   group: {
     display: 'inline-block',
-    '@media (max-width: 433px)': {
+    [smallScreenMediaQuery]: {
       display: 'block',
+    },
+    '&:before,&:after': {
+      display: 'table',
+      content: '" "',
+    },
+    '&:after': {
+      clear: 'both',
+    },
+  },
+
+  buttons: {
+    [smallScreenMediaQuery]: {
+      float: 'right',
+    },
+  },
+
+  label: {
+    display: 'block',
+    fontSize: '12px',
+    paddingTop: '10px',
+    paddingBottom: '2px',
+    [smallScreenMediaQuery]: {
+      float: 'left',
+      paddingTop: '18px',
+      paddingLeft: '10px',
     },
   },
 };

@@ -82,6 +82,8 @@ const styles = {
     flexWrap: 'wrap',
     justifyContent: 'center',
     alignText: 'center',
+    marginTop: '8px',
+    marginBottom: '12px',
   },
 
   footerLink: {

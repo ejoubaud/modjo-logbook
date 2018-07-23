@@ -14,7 +14,7 @@ const Controls = ({ isSpyMode, classes }) => (
 
 const styles = {
   container: {
-    marginTop: '10px',
+    marginTop: '8px',
   },
 };
 
