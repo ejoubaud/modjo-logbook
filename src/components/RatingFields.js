@@ -5,12 +5,17 @@ import Paper from '@material-ui/core/Paper';
 import InputLabel from '@material-ui/core/InputLabel';
 
 import EmojiButton from './EmojiButton';
-import { getFunRating, getDifficultyRating } from '../selectors';
+import { getSelection, getFunRating, getDifficultyRating } from '../selectors';
 import { toggleFunRating, toggleDifficultyRating } from '../actions';
 import funRatings from '../models/funRatings';
 import difficultyRatings from '../models/difficultyRatings';
 
-const RatingFields = ({ noSendReason, classes, toggleFunRating, toggleDifficultyRating }) => {
+const RatingFields = (props) => {
+  const { noSendReason, classes, selection, toggleFunRating, toggleDifficultyRating } = props;
+  const { color, sectorIds } = selection;
+  // Don't show unless selector and color are selected
+  if (sectorIds.length === 0 || !color) return null;
+
   const funConnect = { selector: getFunRating, dispatch: toggleFunRating };
   const difficultyConnect = { selector: getDifficultyRating, dispatch: toggleDifficultyRating };
   return (
@@ -92,7 +97,8 @@ const styles = {
 
 const StyledRatingFields = withStyles(styles)(RatingFields);
 
-const mapStateToProps = () => ({
+const mapStateToProps = state => ({
+  selection: getSelection(state),
 });
 
 const mapDispatchToProps = { toggleFunRating, toggleDifficultyRating };
