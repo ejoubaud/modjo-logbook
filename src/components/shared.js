@@ -1,4 +1,4 @@
 export const sharedTooltipTouchConfig = {
-  enterTouchDelay: 150,
+  enterTouchDelay: 0,
   leaveTouchDelay: 300,
 };
