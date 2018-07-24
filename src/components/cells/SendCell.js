@@ -7,7 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 import FlashIcon from '@material-ui/icons/FlashOn';
 
 import ColorButton from '../ColorButton';
-import { sharedTooltipTouchConfig } from '../shared';
+import { sharedTooltipTouchConfig, hasTouch } from '../shared';
 import { toggleColor, toggleSector } from '../../actions';
 import { getSelection } from '../../selectors';
 import colors from '../../models/colors';
@@ -49,7 +49,7 @@ const SendCell = (props) => {
         </Tooltip>
       ) }
 
-      <span className={classes.group}>
+      <span className={`${classes.group} ${hasTouch && 'hasTouch'}`}>
         <IconButton
           onClick={() => toggleSector(sectorId)}
           className={`${classes.sectorButton} ${selectedSectors.indexOf(sectorId) >= 0 && classes.sectorButtonSelected}`}
@@ -101,11 +101,17 @@ const styles = {
     height: '28px',
     width: '28px',
     fontSize: '18px',
+    '.hasTouch &:hover': {
+      backgroundColor: 'initial',
+    },
   },
 
   sectorButtonSelected: {
     backgroundColor: 'rgba(0, 0, 0, 0.1)',
     margin,
+    '.hasTouch &:hover': {
+      backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    },
   },
 
   typeIcon: {

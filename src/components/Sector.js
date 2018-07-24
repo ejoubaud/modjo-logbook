@@ -2,12 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import injectSheet from 'react-jss';
 
+import { hasTouch } from './shared';
 import { toggleSector } from '../actions';
 import { getColorMap, getSelectedColor, getSelectedSectors, getSendMap } from '../selectors';
 import { isSent as isSectorSent } from '../collections/sendMap';
 import { getPalette } from '../models/colors';
-
-const hasTouch = 'ontouchstart' in document.documentElement || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
 
 // We want the whole sector area to trigger a hover/click, but we only want
 // the part on the wall to get highlighted, so we duplicate the path,
