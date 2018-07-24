@@ -7,12 +7,13 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import Paper from '@material-ui/core/Paper';
 
 import Avatar from './Avatar';
+import { sharedTooltipTouchConfig } from './shared';
 import { getSpyModeTarget } from '../selectors';
 import { stopSpyMode } from '../actions';
 
 const SpyModeButton = ({ spyModeTarget, stopSpyMode, classes }) => (
   <Paper className={classes.container}>
-    <Tooltip title="Quitter son logbook">
+    <Tooltip title="Quitter son logbook" {...sharedTooltipTouchConfig}>
       <Button variant="outlined" onClick={stopSpyMode} fullWidth>
         <Avatar user={spyModeTarget} /><span>{spyModeTarget.displayName}</span>
         <CancelIcon className={classes.rightIcon} />

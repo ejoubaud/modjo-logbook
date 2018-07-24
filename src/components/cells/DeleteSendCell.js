@@ -1,9 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { withStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 
+import { sharedTooltipTouchConfig } from '../shared';
 import { getSendList, getSendMap } from '../../selectors';
 import { wasSectorClearedSince } from '../../collections/sendList';
 import { lastSendForSector } from '../../collections/sendMap';
@@ -30,15 +32,20 @@ const CantDeleteReason = ({ send }) => (
   </div>
 );
 
-const DeleteSendCell = ({ send, sendList, sendMap, toggleDeletionConfirmWithTarget }) => {
+const DeleteSendCell = ({ send, sendList, sendMap, classes, toggleDeletionConfirmWithTarget }) => {
   if (!canDelete(send, sendMap, sendList)) {
     return (
-      <Tooltip title={<CantDeleteReason send={send} />} placement="left">
-        <span>
-          <IconButton onClick={() => toggleDeletionConfirmWithTarget(send)} disabled>
-            <DeleteIcon />
-          </IconButton>
-        </span>
+      <Tooltip
+        title={<CantDeleteReason send={send} />}
+        placement="left"
+        {...sharedTooltipTouchConfig}
+      >
+        <IconButton
+          className={classes.disabled}
+          disableRipple
+        >
+          <DeleteIcon />
+        </IconButton>
       </Tooltip>
     );
   }
@@ -49,6 +56,18 @@ const DeleteSendCell = ({ send, sendList, sendMap, toggleDeletionConfirmWithTarg
   );
 };
 
+const styles = {
+  // use a disabled style rather than disable button so as to show the tooltip
+  disabled: {
+    opacity: '0.5',
+    cursor: 'default',
+    '&:hover,&:active': {
+      backgroundColor: 'initial',
+      boxShadow: 'none',
+    },
+  },
+};
+
 const mapStateToProps = state => ({
   sendList: getSendList(state),
   sendMap: getSendMap(state),
@@ -56,6 +75,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = () => ({ });
 
-const ConnectedDeleteSendCell = connect(mapStateToProps, mapDispatchToProps)(DeleteSendCell);
+const StyledDeleteSendCell = withStyles(styles)(DeleteSendCell);
+
+const ConnectedDeleteSendCell = connect(mapStateToProps, mapDispatchToProps)(StyledDeleteSendCell);
 
 export default ConnectedDeleteSendCell;

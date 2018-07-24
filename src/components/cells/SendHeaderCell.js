@@ -7,6 +7,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import FileDownloadIcon from '@material-ui/icons/FileDownload';
 
+import { sharedTooltipTouchConfig } from '../shared';
 import { getIsTableFilterSynced, getSelectedColor } from '../../selectors';
 import { toggleTableFilterSync, downloadSendListAsCsv } from '../../actions';
 import { getPalette } from '../../models/colors';
@@ -28,7 +29,7 @@ const SendHeaderCell = (props) => {
       <Hidden xsDown>
         Blocs valid&eacute;s
       </Hidden>
-      <Tooltip title={tip}>
+      <Tooltip title={tip} {...sharedTooltipTouchConfig}>
         <IconButton
           className={classes.iconButton}
           style={styles}
@@ -39,7 +40,7 @@ const SendHeaderCell = (props) => {
       </Tooltip>
 
       { showDownloadButton && (
-        <Tooltip title="Tout t&eacute;l&eacute;charger en CSV/Excel">
+        <Tooltip title="Tout t&eacute;l&eacute;charger en CSV/Excel" {...sharedTooltipTouchConfig}>
           <IconButton
             className={classes.iconButton}
             style={styles}

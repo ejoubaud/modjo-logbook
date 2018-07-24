@@ -6,7 +6,7 @@ import { getMuiTheme } from '../models/colors';
 
 const ColorButton = ({ color, children, classes, variant = 'raised', ...otherProps }) => (
   <MuiThemeProvider theme={getMuiTheme(color)}>
-    <Button variant={variant} color="primary" className={classes.root} {...otherProps}>
+    <Button variant={variant} color="primary" {...otherProps} className={`${otherProps.className} ${classes.root}`} >
       {children}
     </Button>
   </MuiThemeProvider>

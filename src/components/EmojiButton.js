@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import { sharedTooltipTouchConfig } from './shared';
 import { getSelection } from '../selectors';
 import { getPalette } from '../models/colors';
 
@@ -30,17 +31,19 @@ const EmojiButton = (props) => {
   const isDisabled = noSendReason || selectedSectorIds.length > 1;
 
   return (
-    <Tooltip title={isDisabled ? (noSendReason || <MultiSelectTip />) : tip} placement="top">
-      <span>
-        <IconButton
-          className={`${classes.emojiButton} ${isSelected && classes.selected}`}
-          onClick={() => dispatch(value)}
-          style={{ backgroundColor: isSelected && getPalette(selectedColor).main }}
-          disabled={isDisabled}
-        >
-          {emoji}
-        </IconButton>
-      </span>
+    <Tooltip
+      title={isDisabled ? (noSendReason || <MultiSelectTip />) : tip}
+      placement="top"
+      {...sharedTooltipTouchConfig}
+    >
+      <IconButton
+        className={`${classes.emojiButton} ${isSelected && classes.selected} ${isDisabled && classes.disabled}`}
+        onClick={() => { if (!isDisabled) dispatch(value); }}
+        style={{ backgroundColor: isSelected && getPalette(selectedColor).main }}
+        disableRipple={isDisabled}
+      >
+        {emoji}
+      </IconButton>
     </Tooltip>
   );
 };
@@ -49,11 +52,14 @@ const styles = {
   emojiButton: {
     color: 'black', // sets alpha to 1, from transucid on IconButton
     borderRadius: 0,
-    '&:disabled': {
-      // ios workaround: material-ui defaults to setting color with low alpha,
-      // which doesn't work on ios
-      opacity: '0.5',
-      color: 'black',
+  },
+  // use a disabled style rather than disable button so as to show the tooltip
+  disabled: {
+    opacity: '0.5',
+    cursor: 'default',
+    '&:hover,&:active': {
+      backgroundColor: 'initial',
+      boxShadow: 'none',
     },
   },
 };

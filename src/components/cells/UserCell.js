@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import Avatar from '../Avatar';
+import { sharedTooltipTouchConfig } from '../shared';
 import { getSpyModeTarget, getSignedInUser } from '../../selectors';
 import { startSpyMode, stopSpyMode } from '../../actions';
 import mockUser from '../../models/mockUser';
@@ -27,7 +28,7 @@ const UserCell = (
   );
   if (isDisabled) return button;
   const tip = shouldTurnSpyModeOff ? 'Cliquer pour revenir à votre logbook' : 'Cliquer pour voir son logbook';
-  return <Tooltip title={tip}>{button}</Tooltip>;
+  return <Tooltip title={tip} {...sharedTooltipTouchConfig}>{button}</Tooltip>;
 };
 
 const mapStateToProps = state => ({

@@ -20,12 +20,13 @@ const RankingTip = () => (
     Blocs valid&eacute;s sur les 3 derniers mois.<br />
     <br />
     D&eacute;monter un bloc ne modifie pas le palmar&egrave;s:<br />
-    le passage pr&eacute;c&eacute;dent compte toujours s&apos;il reste<br />
-    dans les 3 mois, mais seul le dernier passage par<br />
-    secteur/couleur est comptabilis&eacute;.<br />
+    le passage pr&eacute;c&eacute;dent compte toujours s&apos;il<br />
+    reste dans les 3 mois, mais seul le dernier<br />
+    passage par secteur/couleur est comptabilis&eacute;.<br />
     <br />
-    La couleur la plus haute l&apos;emporte, puis le nombre de<br />
-    blocs par couleur. Pas de bonus pour les flash.<br />
+    La couleur la plus haute l&apos;emporte, puis le<br />
+    nombre de blocs par couleur. Pas de bonus<br />
+    pour les flash.<br />
     <br />
     On compte sur votre honn&ecirc;tet&eacute;.
   </Fragment>
@@ -49,7 +50,11 @@ const RankingTable = (props) => {
             <TableCell padding="dense">Grimpeur</TableCell>
             <TableCell padding="dense" numeric>
               Palmar&egrave;s [
-                <Tooltip title={<RankingTip />}>
+                <Tooltip
+                  title={<RankingTip />}
+                  enterTouchDelay={0}
+                  leaveTouchDelay={3000}
+                >
                   <a
                     href=""
                     onClick={(e) => { e.preventDefault(); }}

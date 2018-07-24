@@ -7,6 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 import FlashIcon from '@material-ui/icons/FlashOn';
 
 import ColorButton from '../ColorButton';
+import { sharedTooltipTouchConfig } from '../shared';
 import { toggleColor, toggleSector } from '../../actions';
 import { getSelection } from '../../selectors';
 import colors from '../../models/colors';
@@ -40,7 +41,10 @@ const SendCell = (props) => {
       ) }
 
       { (type === 'clear') && (
-        <Tooltip title="Secteur d&eacute;mont&eacute; / r&eacute;ouvert">
+        <Tooltip
+          title="Secteur d&eacute;mont&eacute; / r&eacute;ouvert"
+          {...sharedTooltipTouchConfig}
+        >
           <RefreshIcon className={classes.clearIcon} />
         </Tooltip>
       ) }
@@ -54,13 +58,21 @@ const SendCell = (props) => {
         </IconButton>
 
         { (type === 'flash') && (
-          <Tooltip title="Flash&eacute;"><FlashIcon className={classes.typeIcon} /></Tooltip>
+          <Tooltip
+            title="Flash&eacute;"
+            {...sharedTooltipTouchConfig}
+          >
+            <FlashIcon className={classes.typeIcon} />
+          </Tooltip>
         ) }
       </span>
 
       <span className={classes.group}>
         { fun && (
-          <Tooltip title={fun.description}>
+          <Tooltip
+            title={fun.description}
+            {...sharedTooltipTouchConfig}
+          >
             <span className={classes.emojiLabel}>
               { fun.emoji }
             </span>
@@ -68,7 +80,10 @@ const SendCell = (props) => {
         ) }
 
         { difficulty && (
-          <Tooltip title={difficulty.description}>
+          <Tooltip
+            title={difficulty.description}
+            {...sharedTooltipTouchConfig}
+          >
             <span className={classes.emojiLabel}>
               { difficulty.emoji }
             </span>

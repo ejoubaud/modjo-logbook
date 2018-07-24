@@ -4,13 +4,17 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import Checkbox from '@material-ui/core/Checkbox';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import { sharedTooltipTouchConfig } from './shared';
 import { getIsSectorMultiSelectMode } from '../selectors';
 import { toggleSectorMultiSelectMode } from '../actions';
 import { getMuiTheme } from '../models/colors';
 
 const toggleSectorMultiSelect = ({ isSectorMultiSelectMode, toggleSectorMultiSelectMode }) => (
   <MuiThemeProvider theme={getMuiTheme(null)}>
-    <Tooltip title={isSectorMultiSelectMode ? 'Désactiver la sélection multiple' : 'Activer la sélection multiple (plusieurs secteurs à la fois)'}>
+    <Tooltip
+      title={isSectorMultiSelectMode ? 'Désactiver la sélection multiple' : 'Activer la sélection multiple (plusieurs secteurs à la fois)'}
+      {...sharedTooltipTouchConfig}
+    >
       <Checkbox
         checked={isSectorMultiSelectMode}
         onClick={toggleSectorMultiSelectMode}
