@@ -9,6 +9,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
+import Hidden from '@material-ui/core/Hidden';
 
 import UserCell from './cells/UserCell';
 import RankingCell from './cells/RankingCell';
@@ -46,7 +47,9 @@ const RankingTable = (props) => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell padding="dense">#</TableCell>
+            <Hidden xsDown>
+              <TableCell padding="dense">#</TableCell>
+            </Hidden>
             <TableCell padding="dense">Grimpeur</TableCell>
             <TableCell padding="dense" numeric>
               Palmar&egrave;s [
@@ -71,11 +74,13 @@ const RankingTable = (props) => {
         <TableBody>
           { users.map((userRankingEntry, idx) => (
             <TableRow key={userRankingEntry.uid}>
-              <TableCell padding="dense">
-                {idx + 1 + ((page - 1) * pageSize)}
-              </TableCell>
-              <TableCell padding="dense">
-                <UserCell user={userRankingEntry} />
+              <Hidden xsDown>
+                <TableCell padding="dense">
+                  {idx + 1 + ((page - 1) * pageSize)}
+                </TableCell>
+              </Hidden>
+              <TableCell padding="none">
+                <UserCell user={userRankingEntry} rank={idx + 1 + ((page - 1) * pageSize)} />
               </TableCell>
               <TableCell padding="dense">
                 <RankingCell entry={userRankingEntry} />

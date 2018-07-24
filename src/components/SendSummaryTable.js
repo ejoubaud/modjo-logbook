@@ -9,6 +9,7 @@ import TableFooter from '@material-ui/core/TableFooter';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Hidden from '@material-ui/core/Hidden';
 
 import SendHeaderCell from './cells/SendHeaderCell';
 import UserCell from './cells/UserCell';
@@ -36,22 +37,26 @@ const SendSummaryTable = (props) => {
             <TableCell padding="dense" className={classes.centerOnSmall}>
               <SendHeaderCell />
             </TableCell>
-            <TableCell padding="dense">Date</TableCell>
+            <Hidden xsDown>
+              <TableCell padding="dense">Date</TableCell>
+            </Hidden>
           </TableRow>
         </TableHead>
 
         <TableBody>
           { sends.map(send => (
             <TableRow key={send.id}>
-              <TableCell padding="dense">
+              <TableCell padding="none">
                 <UserCell user={send.user} />
               </TableCell>
               <TableCell padding="dense" className={classes.centerOnSmall}>
                 <SendCell send={send} />
               </TableCell>
-              <TableCell padding="dense">
-                <DateCell date={send.createdAt} />
-              </TableCell>
+              <Hidden xsDown>
+                <TableCell padding="dense">
+                  <DateCell date={send.createdAt} />
+                </TableCell>
+              </Hidden>
             </TableRow>
           )) }
         </TableBody>

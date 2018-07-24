@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
+import Hidden from '@material-ui/core/Hidden';
 
 import Avatar from '../Avatar';
 import { sharedTooltipTouchConfig } from '../shared';
@@ -9,9 +10,8 @@ import { getSpyModeTarget, getSignedInUser } from '../../selectors';
 import { startSpyMode, stopSpyMode } from '../../actions';
 import mockUser from '../../models/mockUser';
 
-const UserCell = (
-  { user, signedInUser, spyModeTarget, startSpyMode, stopSpyMode },
-) => {
+const UserCell = (props) => {
+  const { user, rank, signedInUser, spyModeTarget, startSpyMode, stopSpyMode } = props;
   const isSignedInUser = signedInUser.uid === user.uid;
   const isSpyModeOn = !!spyModeTarget;
   const isSpyModeTarget = isSpyModeOn && user.uid === spyModeTarget.uid;
@@ -22,6 +22,7 @@ const UserCell = (
       disabled={isDisabled}
       onClick={() => (shouldTurnSpyModeOff ? stopSpyMode() : startSpyMode(user))}
     >
+      { rank && <Hidden smUp><span>{rank}.</span></Hidden> }
       <Avatar user={user} />
       <span>{user.displayName}</span>
     </Button>

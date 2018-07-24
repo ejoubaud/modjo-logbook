@@ -28,7 +28,7 @@ const EmojiButton = (props) => {
     dispatch,
   } = props;
 
-  const isDisabled = noSendReason || selectedSectorIds.length > 1;
+  const isDisabled = !!noSendReason || selectedSectorIds.length > 1;
 
   return (
     <Tooltip
@@ -53,6 +53,7 @@ const styles = {
     color: 'black', // sets alpha to 1, from transucid on IconButton
     borderRadius: 0,
   },
+
   // use a disabled style rather than disable button so as to show the tooltip
   disabled: {
     opacity: '0.5',
