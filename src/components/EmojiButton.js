@@ -11,7 +11,9 @@ import { getPalette } from '../models/colors';
 const MultiSelectTip = () => (
   <Fragment>
     Il n&apos;est possible de noter qu&apos;un bloc &agrave; la fois.<br />
-    D&eacute;selectionner des secteurs pour activer les notes.
+    D&eacute;s&eacute;lectionner des secteurs pour activer les notes.<br />
+    Ou vous pouvez marquer plusieurs blocs comme valid&eacute;s<br />
+    sans note.
   </Fragment>
 );
 
