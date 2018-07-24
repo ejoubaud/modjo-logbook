@@ -23,7 +23,7 @@ const SendHeaderCell = (props) => {
   } = props;
 
   const styles = isSyncOn ? { backgroundColor: palette.main, color: palette.contrastText } : {};
-  const tip = isSyncOn ? 'Désactiver le filtrage par couleur/type sélectionnés' : 'Filtrer par couleur/type sélectionnés';
+  const tip = isSyncOn ? 'Désactiver le filtrage par couleur/type sélectionnés' : 'Filtrer par couleur/secteur sélectionnés';
   return (
     <Fragment>
       <Hidden xsDown>
