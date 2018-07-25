@@ -100,6 +100,7 @@ const styles = {
   sectorButton: {
     height: '28px',
     width: '28px',
+    marginRight: margin,
     fontSize: '18px',
     '.hasTouch &:hover': {
       backgroundColor: 'initial',
@@ -108,7 +109,6 @@ const styles = {
 
   sectorButtonSelected: {
     backgroundColor: 'rgba(0, 0, 0, 0.1)',
-    margin,
     '.hasTouch &:hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.1)',
     },
@@ -116,7 +116,7 @@ const styles = {
 
   typeIcon: {
     verticalAlign: 'middle',
-    margin,
+    marginRight: margin,
   },
 
   clearIcon: {
