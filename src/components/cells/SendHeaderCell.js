@@ -43,7 +43,6 @@ const SendHeaderCell = (props) => {
         <Tooltip title="Tout t&eacute;l&eacute;charger en CSV/Excel" {...sharedTooltipTouchConfig}>
           <IconButton
             className={classes.iconButton}
-            style={styles}
             onClick={() => downloadSendListAsCsv()}
           >
             <FileDownloadIcon className={classes.icon} />
