@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import Hidden from '@material-ui/core/Hidden';
@@ -11,26 +12,41 @@ import { startSpyMode, stopSpyMode } from '../../actions';
 import mockUser from '../../models/mockUser';
 
 const UserCell = (props) => {
-  const { user, rank, signedInUser, spyModeTarget, startSpyMode, stopSpyMode } = props;
+  const { user, rank, classes, signedInUser, spyModeTarget, startSpyMode, stopSpyMode } = props;
   const isSignedInUser = signedInUser.uid === user.uid;
   const isSpyModeOn = !!spyModeTarget;
   const isSpyModeTarget = isSpyModeOn && user.uid === spyModeTarget.uid;
   const isDisabled = isSpyModeTarget || (!isSpyModeOn && isSignedInUser);
   const shouldTurnSpyModeOff = isSpyModeOn && isSignedInUser;
+
   const button = (
     <Button
       disabled={isDisabled}
       onClick={() => (shouldTurnSpyModeOff ? stopSpyMode() : startSpyMode(user))}
     >
-      { rank && <Hidden smUp><span>{rank}.</span></Hidden> }
+      { rank && <Hidden smUp><span className={classes.ranking}>{rank}.</span></Hidden> }
       <Avatar user={user} />
-      <span>{user.displayName}</span>
+      <span className={classes.name}>{user.displayName}</span>
     </Button>
   );
+
   if (isDisabled) return button;
   const tip = shouldTurnSpyModeOff ? 'Cliquer pour revenir à votre logbook' : 'Cliquer pour voir son logbook';
+
   return <Tooltip title={tip} {...sharedTooltipTouchConfig}>{button}</Tooltip>;
 };
+
+const styles = {
+  ranking: {
+    display: 'inline-block',
+    marginRight: '10px',
+  },
+  name: {
+    textAlign: 'left',
+  },
+};
+
+const StyledUserCell = withStyles(styles)(UserCell);
 
 const mapStateToProps = state => ({
   spyModeTarget: getSpyModeTarget(state),
@@ -39,6 +55,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = { startSpyMode, stopSpyMode };
 
-const ConnectedUserCell = connect(mapStateToProps, mapDispatchToProps)(UserCell);
+const ConnectedUserCell = connect(mapStateToProps, mapDispatchToProps)(StyledUserCell);
 
 export default ConnectedUserCell;
