@@ -27,36 +27,29 @@ const SendListLabel = ({ spyModeTarget, classes }) => (
     )
 );
 
-const SendTables = ({ selectedTab, hasSendList, spyModeTarget, classes, toggleTab }) => {
-  if (!hasSendList) {
-    return (
-      <div className={classes.container}>
-        <SendSummaryTable />
-      </div>
-    );
-  }
-
-  return (
-    <div className={classes.container}>
-      <Paper>
-        <Tabs
-          value={selectedTab}
-          onChange={(e, v) => toggleTab(v)}
-          centered
-        >
-          <Tab label="Actus" />
+const SendTables = ({ selectedTab, hasSendList, spyModeTarget, classes, toggleTab }) => (
+  <div className={classes.container}>
+    <Paper>
+      <Tabs
+        value={selectedTab}
+        onChange={(e, v) => toggleTab(v)}
+        centered
+      >
+        <Tab label="Actus" value={0} />
+        { hasSendList && (
           <Tab
             label={<SendListLabel spyModeTarget={spyModeTarget} classes={classes} />}
+            value={1}
           />
-          <Tab label="Classement" />
-        </Tabs>
-      </Paper>
-      { selectedTab === 0 && <SendSummaryTable /> }
-      { selectedTab === 1 && <SendListTable /> }
-      { selectedTab === 2 && <RankingTable /> }
-    </div>
-  );
-};
+        ) }
+        <Tab label="Classement" value={2} />
+      </Tabs>
+    </Paper>
+    { selectedTab === 0 && <SendSummaryTable /> }
+    { selectedTab === 1 && <SendListTable /> }
+    { selectedTab === 2 && <RankingTable /> }
+  </div>
+);
 
 const mapStateToProps = state => ({
   selectedTab: getSelectedTab(state),
