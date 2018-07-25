@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import withState from 'recompose/withState';
@@ -50,6 +50,30 @@ const validations = {
   },
 };
 
+const DefaultSendTooltip = () => (
+  <Fragment>
+    Marquer le(s) bloc(s) commes valid&eacute;(s):<br />
+    encha&icirc;n&eacute;(s) de la position de d&eacute;part jusqu&apos;&agrave;<br />
+    tenir la derni&egrave;re prise &agrave; 2 mains ou au r&eacute;ta final,<br />
+    sans interruption
+  </Fragment>
+);
+
+const DefaultFlashTooltip = () => (
+  <Fragment>
+    Marquer le(s) bloc(s) comme flash&eacute;(s):<br />
+    valid&eacute;(s) au tout premier essai
+  </Fragment>
+);
+
+const DefaultClearTooltip = () => (
+  <Fragment>
+    Indiquer qu&apos;un bloc a &eacute;t&eacute; d&eacute;mont&eacute; ou r&eacute;ouvert<br />
+    depuis la derni&egrave;re fois o&ugrave; vous l&apos;avez valid&eacute;.<br />
+    Vous pourrez ensuite noter un passage du nouveau bloc.
+  </Fragment>
+);
+
 const BoulderForm = (props) => {
   const {
     color,
@@ -74,21 +98,25 @@ const BoulderForm = (props) => {
           color={color}
           disabledReason={noSendReason}
           doSubmit={() => submitSends('redpoint')}
+          defaultTip={<DefaultSendTooltip />}
         />
+
         <SubmitButton
           label="Flash&eacute;"
           Icon={FlashOnIcon}
           color={color}
           disabledReason={noSendReason}
           doSubmit={() => submitSends('flash')}
+          defaultTip={<DefaultFlashTooltip />}
         />
+
         <SubmitButton
           label="D&eacute;mont&eacute;"
           Icon={RefreshIcon}
           color={color}
           disabledReason={noClearReason}
           doSubmit={() => (isColorMapMode ? submitClears() : toggleConfirm(true))}
-          defaultTip="Indiquer qu'un bloc a été démonté ou réouvert depuis la dernière fois où vous l'avez validé. Vous pourrez ensuite noter un passage du nouveau bloc."
+          defaultTip={<DefaultClearTooltip />}
         />
 
         <ToggleSectorMultiSelect />
