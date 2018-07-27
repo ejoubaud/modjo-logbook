@@ -1,19 +1,9 @@
-// Represents the highest sent boulder color for each sector
 import { createSelector } from 'reselect';
 import colorMap from './collections/colorMap';
 import { getPage as paginateSendList, size as sendListSize, toSendMap } from './collections/sendList';
 import { getPage as paginateSendSummary, size as sendSummarySize } from './collections/sendSummary';
 import { getPage as paginateRanking, createRanking } from './collections/ranking';
-
-// Firebase state getters
-
-export const getSignedInUserId = ({ firebase: { auth } }) => !auth.isEmpty && auth.uid;
-export const getSignedInUser = ({ firebase: { profile, auth } }) => (
-  !profile.isEmpty && !auth.isEmpty && { ...profile, uid: auth.uid }
-);
-export const getIsAuthLoading = ({ firebase: { auth, profile } }) => (
-  !auth.isLoaded || !profile.isLoaded
-);
+import { getDisplayName } from './models/user';
 
 // UI state getters
 
@@ -50,6 +40,27 @@ export const getErrorStates = (
   isHidden: isErrorHidden,
   displayDuration: errorDisplayDuration,
 });
+
+export const getIsSpyModeOn = state => !!getSpyModeTarget(state);
+
+// Firebase state getters
+
+export const getSignedInUserId = ({ firebase: { auth } }) => !auth.isEmpty && auth.uid;
+export const getSignedInUser = (state) => {
+  const { firebase: { profile, auth } } = state;
+  if (profile.isEmpty || auth.isEmpty) return false;
+  return {
+    ...profile,
+    uid: auth.uid,
+    displayName: getDisplayName(profile),
+  };
+};
+export const getIsAuthLoading = ({ firebase: { auth, profile } }) => (
+  !auth.isLoaded || !profile.isLoaded
+);
+
+// Mixed state getters
+
 export const getSendSubmitStates = state => ({
   color: getSelectedColor(state),
   sectorIds: getSelectedSectors(state),
@@ -58,8 +69,6 @@ export const getSendSubmitStates = state => ({
   signedInUser: getSignedInUser(state),
   sendList: getSendList(state),
 });
-
-export const getIsSpyModeOn = state => !!getSpyModeTarget(state);
 
 // UI Memoized selectors (and their helpers)
 

@@ -3,7 +3,7 @@ import { takeEvery, put, call, all, select } from 'redux-saga/effects';
 
 import { generateLoadingId } from '../utils';
 import { startSendListSync, stopSendListSync, startSendSummarySync, stopSendSummarySync, syncSendList, syncSendSummary, exitSpyMode, toggleTab, toggleLoading } from '../../actions';
-import { auth, firestore } from '../../firebase';
+import { auth, firestore, docRef } from '../../firebase';
 import { getSendSummary, getIsSpyModeOn } from '../../selectors';
 import { empty as emptySendList } from '../../collections/sendList';
 import { empty as emptySummary, isEmpty } from '../../collections/sendSummary';
@@ -30,11 +30,21 @@ function* exitIfSpyMode() {
   if (isSpying) yield put(exitSpyMode());
 }
 
+function* setDisplayNameUsernameOnSignUp(uid) {
+  const userRef = docRef('users', uid);
+  const userDoc = yield call([userRef, 'get']);
+  const user = userDoc.data();
+  if (user && user.displayName && !user.displayNameOverride) {
+    yield call([userRef, 'set'], { displayNameOverride: user.displayName }, { merge: true });
+  }
+}
+
 function* handleEvent(user) {
   if (user) {
     yield all([
       put(startSendListSync(user.uid)),
       put(startSendSummarySync()),
+      call(setDisplayNameUsernameOnSignUp, user.uid),
     ]);
   } else {
     yield all([

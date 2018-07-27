@@ -7,7 +7,7 @@ import { firestore as db, docRef } from '../firebase';
 import * as sendListUtils from '../collections/sendList';
 import * as sendSummaryUtils from '../collections/sendSummary';
 import { createSends } from '../models/send';
-import mockUser from '../models/mockUser';
+import { mockUser } from '../models/user';
 
 function* submitSends({ payload: { type } }) {
   const {

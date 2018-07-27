@@ -15,12 +15,12 @@ import startSendListSync from './channels/sendListSync';
 import startSendSummarySync from './channels/sendSummarySync';
 import startSpyMode from './spyMode';
 
-function* rootSaga(getFirebase) {
+function* rootSaga() {
   yield all([
     takeEvery(SUBMIT_SENDS, submitSends),
     takeEvery(SUBMIT_CLEARS, submitClears),
     takeEvery(SUBMIT_SEND_DELETION, submitSendDeletion),
-    takeEvery(SUBMIT_DISPLAY_NAME_UPDATE, submitDisplayNameUpdate, getFirebase),
+    takeEvery(SUBMIT_DISPLAY_NAME_UPDATE, submitDisplayNameUpdate),
     takeEvery(SUBMIT_SEND_SUMMARY_USER_UPDATE, submitSendSummaryUserUpdate),
     takeEvery(SUBMIT_SEND_LIST_TRIM, submitSendListTrim),
     takeEvery(SUBMIT_SEND_SUMMARY_TRIM, submitSendSummaryTrim),

@@ -9,7 +9,7 @@ import Avatar from '../Avatar';
 import { sharedTooltipTouchConfig } from '../shared';
 import { getSpyModeTarget, getSignedInUser } from '../../selectors';
 import { startSpyMode, stopSpyMode } from '../../actions';
-import mockUser from '../../models/mockUser';
+import { mockUser } from '../../models/user';
 
 const UserCell = (props) => {
   const { user, rank, classes, signedInUser, spyModeTarget, startSpyMode, stopSpyMode } = props;

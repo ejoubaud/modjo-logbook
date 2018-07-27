@@ -1,16 +1,16 @@
-import { call, put } from 'redux-saga/effects';
+import { call, put, select } from 'redux-saga/effects';
 
 import { generateLoadingId } from './utils';
-import submitSendSummaryUserUpdate from './submitSendSummaryUserUpdate';
-import { showError, toggleLoading } from '../actions';
+import { getSignedInUser } from '../selectors';
+import { showError, toggleLoading, submitSendSummaryUserUpdate } from '../actions';
 
 import { firestore as db } from '../firebase';
 
-function* submitDisplayNameUpdate(getFirebase, { payload: { displayName } }) {
+function* submitDisplayNameUpdate({ payload: { displayName } }) {
   try {
-    const firebase = yield getFirebase();
     const userCollection = db.collection('users');
-    const res = yield call([userCollection.where('displayName', '==', displayName), 'get']);
+    const user = yield select(getSignedInUser);
+    const res = yield call([userCollection.where('displayNameOverride', '==', displayName), 'get']);
 
     if (res.size > 0) {
       yield put(showError('Nom déjà pris'));
@@ -18,9 +18,8 @@ function* submitDisplayNameUpdate(getFirebase, { payload: { displayName } }) {
       const loadingId = generateLoadingId('submitDisplayNameUpdate');
       try {
         yield put(toggleLoading(true, loadingId));
-
-        yield call([firebase, 'updateProfile'], { displayName });
-        yield call(submitSendSummaryUserUpdate);
+        yield call([userCollection.doc(user.uid), 'set'], { displayNameOverride: displayName }, { merge: true });
+        yield put(submitSendSummaryUserUpdate());
       } finally {
         yield put(toggleLoading(false, loadingId));
       }
