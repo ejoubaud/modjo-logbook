@@ -1,4 +1,5 @@
 /* global window */
+/* eslint global-require: off */
 import capitalize from 'lodash/fp/capitalize';
 
 import firebase from 'firebase/app';
@@ -7,24 +8,13 @@ import 'firebase/firestore';
 
 // Setup firebase
 if (process.env.NODE_ENV === 'development') {
-  firebase.initializeApp({
-    apiKey: 'AIzaSyBZcVNjFvytEL-fnAxJKXLM49W63nhz_jI',
-    authDomain: 'modjo-logbook-dev.firebaseapp.com',
-    databaseURL: 'https://modjo-logbook-dev.firebaseio.com',
-    projectId: 'modjo-logbook-dev',
-    storageBucket: 'modjo-logbook-dev.appspot.com',
-    messagingSenderId: '165501549583',
-  });
-} else {
-  firebase.initializeApp({
-    apiKey: 'AIzaSyAW4FfrqI-zc3L1DSTqC79dX_VuvBC2UjE',
-    authDomain: 'modjo-logbook.firebaseapp.com',
-    databaseURL: 'https://modjo-logbook.firebaseio.com',
-    projectId: 'modjo-logbook',
-    storageBucket: 'modjo-logbook.appspot.com',
-    messagingSenderId: '1098715116304',
-  });
+  const config = require('./config/firebase.dev.json');
+  console.log('config', config);
+  firebase.initializeApp(config);
   window.firebase = firebase;
+} else {
+  const config = require('./config/firebase.prod.json');
+  firebase.initializeApp(config);
 }
 
 // Setup firestore

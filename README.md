@@ -16,8 +16,10 @@ Here's what you'll need:
 
 You can then clone this repo and configure your dev firebase project:
 
-```
+```bash
 cd modjo-logbook
+cp src/config/firebase.example.json src/config/firebase.dev.json
+# Edit src/config/firebase.dev.json with your project's config from the Firebase console
 firebase use $YOUR_DEV_FIREBASE_APP_NAME
 firebase deploy --only firestore
 yarn install
@@ -36,6 +38,10 @@ This is a toy side-project and its test suite is not remotely up to professional
 ```
 yarn test
 ```
+
+### First deploy
+
+First ensure you have set a prod firebase config in `src/config/firebase.prod.json`. Otherwise copy `src/config/firebase.example.json` and edit it with the config from your prod project created in the [Firebase Web console](https://firebase.google.com/).
 
 ### Deploy
 
