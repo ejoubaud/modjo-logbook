@@ -1,6 +1,6 @@
 # Modjo logbook
 
-A [PWA](https://developers.google.com/web/progressive-web-apps/) to record sends at the local bouldering gym, built on [React](https://reactjs.org/), [Redux](https://redux.js.org/), [Firebase](https://firebase.google.com/) and [Firebase](https://firebase.google.com/docs/firestore/). Designed to run on Firebase free plan.
+A [PWA](https://developers.google.com/web/progressive-web-apps/) to record sends at the local bouldering gym, built on [React](https://reactjs.org/), [Redux](https://redux.js.org/), [Firebase](https://firebase.google.com/) and [Firestore](https://firebase.google.com/docs/firestore/). Designed to run on Firebase free plan.
 
 It's built around the local gym I go to, but should be decently easy to fork and adapt for yours (the hardest migration step would probably be adapting the SVG map).
 
@@ -82,7 +82,7 @@ This project:
       - they're only ever updated in transactions, to avoid race-conditions updating those complex objects
       - functional collections: all the functions in their respective modules are non-mutating, they're only meant to be browsed and modified via those functions (consider their structure private)
     - **collections**:
-      - `sendList`: List of sends for a given user. There's one stored per user and it's kept
+      - `sendList`: List of sends for a given user. There's one stored per user.
       - `sendSummary`: List of sends for all users. Contains a hash of users, assigns them a short id (to save storage bytes), and uses a `sendList` under the hood to store and order everyone's sends. Each send references the short id of its user (as opposed to `sendList` where the single owner is the document's id)
   - **calculated**: The remaining collections are calculated from the stored ones (directly or indirectly), and usually cached using `reselect`:
     - `sendMap`: from `sendList`, stores the current send status for each color/sector pair, depending on whether it was never sent, last sent (actual send) or last cleared. Used to display the colors on the gym's map when a color is selected, and to generate the `colorMap`
